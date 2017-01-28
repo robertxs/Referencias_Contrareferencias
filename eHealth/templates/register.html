@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{# Load the tag library #}
+{% load bootstrap3 %}
+
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
+
+{% block login %}
+ <div id="cuerpoHeredado" style="padding-left: 80px;">
+    {% if mensaje %}
+      <p class="error"> <i class="fa fa-exclamation-triangle"></i>  <strong>{{ mensaje }}</strong></p>
+    {% endif %}
+    <h2>Agregar datos de Usuario</h2>
+    <form action="" method=POST>
+
+      {% csrf_token %}
+
+        {% for field in form %}
+            {% if field.errors %}
+                <div class="control-group error">
+                    <label class="control-label">{{ field.label }}</label>
+                    <div class="controls">{{ field }}
+                        <span class="help-inline">
+                            {% for error in  field.errors %}{{ error }}{% endfor %}
+                        </span>
+                    </div>
+                </div>
+            {% else %}
+                <div class="control-group">
+                    <label class="control-label">{{ field.label }}</label>
+                    <div class="controls">{{ field }}
+                        {% if field.help_text %}
+                            <p class="help-inline"><small>{{ field.help_text }}</small></p>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+
+        {% buttons %}
+          <div class="col-sm-6 col-md-12">
+              <button id="id_submit" type="submit" class="btn btn-lg">
+                  Registrar
+              </button>
+          </div>
+          <div class="col-md-3"></div>
+      {% endbuttons %}
+        <br>
+    </form>
+  </div>
+{% endblock %}
