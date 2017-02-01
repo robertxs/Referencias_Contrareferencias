@@ -1,4 +1,13 @@
 {% extends "base.html" %}
+{% load bootstrap3 %}
+
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
+
 {% block login %}
   <div id="header">
     <div class="container">
@@ -12,7 +21,9 @@
               <h1>STPeHM</h1>
             </div>
             <div class="login-form">
-              <form action="" method="post">
+              {% bootstrap_form_errors form %}
+              <form action="{% url 'login' %}" method="post">
+                {% csrf_token %}
                 <div class="control-group">
                   <input type="text" class="login-field" placeholder="Username" name="username" style= 'width: 264px'>
                   <label class="login-field-icon fui-user" for="login-name"></label>
