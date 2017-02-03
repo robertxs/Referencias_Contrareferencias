@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div id="cuerpoHeredado">
+  <center><h2>Mis Consultas</h2></center>
+    <div id="show-consultations"><table>
+      <tr>
+        <th>Institucion</th>
+        <th>Consulta</th>
+        <th style="text-align: right">
+          <a id="add_consultation" href="">
+            <i class="fa fa-plus-circle" style="font-size:20px;color:white"></i>
+          </a>
+        </th>
+      </tr>
+      {% for consultation in consultations %}
+        <tr>
+          <td>{{consultation.institution}}</td>
+          <td>{{consultation.speciality}}</td>
+          <td style="text-align: right;">
+            <a><i class="fa fa-pencil" style="font-size:16px;color:black"></i></a>
+            <button id="delete_consultation"><i class="fa fa-trash" style="font-size:16px;color:black"></i></button>
+          </td>
+        </tr>
+      {% endfor%}
+    </table></div>
+  </div>
+{% endblock %}

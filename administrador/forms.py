@@ -14,9 +14,6 @@ class UsuarioForm(forms.ModelForm):
             ('paciente', 'Paciente'),
         ]
     )
-#    role = Group.objects.get_or_create(name = rol)
-    #print(role)
-
 
     ci = forms.CharField(required=True, label="Cédula de identidad")
     username = forms.CharField(required=True, label="Nombre de usuario")

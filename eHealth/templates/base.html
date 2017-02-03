@@ -73,7 +73,7 @@
       <div class="row">
         <div class="col-sm-3" style="padding-left: 30px;">
 
-            <h4><center><strong>{{session.user.name}}</center></strong></h4>
+            <h4><center><strong>{{user.get_full_name|default:user.username}}</center></strong></h4>
 
           <hr>
           <ul class="nav nav-pills nav-stacked">
@@ -83,14 +83,15 @@
                 <li><a href=""><i class="fa fa-user"></i>  Ver Perfil</a></li>
                 {% endif %}
                 {% if user.groups.all.0.name == 'medico' %}
-                  <li><a href=""><i class="fa fa-envelope"></i>  Inbox</a></li>
-                  <li><a href=""><i class="fa fa-user"></i>  Ver Perfil</a></li>
-                  <li><a href=""><i class="fa fa-calendar"></i>  Ver Consultas</a></li>
-                  <li><a href=""><i class="fa fa-folder-open"></i>  Historias Clínicas</a></li>
-                  <li><a href=""><i class="fa fa-search "></i>  Buscar paciente</a></li>
+                  <li><a href="{% url 'inbox' %}"><i class="fa fa-envelope"></i>  Inbox</a></li>
+                  <li><a href="{% url 'perfil_medico' user.pk %}"><i class="fa fa-user"></i>  Ver Perfil</a></li>
+                  <li><a href="{% url 'ver_consultas' user.pk %}"><i class="fa fa-calendar"></i>  Ver Consultas</a></li>
+                  <li><a href="{% url 'historias_clinicas' %}"><i class="fa fa-folder-open"></i>  Historias Clínicas</a></li>
+                  <li><a href=""><i class="fa fa-share"></i>  Referir paciente</a></li>
+                  <li><a href="{% url 'buscar_paciente' %}"><i class="fa fa-search "></i>  Buscar paciente</a></li>
                 {% endif %}
-                <li><a href=""><i class="fa fa-search "></i>  Buscar médico</a></li>
-                <li><a href=""><i class="fa fa-pencil-square-o "></i>  Ver Citas</a></li>
+                <li><a href="{% url 'buscar_medico' %}"><i class="fa fa-search "></i>  Buscar médico</a></li>
+                <li><a href="{% url 'ver_citas' user.pk %}"><i class="fa fa-pencil-square-o "></i>  Ver Citas</a></li>
 
 
               {% else %}
@@ -130,3 +131,4 @@
   {% endblock custom_script %}
   </body>
 </html>
+

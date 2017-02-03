@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div id="">
+  <h1> Buscar</h1>
+</div>
+<!--
+<div class="container">
+    <div class="row">
+        <div class="col-sm-6">
+            <div id="imaginary_container">
+                <div class="input-group stylish-input-group">
+                    <input type="text" class="form-control"  placeholder="Search" id="search">
+                    <span class="input-group-addon">
+                        <button type="submit" id="search-button">
+                            <span class="glyphicon glyphicon-search"></span>
+                        </button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>-->
+<br>
+<br>
+{% if user.groups.all.0.name == "medico" %}
+<h3> Resultados de búsqueda </h3>
+<div>
+    <table id="search_result" class="display" cellspacing="0" width="100%">
+            <thead>
+                <tr>
+                    <th>Cédula</th>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Correo</th>
+                    <th>Rol</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for user in result %}
+                <tr>
+                    <td>{{user.ci}}</td>
+                    <td>{{user.name}}</td>
+                    <td>{{user.last_name}}</td>
+                    <td>{{user.email}}</td>
+                    <td>{{user.role}}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+    <br>
+    <br>
+{% endblock %}

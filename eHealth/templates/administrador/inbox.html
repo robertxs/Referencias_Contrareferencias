@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h3> Inbox </h3>
+<div>
+    <table id="search_result" class="display" cellspacing="0" width="100%">
+            <thead>
+                <tr>
+                    <th>From</th>
+                    <th>Subject</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for elem in result %}
+                <tr>
+                    <td>{{elem.sent_by}}</td>
+                    <td>{{elem.subject}}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <br>
+    <br>
+{% endblock %}

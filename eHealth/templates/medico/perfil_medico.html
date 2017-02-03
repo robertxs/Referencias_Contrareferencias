@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+  <div id="cuerpoHeredado">
+
+      <ul class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" href="#home">Información Básica</a></li>
+        <li><a data-toggle="tab" href="#menu1">Estudios</a></li>
+        <li><a data-toggle="tab" href="#menu2">Reconocimientos</a></li>
+        <li><a data-toggle="tab" href="#menu3">Publicaciones</a></li>
+        <li><a data-toggle="tab" href="#menu4">Experiencia</a></li>
+        <li><a data-toggle="tab" href="#menu5">Habilidades</a></li>
+        <li><a data-toggle="tab" href="#menu6">Eventos</a></li>
+      </ul>
+
+      <div class="tab-content">
+        <div id="home" class="tab-pane fade in active">
+          <center><h2>Información Básica</h2></center>
+            <div class="row">
+              <!-- left column -->
+              <div class="col-md-4 col-sm-6 col-xs-12">
+                <div class="text-center">
+                  <img src="{% static 'assets/img/avatar.png' %}" class="avatar img-circle img-thumbnail" alt="avatar">
+                  <h6>Cambiar foto</h6>
+                  <input type="file" class="text-center center-block well well-sm">
+                </div>
+              </div>
+              <!-- edit form column -->
+              <div class="col-md-8 col-sm-6 col-xs-12 personal-info">
+                {% if mensaje %}
+                <p class="error"> <i class="fa fa-exclamation-triangle"></i>  <strong>{{ mensaje }}</strong></p>
+                {% endif %}
+                <form action="{% url 'perfil_medico' user.pk %}" method=POST>
+                  {{ form.ci.label }}
+                  {{ ci }}
+                  {{ form.username.label }}
+                  {{ username }}
+                  {{ form.name.label }}
+                  {{ form.name }}
+                  {{ form.last_name.label }}
+                  {{ form.last_name }}
+                  {{ form.email.label }}
+                  {{ form.email }}
+                  {{ form.sex.label }}
+                  {{ form.sex }}
+                  {{ form.date_of_birth.label }}
+                  {{ form.date_of_birth }}
+                  {{ form.marital_status.label }}
+                  {{ form.marital_status }}
+                  {{ form.telephone.label }}
+                  {{ form.telephone }}
+                  {{ form.address.label }}
+                  {{ form.address }}
+                  {{ form.submit }}
+                </form>
+              </div>
+            </div>
+        </div>
+        <div id="menu1" class="tab-pane fade">
+          <center><h2>Estudios</h2></center>
+          <br>
+            {% for study in studies %}
+                <h4>{{study.title}} - <i>{{study.institution}} {{study.date_of_graduation}}</i></h4>
+                <div class="row">
+                    <div class="col-md-8 ">
+                        <p>{{study.description}}</p>
+                    </div>
+                    <div class="col-md-4" style="text-align: right;">
+                        <a href=""> Modificar </a>
+                        <a href="">Eliminar</button>
+                    </div>
+                </div>
+                <hr>
+            {% endfor%}
+            <center><a  href="">Agregar Estudios</a></center>
+        </div>
+        <div id="menu2" class="tab-pane fade">
+          <center><h2>Reconocimientos</h2></center>
+          <br>
+            {% for award in awards %}
+                <h4>{{award.title}} - <i>{{award.date}}</i></h4>
+                <div class="row">
+                    <div class="col-md-8 ">
+                        <p>{{award.institution}}</p>
+                    </div>
+                    <div class="col-md-4" style="text-align: right;">
+                        <a href=""> Modificar </a>
+                        <a href=""> Eliminar </a>
+                    </div>
+                </div>
+                <hr>
+            {% endfor%}
+            <center><a href=""> Agregar Reconocimiento</a></center>
+        </div>
+        <div id="menu3" class="tab-pane fade">
+          <center><h2>Publicaciones</h2></center>
+          <br>
+            {% for publication in publications %}
+                <h4>{{publication.title}} - <i>{{publication.date}}</i></h4>
+                <div class="row">
+                    <div class="col-md-8 ">
+                        <p>{{publication.description}}</p>
+                    </div>
+                    <div class="col-md-4" style="text-align: right;">
+                        <a href=""> Modificar </a>
+                        <a href=""> Eliminar </a>
+                    </div>
+                </div>
+                <hr>
+            {% endfor%}
+            <center><a href=""> Agregar Publicación </a></center>
+        </div>
+        <div id="menu4" class="tab-pane fade">
+          <center><h3>Experiencias</h3></center>
+         <br>
+            {% for experience in experiences %}
+                <h4>{{experience.title}} - <i>{{experience.institution}}</i></h4>
+                <h5><b> {{experience.date_of_start}} - {{experience.date_of_finish}}</b></h5>
+                <div class="row">
+                    <div class="col-md-8 ">
+                        <p>{{experience.description}}</p>
+                    </div>
+                    <div class="col-md-4" style="text-align: right;">
+                        <a href="">  Modificar </a>
+                        <a href=""> Eliminar </a>
+                    </div>
+                </div>
+                <hr>
+            {% endfor%}
+            <center><a href=""> Agregar Experiencia</a></center>
+        </div>
+        <div id="menu5" class="tab-pane fade">
+          <center><h3>Habilidades</h3></center>
+          <br>
+            {% for ability in abilities %}
+                <h4>{{ability.title}} </h4>
+                <div class="row">
+                    <div class="col-md-8 ">
+                        <p>{{ability.description}}</p>
+                    </div>
+                    <div class="col-md-4" style="text-align: right;">
+                        <a href=""> Modificar </a>
+                        <a href=""> Eliminar </a>
+                    </div>
+                </div>
+                <hr>
+            {% endfor%}
+            <center><a href=""> Agregar Habilidad </a></center>
+
+        </div>
+         <div id="menu6" class="tab-pane fade">
+          <center><h3>Eventos</h3></center>
+          <br>
+            {% for event in events %}
+                <h4>{{event.title}} <i>{{event.institution}} {{event.date}}</i></h4>
+                <div class="row">
+                    <div class="col-md-8 ">
+                        <p>{{event.description}}</p>
+                    </div>
+                    <div class="col-md-4" style="text-align: right;">
+                        <a href="">  Modificar </a>
+                        <a href=""> Eliminar </a>
+                    </div>
+                </div>
+                <hr>
+            {% endfor%}
+            <center><a href=""> Agregar Evento </a></center>
+
+        </div>
+      </div>
+  </div>
+{% endblock %}

@@ -35,4 +35,9 @@ urlpatterns = patterns(
         Home.as_view(),
         name='home'
     ),
+    url(
+        r'^inbox/$',
+        Inbox.as_view(),
+        name='inbox'
+    ),
 )
