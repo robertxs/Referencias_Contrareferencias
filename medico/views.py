@@ -34,3 +34,5 @@ class BuscarMedico(TemplateView):
 class VerCitas(TemplateView):
     template_name = 'medico/ver_citas.html'
 
+class MisPacientes(TemplateView):
+    template_name = 'medico/mis_pacientes.html'

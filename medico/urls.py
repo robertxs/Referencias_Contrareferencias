@@ -49,5 +49,9 @@ urlpatterns = [
         VerCitas.as_view(),
         name='ver_citas'
     ),
+    url(
+        r'^mis-pacientes/(?P<id>\w+)$',
+        MisPacientes.as_view(),
+        name='mis_pacientes'
+    ),
 ]
-

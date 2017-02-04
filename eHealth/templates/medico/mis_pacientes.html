@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div id="cuerpoHeredado">
+  <center><h2>Mis Pacientes</h2></center>
+    <!-- Modal content -->
+    <div class="modal-wrapper" id="popup">
+      <div class="popup-contenedor">
+         <h2>Paciente: </h2>
+         <p>Cita: </p>
+         <p>Última Visita: </p>
+         <p>Especialidad: </p>
+         <button id = "Finish_Consult">Finalizar Consulta</button>
+         <button id = "Start_Consult">Comenzar Revisión</button>
+         <a class="popup-cerrar" href="#">X</a>
+      </div>
+  </div>
+
+    <div id="show-consultations"><table>
+      <tr>
+        <th>Paciente</th>
+        <th>Fecha</th>
+        <th>Hora</th>
+        <th>Especialidad</th>
+        <th style="text-align: center">
+          <a id="add_consultation" href="#">
+            <i class="fa fa-plus-circle" style="font-size:20px;color:white"></i>
+          </a>
+        </th>
+        <tr>
+          <td>Ana Pérez</td>
+          <td>02/02/2017</td>
+          <td>11:00 a.m.</td>
+          <td>Cardiología</td>
+          <!-- AQUI VER QUE TABLA USAREMOS!! -->
+          <!-- <td>{{consultation.institution}}</td>
+          <td>{{consultation.speciality}}</td> -->
+          <td style="text-align: right;">
+            <a id="check_consultation" class="fa fa-check" style="font-size:16px;color:green" href = "#popup"></a>
+            </td>
+        </tr>
+      </tr>
+      <!-- {% for consultation in consultations %} -->
+
+        <!-- <tr>
+          <td>Paciente</td>
+          <td>Fecha</td>
+          <td>Hora</td>
+          <td>Especialidad</td>
+          <!-- AQUI VER QUE TABLA USAREMOS!! -->
+          <!-- <td>{{consultation.institution}}</td>
+          <td>{{consultation.speciality}}</td> -->
+          <!-- <td style="text-align: right;">
+            <a><i class="fa fa-pencil" style="font-size:16px;color:black"></i></a>
+            <button id="delete_consultation"><i class="fa fa-trash" style="font-size:16px;color:black"></i></button>
+          </td>
+        </tr>  -->
+      {% endfor%}
+    </table></div>
+  </div>
+{% endblock %}
