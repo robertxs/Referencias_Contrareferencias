@@ -67,7 +67,6 @@ class UsuarioForm(forms.ModelForm):
 
 
 class LoginForm(forms.Form):
-
     username = forms.CharField(
         max_length=60, required=True,
         label='', widget=forms.TextInput(attrs={'placeholder': 'Email'}))

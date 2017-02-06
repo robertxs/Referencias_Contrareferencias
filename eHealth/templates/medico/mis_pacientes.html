@@ -5,11 +5,11 @@
   <center><h2>Mis Pacientes</h2></center>
     <!-- Modal content -->
     <div class="modal-wrapper" id="popup">
-      <div class="popup-contenedor">
-         <h2>Paciente: </h2>
+      <div class="popup-contenedor" method=POST>
+         <h2>Paciente:{{Historia.paciente}} </h2>
          <p>Cita: </p>
          <p>Última Visita: </p>
-         <p>Especialidad: </p>
+         <p>Especialidad:{{Historia.especialidad}} </p>
          <button id = "Finish_Consult">Finalizar Consulta</button>
          <button id = "Start_Consult">Comenzar Revisión</button>
          <a class="popup-cerrar" href="#">X</a>

@@ -7,6 +7,8 @@ class Paciente(models.Model):
     ESTADOS_CIVILES = (
         ('Soltero', 'Soltero'),
         ('Casado', 'Casado'),
+        ('Viudo', 'Viudo'),
+        ('Divorciado','Divorciado')
     )
     cedula = models.IntegerField(primary_key=True,
                                  validators=[MaxValueValidator(99999999)])
@@ -17,7 +19,7 @@ class Paciente(models.Model):
     estado_civil = models.CharField(max_length=7, choices=ESTADOS_CIVILES)
     ocupacion = models.CharField(max_length=30)
     direccion = models.CharField(max_length=70)
-    telefono = models.IntegerField()
+    telefono = models.IntegerField(validators=[MaxValueValidator(9999999999)])
 
 
 class Historiadetriaje(models.Model):
@@ -34,3 +36,4 @@ class Historia(models.Model):
                                on_delete=models.CASCADE)
     especialidad = models.ForeignKey(Especialidad,
                                      on_delete=models.CASCADE)
+

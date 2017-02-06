@@ -8,13 +8,19 @@ class Especialidad(models.Model):
 
 
 class Medico(models.Model):
+    ESTADOS_CIVILES = (
+        ('Soltero', 'Soltero'),
+        ('Casado', 'Casado'),
+        ('Viudo', 'Viudo'),
+        ('Divorciado','Divorciado')
+    )    
     cedula = models.IntegerField(primary_key=True,
                                  validators=[MaxValueValidator(99999999)])
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
     fecha_nacimiento = models.DateField()
     sexo = models.CharField(max_length=10)
-    estado_civil = models.CharField(max_length=15)
+    estado_civil = models.CharField(max_length=15, choices=ESTADOS_CIVILES)
     telefono = models.CharField(max_length=15)
     direccion = models.CharField(max_length=100)
     usuario = models.ForeignKey(Usuario,
