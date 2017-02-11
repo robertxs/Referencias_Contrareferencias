@@ -20,19 +20,18 @@ admin.site.register(models.Medico_Experiencias)
 admin.site.register(models.Medico_Logros)
 admin.site.register(models.Medico_Publicaciones)
 admin.site.register(models.Medico_Eventos)
+admin.site.register(models.Cita)
+admin.site.register(models.RevisionMedico)
+admin.site.register(models.InformeMedico)
+admin.site.register(models.Diagnostico)
+admin.site.register(models.Emergencia)
+admin.site.register(models.CentroMedico)
+admin.site.register(models.Laboratorio)
+admin.site.register(models.Horarios)
 
 # Registro de Modelo Paciente.
 admin.site.register(models.Paciente)
 admin.site.register(models.Historiadetriaje)
 admin.site.register(models.Historia)
-
-
-
-
-
-
-
-
-
-
-
+admin.site.register(models.ReferenciaMedico)
+admin.site.register(models.ReferenciaLaboratorio)
