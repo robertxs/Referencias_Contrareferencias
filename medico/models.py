@@ -21,11 +21,10 @@ class Medico(models.Model):
     #)    
     cedula = models.ForeignKey(Usuario,
                                 on_delete=models.CASCADE)
-    especialidad = models.ForeignKey(Especialidad,
-                                        on_delete=models.CASCADE)             
+    # especialidad = models.ForeignKey(Especialidad,
+    #                                     on_delete=models.CASCADE)             
     centro_medico = models.ForeignKey(Institucion,
                                         on_delete=models.CASCADE)
-
     #first_name = models.CharField(max_length=30)
     #last_name = models.CharField(max_length=30)
     #fecha_nacimiento = models.DateField()
@@ -175,11 +174,11 @@ class Horarios(models.Model):
 class ReferenciaMedico(models.Model):
   cita_id = models.ForeignKey(Cita,
                               on_delete=models.CASCADE)
-  cedula_paciente = models.ForeignKey(Paciente,
-                                      on_delete=models.CASCADE)
-  cedula_medico_tratante = models.ForeignKey(Medico,
-                                              on_delete=models.CASCADE)
-  cedula_medico_referido = models.ForeignKey(Medico, related_name= 'ci_medico_referido',
+  # cedula_paciente = models.ForeignKey(Paciente,
+  #                                     on_delete=models.CASCADE)
+  # cedula_medico_tratante = models.ForeignKey(Medico, related_name= 'ci_medico_referido',
+  #                                             on_delete=models.CASCADE)
+  cedula_medico_referido = models.ForeignKey(Medico, 
                                               on_delete=models.CASCADE)
   fecha_referencia = models.DateField()
   hora_referencia = models.DateTimeField()
@@ -188,8 +187,8 @@ class ReferenciaMedico(models.Model):
 class ReferenciaLaboratorio(models.Model):
   cita_id = models.ForeignKey(Cita,
                               on_delete=models.CASCADE)
-  cedula_paciente = models.ForeignKey(Paciente,
-                                      on_delete=models.CASCADE)
-  cedula_medico_tratante = models.ForeignKey(Medico,
-                                              on_delete=models.CASCADE)
+  # cedula_paciente = models.ForeignKey(Paciente,
+  #                                     on_delete=models.CASCADE)
+  # cedula_medico_tratante = models.ForeignKey(Medico,
+  #                                             on_delete=models.CASCADE)
   examenes_estudios = models.TextField()

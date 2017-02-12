@@ -1,0 +1,16 @@
+drop table paciente_citas;
+drop table paciente_historia;
+drop table pacientetriaje;
+drop table paciente_paciente;
+drop table medico_medico_experiencias;
+drop table medico_medico_eventos;
+drop table medico_medico_logros;
+drop table medico_medico_publicaciones;
+drop table medico_medico_habilidades;
+drop table medico_medico_especialidad;
+drop table medico_medico_estudios;
+drop table medico_medico;
+drop table medico_institucion;
+drop table medico_especialidad;
+drop table administrador_usuario;
+create table administrador_usuario(id varchar(30) primary key, user_id varchar(30), ci varchar(30) unique);

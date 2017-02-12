@@ -30,8 +30,8 @@ class Historia(models.Model):
                                  on_delete=models.CASCADE)
     medico = models.ForeignKey('medico.Medico',
                                on_delete=models.CASCADE)
-    especialidad = models.ForeignKey('medico.Especialidad',
-                                     on_delete=models.CASCADE)
+    # especialidad = models.ForeignKey('medico.Especialidad',
+    #                                  on_delete=models.CASCADE)
 
 
 
