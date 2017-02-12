@@ -115,3 +115,6 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "eHealth/static"),
 )
+
+
+# SILENCED_SYSTEM_CHECKS = ['fields.E300']

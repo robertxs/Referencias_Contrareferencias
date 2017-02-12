@@ -6,6 +6,12 @@ from django.core.validators import MaxValueValidator
 class Especialidad(models.Model):
     nombre_especialidad = models.CharField(primary_key=True, max_length=30)
 
+class Institucion(models.Model):
+    rif = models.CharField(max_length=15, primary_key=True)
+    nombre = models.CharField(max_length=100)
+    direccion = models.CharField(max_length=255, blank=False)
+    telefono = models.CharField(max_length=15)
+
 class Medico(models.Model):
     #ESTADOS_CIVILES = (
     #    ('Soltero', 'Soltero'),
@@ -27,23 +33,14 @@ class Medico(models.Model):
     #estado_civil = models.CharField(max_length=15, choices=ESTADOS_CIVILES)
     telefono = models.CharField(max_length=15)
     direccion = models.CharField(max_length=100)
-    usuario = models.ForeignKey(Usuario,
-                                on_delete=models.CASCADE)
+    # usuario = models.ForeignKey(Usuario,
+    #                             on_delete=models.CASCADE)
 
 class Medico_Especialidad(models.Model):
     especialidad = models.ForeignKey(Especialidad,
                                      on_delete=models.CASCADE)
     medico = models.ForeignKey(Medico,
                                on_delete=models.CASCADE)
-
-
-class Institucion(models.Model):
-    rif = models.CharField(max_length=15, primary_key=True)
-    nombre = models.CharField(max_length=100)
-    direccion = models.CharField(max_length=255, blank=False)
-    telefono = models.CharField(max_length=15)
-
-
 
 class Medico_Estudios(models.Model):
     medico = models.ForeignKey(Medico,
@@ -106,13 +103,13 @@ class Cita(models.Model):
     fecha = models.DateField()
     rif_centro_medico = models.ForeignKey(Institucion,
                                         on_delete=models.CASCADE)
-    hora = DateTimeField()
-    revision = models.ForeignKey(RevisionMedico,
-                                    on_delete=models.CASCADE)
-    informe = models.ForeignKey(InformeMedico,
-                                    on_delete=models.CASCADE)
-    diagnostico = models.ForeignKey(Diagnostico,
-                                    on_delete=models.CASCADE)
+    hora = models.DateTimeField()
+    # revision = models.ForeignKey('RevisionMedico',
+    #                                 on_delete=models.CASCADE)
+    # informe = models.ForeignKey('InformeMedico',
+    #                                 on_delete=models.CASCADE)
+    # diagnostico = models.ForeignKey('Diagnostico',
+    #                                 on_delete=models.CASCADE)
     especialidad = models.ForeignKey(Especialidad,
                                     on_delete=models.CASCADE)
 
@@ -139,7 +136,7 @@ class Diagnostico(models.Model):
     conclusiones = models.TextField()
     recipe_medico = models.TextField()
 
-class Emergencia(models.Medico):
+class Emergencia(models.Model):
     cedula_paciente = models.ForeignKey(Paciente,
                                         on_delete=models.CASCADE)
     cedula_medico = models.ForeignKey(Medico,
@@ -170,7 +167,7 @@ class Horarios(models.Model):
     )    
     cedula_medico_tratante = models.ForeignKey(Medico,
                                                 on_delete=models.CASCADE)
-    rif_ = models.ForeignKey(Institucion,
+    rif = models.ForeignKey(Institucion,
                                 on_delete=models.CASCADE)
     hora_cita = models.DateTimeField()
     disponible = models.CharField(max_length=2, choices=DISPONIBILIDAD) 
@@ -182,7 +179,7 @@ class ReferenciaMedico(models.Model):
                                       on_delete=models.CASCADE)
   cedula_medico_tratante = models.ForeignKey(Medico,
                                               on_delete=models.CASCADE)
-  cedula_medico_referido = models.ForeignKey(Medico,
+  cedula_medico_referido = models.ForeignKey(Medico, related_name= 'ci_medico_referido',
                                               on_delete=models.CASCADE)
   fecha_referencia = models.DateField()
   hora_referencia = models.DateTimeField()
