@@ -2,11 +2,13 @@
 from __future__ import unicode_literals
 
 from django.db import migrations, models
+from django.conf import settings
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
+        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
@@ -21,13 +23,9 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Usuario',
             fields=[
-                ('nombre', models.CharField(max_length=20)),
-                ('apellido', models.CharField(max_length=20)),
-                ('username', models.CharField(max_length=10)),
-                ('password', models.CharField(max_length=10)),
-                ('usuario', models.CharField(max_length=10, choices=[(b'Administrador', b'Administrador'), (b'Medico', b'Medico'), (b'Paciente', b'Paciente')])),
-                ('ci', models.CharField(default=b'', max_length=100, serialize=False, primary_key=True)),
-                ('estado_civil', models.CharField(max_length=7, choices=[(b'Soltero', b'Soltero'), (b'Casado', b'Casado'), (b'Viudo', b'Viudo'), (b'Divorciado', b'Divorciado')])),
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('ci', models.CharField(default=b'', max_length=100)),
+                ('user', models.OneToOneField(to=settings.AUTH_USER_MODEL)),
             ],
         ),
         migrations.AddField(

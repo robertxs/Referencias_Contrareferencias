@@ -32,8 +32,8 @@ function show_modify_role(id,name){
       hide_modify_role();
       $("#error-role-span").html("Este rol no puede ser modificado.");
       show_error_role();
-      break; 
-    default: 
+      break;
+    default:
       $('.show-modify-role').css('display','block');
       $('#modify-role-input').val(name);
       $('#modify-role-form').val(id);
@@ -49,7 +49,7 @@ $("#add-role").click(function(){
   console.log(rol);
   $.ajax({
           type: 'POST',
-          url: '/add_role',
+          url: "{% url 'agregar_rol' agregar_rol %}",
           data: JSON.stringify(rol),
           contentType:'application/json; charset=utf-8',
 
@@ -98,8 +98,8 @@ function delete_role(id){
       console.log(id);
       $("#error-role-span").html("Este rol no puede ser eliminado.");
       show_error_role();
-      break; 
-    default: 
+      break;
+    default:
       delete_role_ajax(id);
   }
 };
@@ -121,7 +121,7 @@ function delete_role_ajax(id){
             type: 'POST',
             url: '/delete_role',
             data: JSON.stringify(id),
-            //async: false,  
+            //async: false,
             contentType:'application/json; charset=utf-8',
 
             success: function(response) {

@@ -25,14 +25,104 @@ urlpatterns = [
         name='perfil_medico'
     ),
     url(
-        r'^ver_consultas/(?P<id>\w+)$',
+        r'^agregar-estudios/(?P<id>\w+)$',
+        AgregarEstudios.as_view(),
+        name='agregar_estudios'
+    ),
+    url(
+        r'^modificar-estudios/(?P<id>\w+)$',
+        ModificarEstudios.as_view(),
+        name='modificar_estudios'
+    ),
+    url(
+        r'^eliminar-estudios/(?P<id>\w+)$',
+        'medico.controllers.eliminar_estudios',
+        name='eliminar_estudios'
+    ),
+    url(
+        r'^agregar-reconocimientos/(?P<id>\w+)$',
+        AgregarReconocimientos.as_view(),
+        name='agregar_reconocimientos'
+    ),
+    url(
+        r'^modificar-reconocimientos/(?P<id>\w+)$',
+        ModificarReconocimientos.as_view(),
+        name='modificar_reconocimientos'
+    ),
+    url(
+        r'^eliminar-reconocimientos/(?P<id>\w+)$',
+        'medico.controllers.eliminar_reconocimientos',
+        name='eliminar_reconocimientos'
+    ),
+    url(
+        r'^agregar-publicaciones/(?P<id>\w+)$',
+        AgregarPublicaciones.as_view(),
+        name='agregar_publicaciones'
+    ),
+    url(
+        r'^modificar-publicaciones/(?P<id>\w+)$',
+        ModificarPublicaciones.as_view(),
+        name='modificar_publicaciones'
+    ),
+    url(
+        r'^eliminar-publicaciones/(?P<id>\w+)$',
+        'medico.controllers.eliminar_publicaciones',
+        name='eliminar_publicaciones'
+    ),
+    url(
+        r'^agregar-experiencias/(?P<id>\w+)$',
+        AgregarExperiencias.as_view(),
+        name='agregar_experiencias'
+    ),
+    url(
+        r'^modificar-experiencias/(?P<id>\w+)$',
+        ModificarExperiencias.as_view(),
+        name='modificar_experiencias'
+    ),
+    url(
+        r'^eliminar-experiencias/(?P<id>\w+)$',
+        'medico.controllers.eliminar_experiencias',
+        name='eliminar_experiencias'
+    ),
+    url(
+        r'^agregar-habilidades/(?P<id>\w+)$',
+        AgregarHabilidades.as_view(),
+        name='agregar_habilidades'
+    ),
+    url(
+        r'^modificar-habilidades/(?P<id>\w+)$',
+        ModificarHabilidades.as_view(),
+        name='modificar_habilidades'
+    ),
+    url(
+        r'^eliminar-habilidades/(?P<id>\w+)$',
+        'medico.controllers.eliminar_habilidades',
+        name='eliminar_habilidades'
+    ),
+    url(
+        r'^agregar-eventos/(?P<id>\w+)$',
+        AgregarEventos.as_view(),
+        name='agregar_eventos'
+    ),
+    url(
+        r'^modificar-eventos/(?P<id>\w+)$',
+        ModificarEventos.as_view(),
+        name='modificar_eventos'
+    ),
+    url(
+        r'^eliminar-eventos/(?P<id>\w+)$',
+        'medico.controllers.eliminar_eventos',
+        name='eliminar_eventos'
+    ),
+    url(
+        r'^ver-consultas/(?P<id>\w+)$',
         VerConsultas.as_view(),
         name='ver_consultas'
     ),
     url(
-        r'^historias_clinicas$',
-        HistoriasClinicas.as_view(),
-        name='historias_clinicas'
+        r'^agregar-consulta/$',
+        AgregarConsulta.as_view(),
+        name='agregar_consulta'
     ),
     url(
         r'^buscar-paciente$',
@@ -50,8 +140,38 @@ urlpatterns = [
         name='ver_citas'
     ),
     url(
-        r'^mis-pacientes/(?P<id>\w+)$',
-        MisPacientes.as_view(),
-        name='mis_pacientes'
+        r'^agregar-cita/(?P<id>\w+)$',
+        AgregarCitas.as_view(),
+        name='agregar_cita'
+    ),
+    url(
+        r'^modificar-cita/(?P<id>\w+)$',
+        ModificarCitas.as_view(),
+        name='modificar_cita'
+    ),
+    url(
+        r'^eliminar-cita/(?P<id>\w+)$',
+        'medico.controllers.eliminar_citas',
+        name='eliminar_cita'
+    ),
+    url(
+        r'^historias/$',
+        HistoriasClinicas.as_view(),
+        name='historias_clinicas'
+    ),
+    url(
+        r'^historias/new/$',
+        HistoriasClinicasCrear.as_view(),
+        name='crear_historias_clinicas'
+    ),
+    url(
+        r'^ver-historia-clinica/(?P<pk>\w+)$',
+        HistoriasClinicasModificar.as_view(),
+        name='ver_historia_clinica'
+    ),
+    url(
+        r'^eliminar-historia_clinica/(?P<id>\w+)$',
+        'medico.controllers.eliminar_historia_clinica',
+        name='eliminar_historia_clinica'
     ),
 ]

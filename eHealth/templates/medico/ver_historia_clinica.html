@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div id="cuerpoHeredado">
+   <form action="{% url 'ver_historia_clinica' historia.pk %}" method="post">
+      {% csrf_token %}
+      {{ form }}
+      <input type="submit" value="Submit" />
+   </form>
+</div>
+
+{% endblock %}

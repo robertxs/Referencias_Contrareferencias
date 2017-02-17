@@ -7,12 +7,12 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('medico', '0005_emergencia'),
+        ('medico', '0002_medico_citas'),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='RevisionMedico',
+            name='Medico_Revision',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('motivos', models.CharField(max_length=500)),
@@ -22,7 +22,7 @@ class Migration(migrations.Migration):
                 ('frec_respiratoria', models.CharField(max_length=50)),
                 ('frec_cardiaca', models.CharField(max_length=50)),
                 ('otros', models.TextField()),
-                ('cita_id', models.ForeignKey(to='medico.Cita')),
+                ('cita_id', models.ForeignKey(to='medico.Medico_Citas')),
             ],
         ),
     ]

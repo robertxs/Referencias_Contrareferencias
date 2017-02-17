@@ -1,0 +1,10 @@
+Sistema eHealth
+
+requerimientos: archivo requirements.txt
+version python: python2.7
+
+Ambiente virtual:
+    - instalar virtualenvwrapper
+    - crear entorno virtual: mkvirtualenv --no-site-packages -r requirements.txt <NombreEntornoVirtual>
+
+para ejecutar: ./manage.py runserver

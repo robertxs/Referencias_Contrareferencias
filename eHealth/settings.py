@@ -41,8 +41,7 @@ INSTALLED_APPS = (
     'administrador',
     'bootstrap3_datetime',
     'medico',
-    'paciente',
-
+    'paciente'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -107,6 +106,7 @@ USE_L10N = True
 
 USE_TZ = True
 
+DATE_INPUT_FORMATS = ('%d-%m-%Y', '%Y-%m-%d')
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
@@ -115,6 +115,3 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "eHealth/static"),
 )
-
-
-# SILENCED_SYSTEM_CHECKS = ['fields.E300']

@@ -27,23 +27,23 @@
       {% endif %}
       <th>Descripción</th>
       <th style="text-align: right">
-        <a id="add_appointment" href="">
+        <a id="add_appointment" href="{% url 'agregar_cita' user.pk %}">
           <i class="fa fa-plus-circle" style="font-size:20px;color:white"></i>
         </a>
       </th>
     </tr>
     {% for a in appointments %}
       <tr>
-        <td>{{a.date}}</td>
-        {% if active_user.role == 'Medico' %}
-        <td>{{a.patient}}</td>
+        <td>{{a.fecha}}</td>
+        {% if user.groups.all.0.name == 'medico' %}
+        <td>{{a.paciente}}</td>
         {% else %}
-        <td>{{a.doctor}}</td>
+        <td>{{a.medico}}</td>
         {% endif %}
-        <td>{{a.description}}</td>
+        <td>{{a.descripcion}}</td>
         <td style="text-align: right">
-          <a href=""><i class="fa fa-pencil" style="font-size:16px;color:black"></i></a>
-          <button id="deleteButton_appointment"  onclick="openModal({{a.id}})"><i class="fa fa-trash" style="font-size:16px;color:black"></i></button>
+          <a href="{% url 'modificar_cita' a.pk %}"><i class="fa fa-pencil" style="font-size:16px;color:black"></i></a>
+          <a href="{% url 'eliminar_cita' a.pk %}"><i class="fa fa-trash" style="font-size:16px;color:black"></i></a>
         </td>
       </tr>
     {% endfor%}

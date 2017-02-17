@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{# Load the tag library #}
+{% load bootstrap3 %}
+
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery=1%}
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
+{% load static %}
+{% block content %}
+  <div id="cuerpoHeredado">
+    <center><h2>Gestión de Roles</h2></center>
+    <!--AGREGAR ROL-->
+    <div class="col-xs-12 show-add-role" style="display:none;">
+      <br>
+      <br>
+      <span>Agregar nuevo rol: </span>
+      <input id="add-role-input" name="role" type="role">
+      <button id = "add-role">Aceptar</button>
+     <br>
+     <br>
+    </div>
+    <!--MODIFICAR ROL-->
+    <div class="col-xs-12 show-modify-role" style="display:none;">
+      <br>
+      <br>
+      <span>Modificar rol: </span>
+      <input id="modify-role-input" name="role" type="role">
+
+      <button id = "modify-role-form">Aceptar</button>
+     <br>
+     <br>
+    </div>
+    <!--ERROR ROL-->
+    <div class="col-xs-12 error-role" style="display:none;">
+      <br>
+      <br>
+      <span id="error-role-span"></span>
+     <br>
+     <br>
+    </div>
+    <!-- TABLA DE ROLES-->
+    <div id ="show-roles"><table>
+    <tr>
+      <th>Rol ID</th>
+      <th>Rol</th>
+      <th style="text-align: right">
+         <button id="show-add-role" onclick="show_add_role()"> <i class="fa fa-plus-circle" style="font-size:20px;color:white"></i></button>
+      </th>
+    </tr>
+    {% for role in roles %}
+    <tr>
+      <td>{{ role.id }}</td>
+      <td>{{ role.name }}</td>
+      <td style="text-align: right;">
+        <button id="modify-role" name="{{role.role_name}}" value="{{role.id}}" onclick="show_modify_role({{role.id}},'{{role.role_name}}')"  style="background: transparent; border: 0;padding: 0px 0px 0px 30px;">
+            <i class="fa fa-pencil" style="font-size:16px;color:black"></i>
+        </button>
+        <button id="delete-role" value= "{{role.id}}" onclick="delete_role({{role.id}})"  style="background: transparent; border: 0;padding: 0px 0px 0px 30px;">
+          <i class="fa fa-trash" style="font-size:16px;color:black"></i>
+        </button></td>
+    </tr>
+    {% endfor %}
+  </table>
+  </div>
+</div>
+{% endblock %}

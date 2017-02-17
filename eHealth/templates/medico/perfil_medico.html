@@ -1,4 +1,13 @@
 {% extends "base.html" %}
+{# Load the tag library #}
+{% load bootstrap3 %}
+
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery=1%}
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
 {% load static %}
 {% block content %}
   <div id="cuerpoHeredado">
@@ -27,31 +36,67 @@
               </div>
               <!-- edit form column -->
               <div class="col-md-8 col-sm-6 col-xs-12 personal-info">
-                {% if mensaje %}
-                <p class="error"> <i class="fa fa-exclamation-triangle"></i>  <strong>{{ mensaje }}</strong></p>
-                {% endif %}
                 <form action="{% url 'perfil_medico' user.pk %}" method=POST>
-                  {{ form.ci.label }}
-                  {{ ci }}
-                  {{ form.username.label }}
-                  {{ username }}
-                  {{ form.name.label }}
-                  {{ form.name }}
-                  {{ form.last_name.label }}
-                  {{ form.last_name }}
-                  {{ form.email.label }}
-                  {{ form.email }}
-                  {{ form.sex.label }}
-                  {{ form.sex }}
-                  {{ form.date_of_birth.label }}
-                  {{ form.date_of_birth }}
-                  {{ form.marital_status.label }}
-                  {{ form.marital_status }}
-                  {{ form.telephone.label }}
-                  {{ form.telephone }}
-                  {{ form.address.label }}
-                  {{ form.address }}
-                  {{ form.submit }}
+                  {% csrf_token %}
+
+                  {% bootstrap_form_errors form %}
+
+                  <div id="rest_form">
+                    <div class="form-group">
+                      <label for="id_ci">Cédula</label>
+                      <span>{{medico.usuario.ci}}</span>
+                    </div>
+                    <label for="id_username">Nombre de usuario</label>
+                    <span>{{medico.usuario.user.username}}</span>
+                    <label for="id_first_name">Nombre</label>
+                    {% bootstrap_field form.first_name layout="inline" %}
+                    <label for="id_last_name">Apellido</label>
+                    {% bootstrap_field form.last_name layout="inline" %}
+                    <label for="id_email">Correo</label>
+                    {% bootstrap_field form.email layout="inline" %}
+                    <div class="form-group">
+                      <label for="id_sex">Sexo</label>
+                      <select name="sex">
+                        <option selected="selected">{{medico.sexo}}</option>
+                        <option value="Femenino">Femenino</option>
+                        <option value="Masculino">Masculino</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="id_birth_date">Fecha de nacimiento</label>
+                      <input class="form-control datepicker" id="id_birth_date" name="birth_date" placeholder="Fecha de nacimiento" title="" type="text" value="{{medico.fecha_nacimiento}}"/>
+                    </div>
+                    <div class="form-group">
+                      <label for="id_marital_status">Estado civil</label>
+                      <select name="marital_status">
+                        <option selected="selected">{{medico.estado_civil}}</option>
+                        <option value="Soltero">Soltero</option>
+                        <option value="Casado">Casado</option>
+                        <option value="Viudo">Viudo</option>
+                        <option value="Divorciado">Divorciado</option>
+                        <option value="Otro">Otro</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="id_phone">Teléfono</label>
+                      <input class="form-control" id="id_phone" name="phone" placeholder="Teléfono" title="" type="text" value="{{medico.telefono}}"/>
+                    </div>
+                    <div class="form-group">
+                      <label for="id_address">Dirección</label>
+                      <input class="form-control" id="id_address" name="address" placeholder="Dirección" title="" type="text" value="{{medico.direccion}}"/>
+                    </div>
+                  {% buttons %}
+                      <div class="col-md-3"></div>
+                      <div class="col-sm-4 col-md-6 text-center">
+                          <button type="submit" id="id_submit" class="btn btn-lg">
+                              Guardar
+                          </button>
+                          <br>
+                          <br>
+                      </div>
+                      <div class="col-md-3"></div>
+                  </div>
+                  {% endbuttons %}
                 </form>
               </div>
             </div>
@@ -60,113 +105,122 @@
           <center><h2>Estudios</h2></center>
           <br>
             {% for study in studies %}
-                <h4>{{study.title}} - <i>{{study.institution}} {{study.date_of_graduation}}</i></h4>
+                <h4>{{study.titulo}} - <i>{{study.institucion}} {{study.fecha_graduacion}}</i></h4>
                 <div class="row">
                     <div class="col-md-8 ">
-                        <p>{{study.description}}</p>
+                        <p>{{study.descripcion}}</p>
                     </div>
                     <div class="col-md-4" style="text-align: right;">
-                        <a href=""> Modificar </a>
-                        <a href="">Eliminar</button>
+                        <a href="{% url 'modificar_estudios' study.pk %}"> Modificar </a>
+                        <a href="{% url 'eliminar_estudios' study.pk %}">Eliminar</button>
                     </div>
                 </div>
                 <hr>
             {% endfor%}
-            <center><a  href="">Agregar Estudios</a></center>
+            <center><a  href="{% url 'agregar_estudios' user.pk %}">Agregar Estudios</a></center>
         </div>
         <div id="menu2" class="tab-pane fade">
           <center><h2>Reconocimientos</h2></center>
           <br>
             {% for award in awards %}
-                <h4>{{award.title}} - <i>{{award.date}}</i></h4>
+                <h4>{{award.titulo}} - <i>{{award.fecha}}</i></h4>
                 <div class="row">
                     <div class="col-md-8 ">
-                        <p>{{award.institution}}</p>
+                        <p>{{award.institucion}}</p>
                     </div>
                     <div class="col-md-4" style="text-align: right;">
-                        <a href=""> Modificar </a>
-                        <a href=""> Eliminar </a>
+                        <a href="{% url 'modificar_reconocimientos' award.pk %}"> Modificar </a>
+                        <a href="{% url 'eliminar_reconocimientos' award.pk %}"> Eliminar </a>
                     </div>
                 </div>
                 <hr>
             {% endfor%}
-            <center><a href=""> Agregar Reconocimiento</a></center>
+            <center><a href="{% url 'agregar_reconocimientos' user.pk %}"> Agregar Reconocimiento</a></center>
         </div>
         <div id="menu3" class="tab-pane fade">
           <center><h2>Publicaciones</h2></center>
           <br>
             {% for publication in publications %}
-                <h4>{{publication.title}} - <i>{{publication.date}}</i></h4>
+                <h4>{{publication.titulo}} - <i>{{publication.fecha}}</i></h4>
                 <div class="row">
                     <div class="col-md-8 ">
-                        <p>{{publication.description}}</p>
+                        <p>{{publication.descripcion}}</p>
                     </div>
                     <div class="col-md-4" style="text-align: right;">
-                        <a href=""> Modificar </a>
-                        <a href=""> Eliminar </a>
+                        <a href="{% url 'modificar_publicaciones' publication.pk %}"> Modificar </a>
+                        <a href="{% url 'eliminar_publicaciones' publication.pk %}"> Eliminar </a>
                     </div>
                 </div>
                 <hr>
             {% endfor%}
-            <center><a href=""> Agregar Publicación </a></center>
+            <center><a href="{% url 'agregar_publicaciones' user.pk %}"> Agregar Publicación </a></center>
         </div>
         <div id="menu4" class="tab-pane fade">
           <center><h3>Experiencias</h3></center>
          <br>
             {% for experience in experiences %}
-                <h4>{{experience.title}} - <i>{{experience.institution}}</i></h4>
-                <h5><b> {{experience.date_of_start}} - {{experience.date_of_finish}}</b></h5>
+                <h4>{{experience.titulo}} - <i>{{experience.institucion}}</i></h4>
+                <h5><b> {{experience.fecha_inicio}} - {{experience.fecha_fin}}</b></h5>
                 <div class="row">
                     <div class="col-md-8 ">
-                        <p>{{experience.description}}</p>
+                        <p>{{experience.descripcion}}</p>
                     </div>
                     <div class="col-md-4" style="text-align: right;">
-                        <a href="">  Modificar </a>
-                        <a href=""> Eliminar </a>
+                        <a href="{% url 'modificar_experiencias' experience.pk %}">  Modificar </a>
+                        <a href="{% url 'eliminar_experiencias' experience.pk %}"> Eliminar </a>
                     </div>
                 </div>
                 <hr>
             {% endfor%}
-            <center><a href=""> Agregar Experiencia</a></center>
+            <center><a href="{% url 'agregar_experiencias' user.pk %}"> Agregar Experiencia</a></center>
         </div>
         <div id="menu5" class="tab-pane fade">
           <center><h3>Habilidades</h3></center>
           <br>
             {% for ability in abilities %}
-                <h4>{{ability.title}} </h4>
+                <h4>{{ability.titulo}} </h4>
                 <div class="row">
                     <div class="col-md-8 ">
-                        <p>{{ability.description}}</p>
+                        <p>{{ability.descripcion}}</p>
                     </div>
                     <div class="col-md-4" style="text-align: right;">
-                        <a href=""> Modificar </a>
-                        <a href=""> Eliminar </a>
+                        <a href="{% url 'modificar_habilidades' ability.pk %}"> Modificar </a>
+                        <a href="{% url 'eliminar_habilidades' ability.pk %}"> Eliminar </a>
                     </div>
                 </div>
                 <hr>
             {% endfor%}
-            <center><a href=""> Agregar Habilidad </a></center>
+            <center><a href="{% url 'agregar_habilidades' user.pk %}"> Agregar Habilidad </a></center>
 
         </div>
          <div id="menu6" class="tab-pane fade">
           <center><h3>Eventos</h3></center>
           <br>
             {% for event in events %}
-                <h4>{{event.title}} <i>{{event.institution}} {{event.date}}</i></h4>
+                <h4>{{event.titulo}} <i>{{event.institucion}} {{event.date}}</i></h4>
                 <div class="row">
                     <div class="col-md-8 ">
-                        <p>{{event.description}}</p>
+                        <p>{{event.descripcion}}</p>
                     </div>
                     <div class="col-md-4" style="text-align: right;">
-                        <a href="">  Modificar </a>
-                        <a href=""> Eliminar </a>
+                        <a href="{% url 'modificar_eventos' event.pk %}">  Modificar </a>
+                        <a href="{% url 'eliminar_eventos' event.pk %}"> Eliminar </a>
                     </div>
                 </div>
                 <hr>
             {% endfor%}
-            <center><a href=""> Agregar Evento </a></center>
+            <center><a href="{% url 'agregar_eventos' user.pk %}"> Agregar Evento </a></center>
 
         </div>
       </div>
   </div>
+{% endblock %}
+{% block custom_script %}
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
+<script src="{% static 'plugins/datepicker/locales/bootstrap-datepicker.es.js' %}"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+  $( ".datepicker" ).datepicker({ format: 'dd-mm-yyyy' });
+});
+</script>
 {% endblock %}

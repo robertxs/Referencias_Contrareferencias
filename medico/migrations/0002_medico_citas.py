@@ -7,17 +7,19 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('medico', '0002_cita'),
+        ('paciente', '0001_initial'),
+        ('medico', '0001_initial'),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='InformeMedico',
+            name='Medico_Citas',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('sintomas_signos', models.TextField()),
-                ('desc_prediagnostico', models.TextField()),
-                ('cita_id', models.ForeignKey(to='medico.Cita')),
+                ('fecha', models.DateField()),
+                ('descripcion', models.CharField(max_length=500)),
+                ('medico', models.ForeignKey(to='medico.Medico')),
+                ('paciente', models.ForeignKey(to='paciente.Paciente')),
             ],
         ),
     ]

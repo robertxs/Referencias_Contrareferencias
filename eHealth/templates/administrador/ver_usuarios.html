@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+  <div id="cuerpoHeredado">
+    <div id="myModal_user" class="modal-content">
+      <div class="modal-header">
+        <span class="close">×</span>
+        <h2></h2>
+      </div>
+      <div class="modal-body">
+        <p>¿Está seguro de que desea eliminar el usuario?</p>
+        <button id="deleteButton_user">Eliminar</button>
+        <button id="cancel_user">Cancelar</button>
+      </div>
+      <div class="modal-footer">
+        <h3></h3>
+      </div>
+    </div>
+    <center><h1>Gestión de Usuarios</h1></center>
+    <div id="show-users"><table>
+      <tr>
+        <th>Cédula</th>
+        <th>Username</th>
+        <th>Nombre</th>
+        <th>Apellido</th>
+        <th>Mail</th>
+        <th> Rol </th>
+        <th></th>
+      </tr>
+      {% for user in usuarios %}
+        <tr id="{{user.c}}">
+          <td>{{user.ci}}</td>
+          <td>{{user.user.username}}</td>
+          <td>{{user.user.first_name}}</td>
+          <td>{{user.user.last_name}}</td>
+          <td>{{user.user.email}}</td>
+          <td>{{user.user.groups.all.0.name}}</td>
+          <td style="text-align: right;">
+            <a href="{% url 'modificar_usuario' user.pk %}"><i class="fa fa-pencil" style="font-size:16px;color:black"></i></a>
+            <a href="{% url 'eliminar_usuario' user.pk %}"><i class="fa fa-trash" style="font-size:16px;color:black"></i></button>
+
+          </td>
+        </tr>
+      {% endfor%}
+    </table></div>
+  </div>
+{% endblock %}

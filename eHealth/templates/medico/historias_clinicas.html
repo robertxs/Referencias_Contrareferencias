@@ -1,200 +1,32 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
-  <div id="cuerpoHeredado">
 
-  <ul class="nav nav-tabs">
-      <li class="active"><a data-toggle="tab" href="#home">Información Personal</a></li>
-      <li><a data-toggle="tab" href="#menu0">Ant. Familiares</a></li>
-      <li><a data-toggle="tab" href="#menu1">Ant. Patológicos</a></li>
-      <li><a data-toggle="tab" href="#menu2">Ant. No Patológicos</a></li>
-      <li><a data-toggle="tab" href="#menu3">Consultas</a></li>
-  </ul>
-
-  <div class="tab-content">
-
-  <div id="home" class="tab-pane fade in active">
-  <center><h2>Información Personal</h2></center><br>
-    <div class="row">
-      <!-- edit form column -->
-      <div class="col-md-8 col-sm-6 col-xs-12 personal-info">
-        {% if mensaje %}
-        <p class="error"> <i class="fa fa-exclamation-triangle"></i>  <strong>{{ mensaje }}</strong></p>
-        {% endif %}
-        <form>
-          {{patient_form.ci.label}}
-          {{ci}}
-          {{patient_form.name.label}}
-          {{name}}
-          {{patient_form.last_name.label}}
-          {{last_name}}
-          {{patient_form.email.label}}
-          {{email}}
-          {{patient_form.sex.label}}
-          {% if sex %}
-          {{sex}}
-          {% else %}
-          <br>
-          {% endif %}
-          {{patient_form.date_of_birth.label}}
-          {% if date_of_birth %}
-          {{date_of_birth}}
-          {% else %}
-          <br>
-          {% endif %}
-          {{patient_form.telephone.label}}
-          {% if telephone %}
-          {{telephone}}
-          {% else %}
-          <br>
-          {% endif %}
-          {{patient_form.address.label}}
-          {% if address %}
-          {{address}}
-          {% else %}
-          <br>
-          {% endif %}
-        </form>
+<div id="cuerpoHeredado">
+   <div class="row">
+      <div class="col-md-9">
+         <h3>Historias Clinicas</h3>
       </div>
-    </div>
-  </div>
-
-  <div id="menu0" class="tab-pane fade">
-  <center><h2>Antecedentes Familiares</h2></center><br>
-    <div class="row">
-      <!-- edit form column -->
-      <div class="col-md-8 col-sm-6 col-xs-12 personal-info">
-        {% if mensaje %}
-        <p class="error"> <i class="fa fa-exclamation-triangle"></i>  <strong>{{ mensaje }}</strong></p>
-        {% endif %}
-          <form action="" method=POST>
-                {{form.asthma}}
-                {{form.asthma.label}}
-                {{form.cancer}}
-                {{form.cancer.label}}
-                {{form.heartdisease}}
-                {{form.heartdisease.label}}
-                {{form.diabetes}}
-                {{form.diabetes.label}}
-                {{form.liverdisease}}
-                {{form.liverdisease.label}}
-                {{form.hypertension}}
-                {{form.hypertension.label}}
-                {{form.other.label}}
-                {{form.other}}
-                {{form.submit}}
-        </form>
+      <div class="col-md-3">
+         <a class="btn btn-default" href="{% url 'crear_historias_clinicas' %}">Nueva Historia</a>
       </div>
-    </div>
-  </div>
-
-  <div id="menu1" class="tab-pane fade">
-    <center><h2>Antecedentes Patológicos</h2></center>
-    <br>
-    <div class="row">
-      <!-- edit form column -->
-      <div class="col-md-8 col-sm-6 col-xs-12 personal-info">
-        {% if mensaje %}
-        <p class="error"> <i class="fa fa-exclamation-triangle"></i>  <strong>{{ mensaje }}</strong></p>
-        {% endif %}
-          <form action="" method=POST>
-                {{form1.current_condition.label}}
-                {{form1.current_condition}}
-                {{form1.surgical_history.label}}
-                {{form1.surgical_history}}
-                {{form1.transfusional_history.label}}
-                {{form1.transfusional_history}}
-                {{form1.allergies.label}}
-                {{form1.allergies}}
-                {{form1.traumatic_history.label}}
-                {{form1.traumatic_history}}
-                {{form1.hospitalizations.label}}
-                {{form1.hospitalizations}}
-                {{form1.addictions.label}}
-                {{form1.addictions}}
-                {{form1.other.label}}
-                {{form1.other}}
-                {{form1.submit}}
-        </form>
-      </div>
-    </div>
-  </div>
-
-  <div id="menu2" class="tab-pane fade">
-    <center><h2>Antecedentes No Patológicos</h2></center>
-    <br>
-    <div class="row">
-      <!-- edit form column -->
-      <div class="col-md-8 col-sm-6 col-xs-12 personal-info">
-        {% if mensaje %}
-        <p class="error"> <i class="fa fa-exclamation-triangle"></i>  <strong>{{ mensaje }}</strong></p>
-        {% endif %}
-          <form action="" method=POST>
-              <h3>Hábitos personales</h3>
-                {{form2.defecation.label}}
-                {{form2.defecation}}
-                {{form2.toothbrushing.label}}
-                {{form2.toothbrushing}}
-                <h3>Tabaquismo</h3>
-                {{form2.cigarrettes.label}}
-                {{form2.cigarrettes}}
-                {{form2.years.label}}
-                {{form2.years}}
-                <h3>Alcoholismo</h3>
-                {{form2.beverages.label}}
-                {{form2.beverages}}
-                {{form2.frecuency.label}}
-                {{form2.frecuency}}
-                <h3>Actividades físicas</h3>
-                {{form2.physical_activity.label}}
-                {{form2.physical_activity}}
-                {{form2.frecuency2.label}}
-                {{form2.frecuency2}}
-                <h3>Otro</h3>
-                <!--{{form2.other.label}}-->
-                {{form2.other}}
-                {{form2.submit}}
-        </form>
-      </div>
-    </div>
-  </div>
-
-  <div id="menu3" class="tab-pane fade">
-    <center><h2>Consultas</h2></center>
-    <br>
-    <div class="row">
-      <!-- edit form column -->
-      <div class="col-md-8 col-sm-6 col-xs-12 personal-info">
-        {% if mensaje %}
-        <p class="error"> <i class="fa fa-exclamation-triangle"></i>  <strong>{{ mensaje }}</strong></p>
-        {% endif %}
-
-        <br>
-        {% for c in consultations %}
-          <h4>{{c.date}} - <i> Dr. {{c.name_doctor}}</i></h4>
-          <div class="row">
-            <div class="col-md-8 ">
-            {% if c.motive %}
-            <p>{{c.motive}}</p>
-            {% else %}
-            <br>
-            {% endif %}
-          </div>
-          <div class="col-md-4" style="text-align: right;">
-            {% if ci_doctor == c.ci_doctor%}
-            <a href=""> Modificar </a>
-            {% endif %}
-          </div>
-        </div>
-        <hr>
-      {% endfor%}
-      <center><a  href="">Agregar Consulta</a></center>
-
-        </form>
-      </div>
-    </div>
-  </div>
-
-
+   </div>
+   <table class="table">
+      <tr>
+         <th>Cedula</th>
+         <th>Nombre</th>
+         <th>Apellido</th>
+         <th>Eliminar</th>
+      </tr>
+      {% for historia in historias %}
+         <tr>
+            <td><a href="{% url 'ver_historia_clinica' historia.pk %}">{{historia.paciente.cedula}}</a></td>
+            <td>{{historia.paciente.first_name}}</td>
+            <td>{{historia.paciente.last_name}}</td>
+            <td><a href="{% url 'eliminar_historia_clinica' historia.pk %}" style="color: red; font-weight: bolder;">x</a></td>
+         </tr>
+      {% endfor %}
+   </table>
 </div>
+
 {% endblock %}

@@ -40,4 +40,29 @@ urlpatterns = patterns(
         Inbox.as_view(),
         name='inbox'
     ),
+    url(
+        r'^ver-usuarios/$',
+        VerUsuarios.as_view(),
+        name='ver_usuarios'
+    ),
+    url(
+        r'^modificar-usuario/(?P<pk>\w+)$',
+        ModificarUsuario.as_view(),
+        name='modificar_usuario'
+    ),
+    url(
+        r'^eliminar-usuario/(?P<id>\w+)$',
+        'administrador.controllers.eliminar_usuario',
+        name='eliminar_usuario'
+    ),
+    url(
+        r'^ver-roles/$',
+        VerRoles.as_view(),
+        name='ver_roles'
+    ),
+    url(
+        r'^agregar_rol/(?P<name>\w+)$',
+        'administrador.controllers.agregar_rol',
+        name='agregar_rol'
+    ),
 )

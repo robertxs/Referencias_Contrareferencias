@@ -11,9 +11,14 @@ from administrador.models import *
 from administrador.controllers import *
 
 
-# Create your views here.
 class Index(TemplateView):
     template_name = 'index.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(
+            Index, self).get_context_data(**kwargs)
+        return context
+
 
 class Register(CreateView):
     template_name = 'register.html'
@@ -30,7 +35,6 @@ class Register(CreateView):
         POST variables and then checked for validity.
         """
         form = UsuarioForm(request.POST)
-
         if form.is_valid():
             # Registramos al usuario
             register_user(form)
@@ -106,3 +110,83 @@ class Home(TemplateView):
 
 class Inbox(TemplateView):
     template_name = 'administrador/inbox.html'
+
+
+class VerUsuarios(TemplateView):
+    template_name = 'administrador/ver_usuarios.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(
+            VerUsuarios, self).get_context_data(**kwargs)
+
+        usuarios = Usuario.objects.all()
+        context['usuarios'] = usuarios
+        return context
+
+
+class ModificarUsuario(CreateView):
+    template_name = 'administrador/modificar_usuario.html'
+    form_class = ModificarUsuarioForm
+
+    def get_context_data(self, **kwargs):
+        context = super(
+            ModificarUsuario, self).get_context_data(**kwargs)
+        usuario = Usuario.objects.get(pk=self.kwargs['pk'])
+        form = UsuarioForm(
+                    initial={'username': usuario.user.username,
+                             'first_name': usuario.user.first_name,
+                             'last_name': usuario.user.last_name,
+                             'email': usuario.user.email,
+                             'rol': usuario.user.groups.all()[0],
+                             }
+                )
+
+        context['form'] = form
+        context['usuario'] = usuario
+
+        return context
+
+    def post(self, request, *args, **kwargs):
+        """
+        Handles POST requests, instantiating a form instance with the passed
+        POST variables and then checked for validity.
+        """
+        form = ModificarUsuarioForm(request.POST)
+        form.fields['passw'].required = False
+        form.fields['ci'].required = False
+        if form.is_valid():
+            usuario_id = kwargs['pk']
+            username = request.POST['username']
+            first_name = request.POST['first_name']
+            last_name = request.POST['last_name']
+            email = request.POST['email']
+            rol = request.POST['rol']
+            value = modificar_usuario(usuario_id, username,
+                                      first_name, last_name,
+                                      email, rol)
+            if value is True:
+                return HttpResponseRedirect(reverse_lazy(
+                    'ver_usuarios'))
+            else:
+                return render_to_response('administrador/modificar_usuario.html',
+                                          {'form': form,
+                                           'title': 'Modificar'},
+                                          context_instance=RequestContext(
+                                              request))
+        else:
+            return render_to_response('administrador/modificar_usuario.html',
+                                      {'form': form,
+                                       'title': 'Modificar'},
+                                      context_instance=RequestContext(request))
+
+
+class VerRoles(TemplateView):
+    template_name = 'administrador/ver_roles.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(
+            VerRoles, self).get_context_data(**kwargs)
+
+        roles = Group.objects.all()
+        context['roles'] = roles
+        return context

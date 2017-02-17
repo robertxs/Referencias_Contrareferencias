@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import migrations, models
+import django.core.validators
 
 
 class Migration(migrations.Migration):
@@ -12,12 +13,6 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='CentroMedico',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-            ],
-        ),
-        migrations.CreateModel(
             name='Especialidad',
             fields=[
                 ('nombre_especialidad', models.CharField(max_length=30, serialize=False, primary_key=True)),
@@ -26,29 +21,22 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Institucion',
             fields=[
-                ('rif', models.CharField(max_length=15, serialize=False, primary_key=True)),
-                ('nombre', models.CharField(max_length=100)),
-                ('direccion', models.CharField(max_length=255)),
-                ('telefono', models.CharField(max_length=15)),
-            ],
-        ),
-        migrations.CreateModel(
-            name='Laboratorio',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('estudios', models.CharField(max_length=100)),
-                ('horario_atencion', models.CharField(max_length=50)),
-                ('rif', models.ForeignKey(to='medico.Institucion')),
+                ('name', models.CharField(max_length=100, serialize=False, primary_key=True)),
+                ('address', models.CharField(max_length=255)),
             ],
         ),
         migrations.CreateModel(
             name='Medico',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('telefono', models.CharField(max_length=15)),
-                ('direccion', models.CharField(max_length=100)),
-                ('cedula', models.ForeignKey(to='administrador.Usuario')),
-                ('centro_medico', models.ForeignKey(to='medico.Institucion')),
+                ('cedula', models.IntegerField(serialize=False, primary_key=True, validators=[django.core.validators.MaxValueValidator(99999999)])),
+                ('first_name', models.CharField(max_length=30, null=True, blank=True)),
+                ('last_name', models.CharField(max_length=30, null=True, blank=True)),
+                ('fecha_nacimiento', models.DateField(null=True)),
+                ('sexo', models.CharField(max_length=10, null=True, blank=True)),
+                ('estado_civil', models.CharField(max_length=15, null=True, blank=True)),
+                ('telefono', models.CharField(max_length=15, null=True, blank=True)),
+                ('direccion', models.CharField(max_length=100, null=True, blank=True)),
+                ('usuario', models.ForeignKey(to='administrador.Usuario')),
             ],
         ),
         migrations.CreateModel(
@@ -125,20 +113,5 @@ class Migration(migrations.Migration):
                 ('fecha', models.DateField()),
                 ('medico', models.ForeignKey(to='medico.Medico')),
             ],
-        ),
-        migrations.AddField(
-            model_name='centromedico',
-            name='especialidad',
-            field=models.ForeignKey(to='medico.Especialidad'),
-        ),
-        migrations.AddField(
-            model_name='centromedico',
-            name='medico',
-            field=models.ForeignKey(to='medico.Medico'),
-        ),
-        migrations.AddField(
-            model_name='centromedico',
-            name='rif',
-            field=models.ForeignKey(to='medico.Institucion'),
         ),
     ]
