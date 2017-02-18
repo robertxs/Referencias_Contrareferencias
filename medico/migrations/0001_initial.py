@@ -21,7 +21,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Institucion',
             fields=[
-                ('name', models.CharField(max_length=100, serialize=False, primary_key=True)),
+                ('rif', models.CharField(max_length=10, serialize=False, primary_key=True)),
+                ('name', models.CharField(max_length=100)),
                 ('address', models.CharField(max_length=255)),
             ],
         ),
@@ -43,7 +44,10 @@ class Migration(migrations.Migration):
             name='Medico_Especialidad',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('horario', models.DateField()),
+                ('disponibilidad', models.CharField(max_length=2, choices=[(b'Si', b'Si'), (b'No', b'No')])),
                 ('especialidad', models.ForeignKey(to='medico.Especialidad')),
+                ('institucion', models.ForeignKey(to='medico.Institucion')),
                 ('medico', models.ForeignKey(to='medico.Medico')),
             ],
         ),

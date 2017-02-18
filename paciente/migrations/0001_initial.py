@@ -8,7 +8,7 @@ import django.core.validators
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('medico', '0001_initial'),
+        ('medico', '__first__'),
         ('administrador', '0001_initial'),
     ]
 

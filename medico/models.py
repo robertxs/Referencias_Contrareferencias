@@ -24,17 +24,25 @@ class Medico(models.Model):
     def __str__(self):
         return str(self.cedula) + "  " + self.first_name + " " + self.last_name
 
+class Institucion(models.Model):
+    rif = models.CharField(max_length=10, primary_key = True)
+    name = models.CharField(max_length=100)
+    address = models.CharField(max_length=255, blank=False)
 
+# Se contempla tener aqui donde trabaja el medico y la especialidad
 class Medico_Especialidad(models.Model):
+    DISPONIBILIDAD = (
+                    ('Si', 'Si'),
+                    ('No', 'No')
+                    )
     especialidad = models.ForeignKey(Especialidad,
                                      on_delete=models.CASCADE)
     medico = models.ForeignKey(Medico,
                                on_delete=models.CASCADE)
-
-
-class Institucion(models.Model):
-    name = models.CharField(max_length=100, primary_key=True)
-    address = models.CharField(max_length=255, blank=False)
+    institucion = models.ForeignKey(Institucion,
+                                    on_delete= models.CASCADE)
+    horario = models.DateField()
+    disponibilidad = models.CharField(max_length=2, choices=DISPONIBILIDAD, blank=False, null=False )
 
 
 class Medico_Estudios(models.Model):
@@ -97,8 +105,16 @@ class Medico_Citas(models.Model):
                                  on_delete=models.CASCADE)
     medico = models.ForeignKey(Medico,
                                on_delete=models.CASCADE)
+    institucion = models.ForeignKey(Institucion,
+                                    on_delete=models.CASCADE)
     fecha = models.DateField()
     descripcion = models.CharField(max_length=500, blank=False)
+
+    def __unicode__(self):
+        return self.name
+
+    class Meta:
+        unique_together = ("paciente","medico","institucion")
 
 class Medico_Revision(models.Model):
     cita = models.ForeignKey(Medico_Citas,
@@ -112,8 +128,6 @@ class Medico_Revision(models.Model):
     otros = models.TextField()
 
 class Medico_Informe(models.Model):
-    cita = models.ForeignKey(Medico_Citas,
-                              on_delete=models.CASCADE)
     medico_Revision = models.ForeignKey(Medico_Revision,
                                         on_delete=models.CASCADE)
     desc_prediagnostico = models.TextField()
@@ -125,9 +139,9 @@ class Medico_Diagnostico(models.Model):
     recipe_medico = models.TextField()
 
 class Emergencia(models.Model):
-    cedula_paciente = models.ForeignKey(Paciente,
+    paciente = models.ForeignKey(Paciente,
                                         on_delete=models.CASCADE)
-    cedula_medico = models.ForeignKey(Medico,
+    medico = models.ForeignKey(Medico,
                                         on_delete=models.CASCADE)
     institucion = models.ForeignKey(Institucion,
                                         on_delete=models.CASCADE)
@@ -135,21 +149,15 @@ class Emergencia(models.Model):
 
     hora_entrada = models.DateTimeField()
 
-class Medico_Institucion(models.Model):
-    institucion = models.ForeignKey(Institucion,
-                            on_delete=models.CASCADE)
-    especialidad = models.ForeignKey(Especialidad,
-                                        on_delete=models.CASCADE)
-    medico = models.ForeignKey(Medico,
-                                on_delete=models.CASCADE)
+    def __unicode__(self):
+        return self.name
+
+    class Meta:
+        unique_together = ('paciente','medico','institucion')
 
 class Referencia(models.Model):
   informe = models.ForeignKey(Medico_Informe,
                               on_delete=models.CASCADE)
-  # cedula_paciente = models.ForeignKey(Paciente,
-  #                                     on_delete=models.CASCADE)
-  # cedula__tratante = models.ForeignKey(, related_name= 'ci__referido',
-  #                                             on_delete=models.CASCADE)
   medico_referido = models.ForeignKey(Medico,
                                     on_delete=models.CASCADE)
   fecha_referencia = models.DateField()
