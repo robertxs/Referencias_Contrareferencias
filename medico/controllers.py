@@ -86,6 +86,7 @@ def modificar_estudios(estudio_id, titulo, fecha_graduacion, descripcion,
         estudio.descripcion = descripcion
         estudio.institucion = institucion
         estudio.save()
+        print("MODIFICAR Estudios")
         return True
     except:
         return False
@@ -391,12 +392,14 @@ def eliminar_eventos(request, id):
         'perfil_medico', kwargs={'id': request.user.pk}))
 
 
-def agregar_citas(user_pk, paciente, descripcion, fecha):
+def agregar_citas(user_pk, paciente, institucion, descripcion, fecha):
+    print("CONTROLADOR")
     try:
         user = User.objects.get(pk=user_pk)
         usuario = Usuario.objects.get(user=user)
         medico = Medico.objects.get(usuario=usuario)
         paciente = Paciente.objects.get(cedula=paciente)
+        institucion = Institucion.objects.get(rif=institucion)
         try:
             fecha = datetime.datetime.strptime(fecha,
                                                '%d-%m-%Y'
@@ -410,6 +413,7 @@ def agregar_citas(user_pk, paciente, descripcion, fecha):
                 fecha = cal.parseDT(fecha, now)[0]
         cita = Medico_Citas(paciente=paciente,
                             medico=medico,
+                            institucion = institucion,
                             descripcion=descripcion,
                             fecha=fecha)
         cita.save()

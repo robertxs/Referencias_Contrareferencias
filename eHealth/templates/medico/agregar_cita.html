@@ -22,8 +22,16 @@
     <div class="hidden">
         {% bootstrap_form_errors form %}
     </div>
+      {% if user.groups.all.0.name == 'paciente' %}
+        <label for="id_medico">Médico</label>
+       {% bootstrap_field form.medico layout="inline" %}
+      {% endif %}
+      {% if user.groups.all.0.name == 'medico' %}
       <label for="id_paciente">Paciente</label>
       {% bootstrap_field form.paciente layout="inline" %}
+      {% endif %}
+      <label for="id_fecha">Institución Médica</label>
+      {% bootstrap_field form.institucion layout="inline" %}
       <label for="id_fecha">Fecha</label>
       {% bootstrap_field form.fecha layout="inline" %}
       <label for="id_descripcion">Descripción</label>
@@ -52,4 +60,3 @@ $(document).ready(function(){
 });
 </script>
 {% endblock %}
-

@@ -11,6 +11,7 @@ from administrador.forms import *
 from medico.forms import *
 from medico.models import *
 from medico.controllers import *
+from administrador.models import *
 import datetime
 import calendar
 import parsedatetime as pdt
@@ -708,12 +709,14 @@ class AgregarCitas(CreateView):
         POST variables and then checked for validity.
         """
         form = Medico_CitasForm(request.POST)
+        print(form.is_valid())
         if form.is_valid():
             user_pk = request.user.pk
             paciente = request.POST['paciente']
+            institucion = request.POST['institucion']
             fecha = request.POST['fecha']
             descripcion = request.POST['descripcion']
-            value = agregar_citas(user_pk, paciente, descripcion,
+            value = agregar_citas(user_pk, paciente, institucion, descripcion,
                                   fecha)
             if value is True:
                 return HttpResponseRedirect(reverse_lazy(

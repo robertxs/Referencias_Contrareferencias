@@ -3,11 +3,6 @@ from administrador.models import *
 from paciente.models import *
 from django.core.validators import MaxValueValidator
 
-
-class Especialidad(models.Model):
-    nombre_especialidad = models.CharField(primary_key=True, max_length=30)
-
-
 class Medico(models.Model):
     cedula = models.IntegerField(primary_key=True,
                                  validators=[MaxValueValidator(99999999)])
@@ -24,10 +19,17 @@ class Medico(models.Model):
     def __str__(self):
         return str(self.cedula) + "  " + self.first_name + " " + self.last_name
 
+class Especialidad(models.Model):
+    nombre_especialidad = models.CharField(primary_key=True, max_length=30)
+
 class Institucion(models.Model):
     rif = models.CharField(max_length=10, primary_key = True)
     name = models.CharField(max_length=100)
     address = models.CharField(max_length=255, blank=False)
+
+    def __str__(self):
+        return str(self.rif) + "  " + self.name
+
 
 # Se contempla tener aqui donde trabaja el medico y la especialidad
 class Medico_Especialidad(models.Model):
@@ -114,7 +116,7 @@ class Medico_Citas(models.Model):
         return self.name
 
     class Meta:
-        unique_together = ("paciente","medico","institucion")
+        unique_together = ("paciente","medico","institucion","fecha")
 
 class Medico_Revision(models.Model):
     cita = models.ForeignKey(Medico_Citas,

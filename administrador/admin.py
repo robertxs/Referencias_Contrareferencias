@@ -7,6 +7,7 @@ from paciente.models import *
 admin.site.register(Medico)
 admin.site.register(Medico_Estudios)
 admin.site.register(Medico_Logros)
+admin.site.register(Institucion)
 admin.site.register(Medico_Publicaciones)
 admin.site.register(Paciente)
 admin.site.register(Usuario)

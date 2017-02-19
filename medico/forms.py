@@ -6,6 +6,7 @@ from django.contrib.auth.models import User, Group
 from administrador.models import Usuario
 from medico.models import Medico
 from paciente.models import Historiadetriaje, Paciente
+import datetime
 
 
 class Medico_EstudiosForm(forms.ModelForm):
@@ -54,7 +55,21 @@ class Medico_CitasForm(forms.ModelForm):
 
     class Meta:
         model = Medico_Citas
-        exclude = ("medico",)
+    #    exclude = ("medico",)
+        fields = ['paciente','institucion', 'fecha','descripcion']
+
+
+    # def clean_fecha(self):
+    #     fecha_cita = self.cleaned_data.get('fecha')
+    #
+    #     #Obtenemos la fecha actual
+    #     fecha_actual = datetime.datetime.now()
+    #
+    #     if fecha_cita < fecha_actual :
+    #         raise forms.ValidationError("La fecha de la cita no puede ser menor a la de hoy")
+    #
+    #     return fecha_cita
+
 
 
 class HistoriaClinicaForm(forms.ModelForm):
