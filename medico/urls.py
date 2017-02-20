@@ -174,4 +174,9 @@ urlpatterns = [
         'medico.controllers.eliminar_historia_clinica',
         name='eliminar_historia_clinica'
     ),
+    url(
+        r'^consulta/(?P<id>\w+)$',
+        Consultas.as_view(),
+        name='consulta'
+    ),
 ]

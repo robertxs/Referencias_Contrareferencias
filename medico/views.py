@@ -685,7 +685,7 @@ class VerCitas(TemplateView):
             VerCitas, self).get_context_data(**kwargs)
         user = user = User.objects.get(pk=self.kwargs['id'])
         citas = Medico_Citas.objects.filter(
-            medico__usuario__user=user)
+            medico__usuario__user=user).order_by('-fecha')
 
         context['appointments'] = citas
 
@@ -748,7 +748,8 @@ class ModificarCitas(CreateView):
         cita = Medico_Citas.objects.get(pk=self.kwargs['id'])
         data = {'paciente': cita.paciente,
                 'descripcion': cita.descripcion,
-                'fecha': cita.fecha
+                'fecha': cita.fecha,
+                'institucion': cita.institucion
                 }
         form = Medico_CitasForm(initial=data)
         context['form'] = form
@@ -852,3 +853,23 @@ class HistoriasClinicasModificar(UpdateView):
         context['historia'] = historia
 
         return context
+
+class Consultas(View):
+    template_name = 'medico/consulta.html'
+
+    def get(self, request, *args, **kwargs):
+        form = Medico_ConsultasForm
+        return render(request, self.template_name, {'form': form})
+
+    # def post(self, request, *args, **kwargs):
+    #     """
+    #     Handles POST requests, instantiating a form instance with the passed
+    #     POST variables and then checked for validity.
+    #     """
+    #     form = HistoriaClinicaForm(request.POST)
+    #     if form.is_valid():
+    #         form.save()
+    #         return HttpResponseRedirect(reverse_lazy('historias_clinicas'))
+    #     else:
+    #         return render_to_response('crear_historia.html', {'form': form},
+    #                                   context_instance=RequestContext(request))
