@@ -22,13 +22,13 @@
       <th>Fecha</th>
       {% if user.groups.all.0.name == 'medico' %}
       <th>Paciente</th>
-      {% elif user.groups.all.0.name == 'paciente' %}
+      {% else %}
       <th>Médico</th>
       {% endif %}
       <th>Institución</th>
       <th>Descripción</th>
       <th style="text-align: right">
-        <a id="add_appointment" href="{% url 'agregar_cita' user.pk %}">
+        <a id="add_appointment" href="{% url 'agregar_cita_paciente' user.pk %}">
           <i class="fa fa-plus-circle" style="font-size:20px;color:white"></i>
         </a>
       </th>
@@ -44,8 +44,8 @@
         <td>{{a.institucion.name}}</td>
         <td>{{a.descripcion}}</td>
         <td style="text-align: right">
-          <a href="{% url 'modificar_cita' a.pk %}"><i class="fa fa-pencil" style="font-size:20px;color:#5882FA"></i></a>
-          <a href="{% url 'eliminar_cita' a.pk %}"><i class="fa fa-trash" style="font-size:20px;color:#5882FA"></i></a>
+          <a href="{% url 'modificar_cita_paciente' a.pk %}"><i class="fa fa-pencil" style="font-size:20px;color:#5882FA"></i></a>
+          <a href="{% url 'eliminar_cita_paciente' a.pk %}"><i class="fa fa-trash" style="font-size:20px;color:#5882FA"></i></a>
         </td>
       </tr>
     {% endfor%}

@@ -6,6 +6,7 @@ from django.http import HttpResponseRedirect
 from django.template import RequestContext
 from django.shortcuts import render
 from django.contrib.auth import *
+from django.contrib import messages
 from django.views.generic import *
 from administrador.forms import *
 from medico.forms import *
@@ -728,6 +729,7 @@ class AgregarCitas(CreateView):
                                           context_instance=RequestContext(
                                               request))
         else:
+            messages.error(request,"Por favor verifique que los campos estan en color rojo.")
             return render_to_response('medico/agregar_cita.html',
                                       {'form': form,
                                        'title': 'Agregar'},

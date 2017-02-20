@@ -15,7 +15,32 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
+from paciente.views import *
 
 urlpatterns = [
-    url(r'^admin/', include(admin.site.urls)),
+    url(
+        r'^ver-citas-paciente/(?P<id>\w+)$',
+        VerCitasPaciente.as_view(),
+        name='ver_citas_paciente'
+    ),
+    url(
+        r'^agregar-cita-paciente/(?P<id>\w+)$',
+        AgregarCitasPaciente.as_view(),
+        name='agregar_cita_paciente'
+    ),
+    url(
+        r'^modificar-cita-paciente/(?P<id>\w+)$',
+        ModificarCitasPaciente.as_view(),
+        name='modificar_cita_paciente'
+    ),
+    url(
+        r'^eliminar-cita-paciente/(?P<id>\w+)$',
+        'medico.controllers.eliminar_citas',
+        name='eliminar_cita_paciente'
+    ),
+    url(
+        r'^buscar-medico$',
+        BuscarMedico.as_view(),
+        name='buscar_medico_paciente'
+    ),
 ]
