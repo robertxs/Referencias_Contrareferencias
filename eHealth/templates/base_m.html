@@ -1,0 +1,142 @@
+<!doctype html>
+{% load static %}
+<html>
+  <head>
+    {% block head %}
+      <!-- Bootstrap -->
+
+
+      <link href="{% static 'assets/css/bootstrap.css' %}" rel="stylesheet">
+      <link href="{% static 'assets/css/bootstrap-theme.css' %}" rel="stylesheet">
+      <link href="{% static 'assets/css/style.css' %}" rel="stylesheet">
+      <link href="{% static 'assets/css/modal.css' %}" rel="stylesheet">
+      <link href="{% static 'assets/css/search.css' %}" rel="stylesheet">
+      <link href="{% static 'assets/css/jquery.dataTables.min.css' %}" rel="stylesheet">
+      <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
+
+      <!--script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script-->
+      <script type="text/javascript" src="{% static 'assets/js/jquery-1.12.2.min.js' %}"></script>
+      <script type="text/javascript" src="{% static 'assets/js/bootstrap.min.js' %}"></script>
+      <script type="text/javascript" src="{% static 'assets/js/user.js' %}"></script>
+      <script type="text/javascript" src="{% static 'assets/js/roles.js' %}"></script>
+
+      <script type="text/javascript" src="{% static 'assets/js/appointments.js' %}"></script>
+
+      <script type="text/javascript" src="{% static 'assets/js/institution.js' %}"></script>
+
+      <script type="text/javascript" src="{% static 'assets/js/institutionElement.js' %}"></script>
+
+      <script type="text/javascript" src="{% static 'assets/js/specialization.js' %}"></script>
+
+      <script type="text/javascript" src="{% static 'assets/js/search.js' %}"></script>
+
+      <script type="text/javascript" src="{% static 'assets/js/jquery-1.12.3.min.js' %}"></script>
+
+      <script type="text/javascript" src="{% static 'assets/js/jquery.dataTables.min.js' %}"></script>
+
+      <script src="{% static 'assets/js/angular/ng-table.min.js' %}"></script>
+
+      <title>{% block title %} STPeHM {% endblock %} </title>
+    {% endblock %}
+  </head>
+
+  <body>
+    <header>
+      {% block custom_css %}
+      {% endblock custom_css %}
+    </header>
+  <!-- Fixed navbar -->
+    <div id="top-nav" class="navbar navbar-inverse navbar-static-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="">STPeHM</a>
+        </div>
+
+        <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                 {% if request.user.is_authenticated %}
+                <li><a href="{% url 'logout' %}">Salir</a></li>
+                 {% endif %}
+                </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main -->
+    {% if request.user.is_authenticated %}
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3" style="padding-left: 30px;">
+
+            <h4><center><strong>{{user.get_full_name|default:user.username}}</center></strong></h4>
+
+          <hr>
+          <ul class="nav nav-pills nav-stacked">
+              <li class="nav-header"></li>
+              {% if user.groups.all.0.name != 'admin' %}
+
+                {% if user.groups.all.0.name == 'paciente' %}
+                <li><a href=""><i class="fa fa-user"></i>  Ver Perfil</a></li>
+                <li><a href="{% url 'buscar_medico_paciente' %}"><i class="fa fa-search "></i>  Buscar médico </a></li>
+                <li><a href="{% url 'ver_citas_paciente' user.pk %}"><i class="fa fa-pencil-square-o "></i>  Ver Citas</a></li>
+                {% endif %}
+                {% if user.groups.all.0.name == 'medico' %}
+
+                  <li><a href=""><i class="fa fa-edit"></i>  Iniciar Consulta</a></li>
+
+                  <li><a href=""><i class="fa fa-child"></i>  Ver Perfil Paciente</a></li>
+
+                  <li><a href=""><i class="fa fa-table"></i>  Historial</a></li>
+
+                  <li><a href=""><i class="fa fa-file"></i>  Hacer Informe</a></li>
+
+                  <li><a href=""><i class="fa fa-envelope"></i>  Referir Paciente</a></li>
+
+                  <li><a href=""><i class="fa fa-book"></i>  Ver Historia C.</a></li>
+
+                  <li><a href=""><i class="fa fa-check-square-o"></i>  Diagnóstico</a></li>
+
+                {% endif %}
+        
+              {% else %}
+                <li><a href="{% url 'ver_usuarios' %}"><i class="fa fa-user"></i>  Gestionar Usuarios</a></li>
+                <li><a href="{% url 'ver_roles' %}"><i class="fa fa-users"></i>  Gestionar Roles</a></li>
+                <li><a href=""><i class="fa fa-stethoscope"></i>  Gestionar Instituciones</a></li>
+                <li><a href=""><i class="fa fa-h-square"></i>  Gestionar Especializaciones</a></li>
+              {% endif %}
+          </ul>
+        </div>
+        <div class="col-sm-9">
+        {% block content %}
+        {% endblock %}
+        </div>
+      </div>
+    </div>
+    {% else %}
+      {% block login %}
+      {% endblock %}
+    {% endif %}
+
+    <div id="footer">
+      {% block footer %}
+        <div class="container">
+          <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+              <p class="copyright">Copyright © 2016 - Papagayo</p>
+            </div>
+            <div class="col-md-3" style="text-align: right;">
+              <img src="{% static 'assets/img/logo-STPeHM.png' %}" style="width: 76%;">
+            </div>
+          </div>
+        </div>
+      {% endblock %}
+    </div>
+    {% block custom_script %}
+  {% endblock custom_script %}
+  </body>
+</html>
