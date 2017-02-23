@@ -56,7 +56,8 @@ class Medico_CitasForm(forms.ModelForm):
     class Meta:
         model = Medico_Citas
     #    exclude = ("medico",)
-        fields = ['paciente','institucion', 'fecha','descripcion']
+        fields = '__all__'
+        # ['paciente','institucion', 'fecha','descripcion']
 
     def clean_fecha(self):
         fecha_cita = self.cleaned_data.get('fecha')
@@ -66,8 +67,8 @@ class Medico_CitasForm(forms.ModelForm):
         #Obtenemos la fecha actual
         fecha_actual = datetime.datetime.now().date()
         if fecha_cita < fecha_actual :
-            raise forms.ValidationError('La fecha de la cita no puede ser menor a la de hoy')        
-        
+            raise forms.ValidationError('La fecha de la cita no puede ser menor a la de hoy')
+
         if num_pacientes > 10:
             raise forms.ValidationError('La fecha solicitada no se encuentra disponible')
         return fecha_cita
@@ -96,5 +97,11 @@ class HistoriaClinicaForm(forms.ModelForm):
 class Medico_ConsultasForm(forms.ModelForm):
 
     class Meta:
-        model = Medico_Eventos
-        exclude = ("medico",)
+        model = Medico_Citas
+        fields = ("paciente", "institucion", "fecha")
+
+        labels = {
+            'paciente' : 'Paciente',
+            'institucion' : 'Institución',
+            'fecha' : 'Fecha',
+        }

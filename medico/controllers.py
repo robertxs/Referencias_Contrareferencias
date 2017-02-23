@@ -393,7 +393,6 @@ def eliminar_eventos(request, id):
 
 
 def agregar_citas(user_pk, paciente, institucion, descripcion, fecha):
-    print("CONTROLADOR")
     try:
         user = User.objects.get(pk=user_pk)
         usuario = Usuario.objects.get(user=user)

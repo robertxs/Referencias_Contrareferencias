@@ -610,3 +610,29 @@ label:hover:before {
   filter: progid:DXImageTransform.Microsoft.Alpha(enabled=false);
   opacity: 1;
 }
+
+#revision {
+  position: relative;
+  top: 105px;
+  left: 410px;
+}
+
+#finalizar{
+  position: relative;
+  top: 60px;
+  left: 220px;
+}
+
+#pacientes{
+  position: relative;
+  top: 80px;
+  left: 170px;
+  right: 988px;
+
+}
+
+#atras{
+  position: relative;
+  top: -230px;
+  left: 410px;
+}
