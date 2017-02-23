@@ -22,6 +22,9 @@ class Medico(models.Model):
 class Especialidad(models.Model):
     nombre_especialidad = models.CharField(primary_key=True, max_length=30)
 
+    def __str__(self):
+        return str(self.nombre_especialidad)
+
 class Institucion(models.Model):
     rif = models.CharField(max_length=10, primary_key = True)
     name = models.CharField(max_length=100)
@@ -111,6 +114,8 @@ class Medico_Citas(models.Model):
                                     on_delete=models.CASCADE)
     fecha = models.DateField()
     descripcion = models.CharField(max_length=500, blank=False)
+    # especialidad = models.ForeignKey(Medico_Especialidad,
+    #                                 on_delete=models.CASCADE)
 
     def __unicode__(self):
         return self.name

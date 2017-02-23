@@ -853,6 +853,7 @@ class HistoriasClinicasModificar(UpdateView):
 
         return context
 
+
 class Consultas(TemplateView):
     template_name = 'medico/consulta.html'
     form = Medico_ConsultasForm
@@ -860,6 +861,41 @@ class Consultas(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(
             Consultas, self).get_context_data(**kwargs)
-        cita = Medico_Citas.objects.get(paciente=self.kwargs['id'])
-        context['paciente'] = cita
+        print("context es:" +str(context))
+        cita = Medico_Citas.objects.get(id=self.kwargs['id'])
+        print(cita.medico.cedula)
+        especialidad = Medico_Especialidad.objects.get(medico=cita.medico.cedula)
+        context['consulta'] = cita
+        context['especialidad'] = especialidad
         return context
+
+    def post(self, request, *args, **kwargs):
+        """
+        Handles POST requests, instantiating a form instance with the passed
+        POST variables and then checked for validity.
+        """
+        form = Medico_CitasForm(request.POST)
+        if form.is_valid():
+            user_pk = request.user.pk
+            paciente = request.POST['paciente']
+            institucion = request.POST['institucion']
+            fecha = request.POST['fecha']
+            descripcion = request.POST['descripcion']
+            value = agregar_citas(user_pk, paciente, institucion, descripcion,
+                                  fecha)
+            if value is True:
+                return HttpResponseRedirect(reverse_lazy(
+                    'ver_citas', kwargs={'id': request.user.pk}))
+            else:
+                return render_to_response('medico/agregar_cita.html',
+                                          {'form': form,
+                                           'title': 'Agregar'},
+                                          context_instance=RequestContext(
+                                              request))
+        else:
+            messages.error(request,"Por favor verifique que los campos estan en color rojo.")
+            return render_to_response('medico/agregar_cita.html',
+                                      {'form': form,
+                                       'title': 'Agregar'},
+                                      context_instance=RequestContext(request))
+

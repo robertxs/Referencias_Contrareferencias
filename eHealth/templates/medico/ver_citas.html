@@ -34,7 +34,7 @@
       </th>
     </tr>
     {% for a in appointments %}
-      <tr onclick="location.href='{% url 'consulta' a.paciente.pk %}'">
+      <tr onclick="location.href='{% url 'consulta' a.id %}'">
         <td>{{a.fecha}}</td>
         {% if user.groups.all.0.name == 'medico' %}
         <td>{{a.paciente.first_name}} {{a.paciente.last_name}}</td>

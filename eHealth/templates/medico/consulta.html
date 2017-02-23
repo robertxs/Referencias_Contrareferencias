@@ -15,18 +15,18 @@
 
   <div class="tab-content">
     <div class="col-md-8 col-sm-6 col-xs-12 personal-info">
-      <form action="{% url 'consulta' paciente.pk %}" method=POST>
+      <form action="{% url 'consulta' consulta.pk %}" method=POST>
         {% csrf_token %}
       <div id="rest_form">
         <div class="form-group" id='pacientes'>
           <label for="id_paciente">Paciente: </label>
-          <span>{{paciente.paciente.first_name}} {{paciente.paciente.last_name}}</span>
+          <span>{{consulta.paciente.first_name}} {{consulta.paciente.last_name}}</span>
         <label for="id_fechaCita">Cita: </label>
-        <span>{{paciente.fecha}}</span>
+        <span>{{consulta.fecha}}</span>
         <label for="id_fechaCita">Institución: </label>
-        <span>{{paciente.institucion}}</span>
+        <span>{{consulta.institucion.name}}</span>
         <label for="id_descripcion">Descripción: </label>
-        <span>{{paciente.descripcion}}</span>
+        <span>{{especialidad.especialidad.nombre_especialidad}}</span>
         </div>
 
       </div>
@@ -34,10 +34,10 @@
       <div class="col-md-3"></div>
       <div class="col-sm-4 col-md-6 text-center">
         <form >
-          <button id = 'revision' type="submit" id="id_submit" class="btn btn-lg">
+          <button id = 'revision' type="submit" id="id_submit" class="btn btn-danger">
               Comenzar Revisión
           </button>
-          <button id ='finalizar' type="submit" id="id_submit" class="btn btn-lg">
+          <button id ='finalizar' type="" id="id_submit" class="btn btn-lg">
               Finalizar Consulta
           </button>
 
