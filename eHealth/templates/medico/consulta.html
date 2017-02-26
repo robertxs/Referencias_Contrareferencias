@@ -12,6 +12,34 @@
 {% block content %}
 
 <div id="cuerpoHeredado">
+  <div class="container">
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" role="dialog">
+      <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Finalizar Consulta</h4>
+          </div>
+          <div class="modal-body">
+            <p>¿Está seguro que desea finalizar esta consulta?</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+<!-- <a id = "finalizar" class="btn btn-danger"  data-toggle="modal" data-target="#myModal" role="button">..</a> -->
+            <a type="button" class="btn btn-primary" href="{% url 'eliminar_cita' consulta.id %}">Aceptar</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+
+
 
   <div class="tab-content">
     <div class="col-md-8 col-sm-6 col-xs-12 personal-info">
@@ -25,31 +53,25 @@
         <span>{{consulta.fecha}}</span>
         <label for="id_fechaCita">Institución: </label>
         <span>{{consulta.institucion.name}}</span>
-        <label for="id_descripcion">Descripción: </label>
+        <label for="id_descripcion">Especialidad: </label>
         <span>{{especialidad.especialidad.nombre_especialidad}}</span>
         </div>
-
       </div>
+    </form>
       {% buttons %}
-      <div class="col-md-3"></div>
+        <div class="col-md-3"></div>
       <div class="col-sm-4 col-md-6 text-center">
-        <form >
-          <button id = 'revision' type="submit" id="id_submit" class="btn btn-danger">
+          <button id = 'revision' type="button" class="btn btn-info">
               Comenzar Revisión
           </button>
-          <button id ='finalizar' type="" id="id_submit" class="btn btn-lg">
-              Finalizar Consulta
-          </button>
+          <!-- Trigger the modal with a button -->
+          <button type="button"  id = "finalizar" class="btn btn-danger" data-toggle="modal" data-target="#myModal">Finalizar Consulta</button>
+          <a id = "atras" href="javascript:window.history.back();" role = "button">&laquo; Regresar</a>
 
-            <a id = "atras" href="javascript:window.history.back();">&laquo; Regresar</a>
-
-        </form>
           <div class="col-md-3"></div>
       {% endbuttons %}
     </div>
 </div>
 </div>
 </div>
-
-
 {% endblock %}

@@ -448,6 +448,7 @@ def modificar_citas(cita_id, paciente, descripcion, fecha):
 
 def eliminar_citas(request, id):
     cita = Medico_Citas.objects.get(pk=id)
+    print(cita.id)
     cita.delete()
     return HttpResponseRedirect(reverse_lazy(
                     'ver_citas', kwargs={'id': request.user.pk}))
@@ -458,3 +459,6 @@ def eliminar_historia_clinica(request, id):
     historia.delete()
     return HttpResponseRedirect(reverse_lazy(
         'historias_clinicas'))
+
+# def finalizar_consulta(request, id):
+#     cita = Medico_Citas.objects

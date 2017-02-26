@@ -863,7 +863,7 @@ class Consultas(TemplateView):
             Consultas, self).get_context_data(**kwargs)
         print("context es:" +str(context))
         cita = Medico_Citas.objects.get(id=self.kwargs['id'])
-        print(cita.medico.cedula)
+    #    print(cita.medico.cedula)
         especialidad = Medico_Especialidad.objects.get(medico=cita.medico.cedula)
         context['consulta'] = cita
         context['especialidad'] = especialidad
@@ -898,4 +898,3 @@ class Consultas(TemplateView):
                                       {'form': form,
                                        'title': 'Agregar'},
                                       context_instance=RequestContext(request))
-
