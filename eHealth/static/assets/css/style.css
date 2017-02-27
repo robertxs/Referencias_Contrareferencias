@@ -636,3 +636,9 @@ label:hover:before {
   top: -310px;
   left: 410px;
 }
+
+#cancelar{
+  position: relative;
+  top: 10px;
+  left: 350px;
+}
