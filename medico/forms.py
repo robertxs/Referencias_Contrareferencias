@@ -57,7 +57,7 @@ class Medico_CitasForm(forms.ModelForm):
         model = Medico_Citas
     #    exclude = ("medico",)
         fields = ['paciente','institucion', 'fecha','descripcion']
-        # '__all__'
+
 
     def clean_fecha(self):
         fecha_cita = self.cleaned_data.get('fecha')
@@ -105,3 +105,11 @@ class Medico_ConsultasForm(forms.ModelForm):
             'institucion' : 'Institución',
             'fecha' : 'Fecha',
         }
+
+class Medico_RevisionForm(forms.ModelForm):
+
+    class Meta:
+        model = Medico_Revision
+        exclude=("cita",)
+        #fields = ['cita','motivos','sintomas','presion_sanguinea','temperatura',
+        #         'frec_cardiaca','frec_respiratoria','otros']

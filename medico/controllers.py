@@ -460,5 +460,17 @@ def eliminar_historia_clinica(request, id):
     return HttpResponseRedirect(reverse_lazy(
         'historias_clinicas'))
 
-# def finalizar_consulta(request, id):
-#     cita = Medico_Citas.objects
+def comenzar_revision(cita_id, motivos, sintomas, presion_sanguinea, temperatura,
+                    frec_respiratoria, frec_cardiaca, otros):
+
+    try:
+        cita = Medico_Citas.objects.get(pk =cita_id)
+        revision = Medico_Revision(cita = cita, motivos = motivos,
+                                    sintomas = sintomas, presion_sanguinea = presion_sanguinea,
+                                    temperatura=temperatura, frec_respiratoria=frec_respiratoria,
+                                    frec_cardiaca=frec_cardiaca, otros=otros)
+        revision.save()
+
+        return True
+    except:
+        return False

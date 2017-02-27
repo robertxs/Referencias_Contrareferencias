@@ -61,12 +61,12 @@
       {% buttons %}
         <div class="col-md-3"></div>
       <div class="col-sm-4 col-md-6 text-center">
-          <button id = 'revision' type="button" class="btn btn-info">
+          <a id = 'revision' type="button" class="btn btn-info" href = "{% url 'comenzar_revision' consulta.id %}">
               Comenzar Revisión
-          </button>
+          </a>
           <!-- Trigger the modal with a button -->
           <button type="button"  id = "finalizar" class="btn btn-danger" data-toggle="modal" data-target="#myModal">Finalizar Consulta</button>
-          <a id = "atras" href="javascript:window.history.back();" role = "button">&laquo; Regresar</a>
+          <a id = "atras" href="{% url 'ver_citas' user.pk %}" role = "button">&laquo; Regresar</a>
 
           <div class="col-md-3"></div>
       {% endbuttons %}

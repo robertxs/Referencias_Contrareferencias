@@ -126,13 +126,13 @@ class Medico_Citas(models.Model):
 class Medico_Revision(models.Model):
     cita = models.ForeignKey(Medico_Citas,
                               on_delete=models.CASCADE)
-    motivos = models.CharField(max_length=500)
-    sintomas = models.TextField()
-    presion_sanguinea = models.CharField(max_length=30)
-    temperatura = models.CharField(max_length=50)
-    frec_respiratoria = models.CharField(max_length=50)
-    frec_cardiaca = models.CharField(max_length=50)
-    otros = models.TextField()
+    motivos = models.CharField(max_length=500, blank=False)
+    sintomas = models.CharField(max_length=500, blank=False)
+    presion_sanguinea = models.CharField(max_length=30,blank=False)
+    temperatura = models.CharField(max_length=500, blank = False)
+    frec_respiratoria = models.CharField(max_length=500, blank = False)
+    frec_cardiaca = models.CharField(max_length=50, blank = False)
+    otros = models.CharField(max_length=50, blank=True)
 
 class Medico_Informe(models.Model):
     medico_Revision = models.ForeignKey(Medico_Revision,

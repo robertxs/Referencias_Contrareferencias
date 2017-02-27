@@ -861,9 +861,8 @@ class Consultas(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(
             Consultas, self).get_context_data(**kwargs)
-        print("context es:" +str(context))
+
         cita = Medico_Citas.objects.get(id=self.kwargs['id'])
-    #    print(cita.medico.cedula)
         especialidad = Medico_Especialidad.objects.get(medico=cita.medico.cedula)
         context['consulta'] = cita
         context['especialidad'] = especialidad
@@ -895,6 +894,56 @@ class Consultas(TemplateView):
         else:
             messages.error(request,"Por favor verifique que los campos estan en color rojo.")
             return render_to_response('medico/agregar_cita.html',
+                                      {'form': form,
+                                       'title': 'Agregar'},
+                                      context_instance=RequestContext(request))
+
+class ComenzarRevision(CreateView):
+    template_name = 'medico/comenzar_revision.html'
+    form_class = Medico_RevisionForm
+
+    def get_context_data(self, **kwargs):
+        print("get")
+        context = super(
+            ComenzarRevision, self).get_context_data(**kwargs)
+
+        cita = Medico_Citas.objects.get(id=self.kwargs['id'])
+        context['revision'] = cita
+        context['title'] = 'Comenzar'
+
+        return context
+
+    def post(self, request, *args, **kwargs):
+        """
+        Handles POST requests, instantiating a form instance with the passed
+        POST variables and then checked for validity.
+        """
+        form = Medico_RevisionForm(request.POST)
+        print(form.is_valid())
+        if form.is_valid():
+            cita = kwargs['id']
+            print(cita)
+            motivos = request.POST['motivos']
+            sintomas = request.POST['sintomas']
+            presion_sanguinea = request.POST['presion_sanguinea']
+            temperatura = request.POST['temperatura']
+            frec_respiratoria = request.POST['frec_respiratoria']
+            frec_cardiaca = request.POST['frec_cardiaca']
+            otros = request.POST['otros']
+            value = comenzar_revision(cita, motivos, sintomas, presion_sanguinea,
+                                     temperatura, frec_respiratoria, frec_cardiaca,
+                                     otros)
+            if value is True:
+                return HttpResponseRedirect(reverse_lazy(
+                    'consulta', kwargs={'id': kwargs['id']}))
+            else:
+                return render_to_response('medico/comenzar_revision.html',
+                                          {'form': form,
+                                           'title': 'Agregar'},
+                                          context_instance=RequestContext(
+                                              request))
+        else:
+            return render_to_response('medico/comenzar_revision.html',
                                       {'form': form,
                                        'title': 'Agregar'},
                                       context_instance=RequestContext(request))

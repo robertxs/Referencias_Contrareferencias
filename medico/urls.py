@@ -179,4 +179,10 @@ urlpatterns = [
         Consultas.as_view(),
         name='consulta'
     ),
+
+    url(
+        r'^comenzar-revision/(?P<id>\w+)$',
+        ComenzarRevision.as_view(),
+        name='comenzar_revision'
+    ),
 ]

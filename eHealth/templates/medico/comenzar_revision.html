@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{# Load the tag library #}
+{% load bootstrap3 %}
+
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery=1%}
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
+{% load static %}
+{% block content %}
+<div id="cuerpoHeredado">
+
+    <h2> Revisión Médica</h2>
+    <form action="" method=POST>
+
+      {% csrf_token %}
+      <div class="hidden">
+        {% bootstrap_form_errors form %}
+      </div>
+      <label for="id_paciente">Paciente: </label>
+      <span>{{revision.paciente.first_name}} {{revision.paciente.last_name}}</span>
+      <label for="id_motivos">Motivos</label>
+      {% bootstrap_field form.motivos layout="inline" %}
+      <label for="id_motivos">Síntomas</label>
+      {% bootstrap_field form.sintomas layout="inline" %}
+     <label for="id_motivos">Presión Sanguínea</label>
+      {% bootstrap_field form.presion_sanguinea layout="inline" %}
+      <label for="id_motivos">Temperatura</label>
+      {% bootstrap_field form.temperatura layout="inline" %}
+      <label for="id_motivos">Frecuencia Respiratoria</label>
+      {% bootstrap_field form.frec_respiratoria layout="inline" %}
+      <label for="id_motivos">Frecuencia Cardíaca</label>
+      {% bootstrap_field form.frec_cardiaca layout="inline" %}
+      <label for="id_motivos">Otros</label>
+      {% bootstrap_field form.otros layout="inline" %}
+      {% buttons %}
+      <div class="col-md-3"></div>
+      <div class="col-sm-4 col-md-6 text-center">
+          <br>
+          <button id="id_submit" type="submit" class="btn btn-lg calculate">
+              Guardar
+          </button>
+          <br>
+          <br>
+      </div>
+      <div class="col-md-3"></div>
+  {% endbuttons %}
+</div>
+{% endblock %}
