@@ -453,6 +453,60 @@ def eliminar_citas(request, id):
                     'ver_citas', kwargs={'id': request.user.pk}))
 
 
+def agregar_consultas(medico_id, especialidad, institucion, hora):
+    try:
+        print("llegue a agregar consulta con:")
+        print(medico_id)
+        print(especialidad)
+        user = User.objects.get(pk=user_pk)
+        usuario = Usuario.objects.get(user=user)
+        medico = Medico.objects.get(usuario=usuario)
+        institucion = Institucion.objects.get(rif=institucion)
+        especialidad = Especialidad.objects.get(nombre_especialidad=especialidad)
+        
+
+        consulta = Medico_Especialidad(medico=medico,
+                            institucion = institucion,
+                            especialidad=especialidad,
+                            horario=hora)
+        consulta.save()
+        return True
+    except:
+        print("llegue a agregar consulta con error:")
+        return False
+
+
+def modificar_consultas(consulta_id, medico, institucion, horario, especialidad):
+    try:
+        consulta = Medico_Especialidad.objects.get(
+            pk=consulta_id)
+        try:
+            fecha = datetime.datetime.strptime(fecha,
+                                               '%d-%m-%Y'
+                                               ).strftime('%Y-%m-%d')
+        except:
+            if fecha is None:
+                fecha = None
+            else:
+                cal = pdt.Calendar()
+                now = datetime.datetime.now()
+                fecha = cal.parseDT(fecha, now)[0]
+        paciente = Paciente.objects.get(cedula=paciente)
+        cita.paciente = paciente
+        cita.descripcion = descripcion
+        cita.fecha = fecha
+        cita.save()
+        return True
+    except:
+        return False
+
+def eliminar_consultas(request, id):
+    consulta = Medico_Especialidad.objects.get(pk=id)
+    consulta.delete()
+    return HttpResponseRedirect(reverse_lazy(
+                    'ver_consultas', kwargs={'id': request.user.pk}))
+
+
 def eliminar_historia_clinica(request, id):
     historia = Historiadetriaje.objects.get(pk=id)
     historia.delete()

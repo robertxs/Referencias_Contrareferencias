@@ -31,7 +31,7 @@ class Institucion(models.Model):
     address = models.CharField(max_length=255, blank=False)
 
     def __str__(self):
-        return str(self.rif) + "  " + self.name
+        return self.name
 
 
 # Se contempla tener aqui donde trabaja el medico y la especialidad
@@ -46,8 +46,8 @@ class Medico_Especialidad(models.Model):
                                on_delete=models.CASCADE)
     institucion = models.ForeignKey(Institucion,
                                     on_delete= models.CASCADE)
-    horario = models.DateField()
-    disponibilidad = models.CharField(max_length=2, choices=DISPONIBILIDAD, blank=False, null=False )
+    horario = models.CharField(max_length=10, blank=False)
+    disponibilidad = models.CharField(max_length=2, choices=DISPONIBILIDAD, blank=False, null=False, default='Si' )
 
 
 class Medico_Estudios(models.Model):

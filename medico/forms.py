@@ -74,7 +74,6 @@ class Medico_CitasForm(forms.ModelForm):
         return fecha_cita
 
 
-
 class HistoriaClinicaForm(forms.ModelForm):
     class Meta:
         model = Historiadetriaje
@@ -104,4 +103,16 @@ class Medico_ConsultasForm(forms.ModelForm):
             'paciente' : 'Paciente',
             'institucion' : 'Institución',
             'fecha' : 'Fecha',
+        }
+
+
+class Medico_HorariosForm(forms.ModelForm):
+
+    class Meta:
+        model = Medico_Especialidad
+        fields = ("especialidad", "institucion")
+
+        labels = {
+            'especialidad' : 'Especialidad',
+            'institucion' : 'Institución'
         }
