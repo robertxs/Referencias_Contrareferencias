@@ -10,6 +10,7 @@ from django.contrib import messages
 from django.views.generic import *
 from administrador.forms import *
 from medico.forms import *
+from paciente.forms import *
 from medico.models import *
 from medico.controllers import *
 from administrador.models import *
@@ -867,8 +868,6 @@ class Consultas(TemplateView):
 #        paciente = Paciente.objects.get(cedula = cita.paciente.cedula)
         context['consulta'] = cita
         context['especialidad'] = especialidad
-#        context['paciente'] = paciente
-        #context['revision'] = revision
         return context
 
     def post(self, request, *args, **kwargs):
@@ -953,6 +952,7 @@ class InformeMedico(CreateView):
     template_name = 'medico/informe_medico.html'
     form_class = Medico_InformeForm
 
+
     def get_context_data(self, **kwargs):
 
         context = super(
@@ -961,13 +961,9 @@ class InformeMedico(CreateView):
         cita = Medico_Citas.objects.get(id=self.kwargs['id'])
     #    print(cita.id)
         revision = Medico_Revision.objects.get(cita_id=cita.id)
-        #informe = Medico_Informe.objects.get(medico_Revision=revision)
-        #print(informe)
 
-    #    print(revision.id)
         context['consulta'] = cita
         context['revision'] = revision
-        #context['informe'] = informe
         return context
 
     def post(self, request, *args, **kwargs):
@@ -976,17 +972,17 @@ class InformeMedico(CreateView):
         POST variables and then checked for validity.
         """
         form = Medico_InformeForm(request.POST)
+        #form1 = PacienteForm(request.POST)
         print(form.is_valid())
         if form.is_valid():
             cita = kwargs['id']
-            revision = Medico_Revision.objects.get(cita=cita)
-            print(revision.id)
+            revision = Medico_Revision.objects.get(pk=cita)
             desc_prediagnostico = request.POST['desc_prediagnostico']
-            value = informe_medico(revision.id, desc_prediagnostico)
-            print(value)
+            print(desc_prediagnostico)
+            value = informe_medico(revision.pk, desc_prediagnostico)
             if value is True:
                 return HttpResponseRedirect(reverse_lazy(
-                    'informe_medico', kwargs={'id': kwargs['id']}))
+                    'consulta', kwargs={'id': kwargs['id']}))
             else:
                 return render_to_response('medico/informe_medico.html',
                                           {'form': form,

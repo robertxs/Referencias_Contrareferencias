@@ -14,16 +14,14 @@ class Paciente_CitasForm(forms.ModelForm):
         model = Medico_Citas
         exclude = ("paciente",)
         fields = ['medico','institucion', 'fecha','descripcion']
-        
+
 
     def clean_fecha(self):
         fecha_cita = self.cleaned_data.get('fecha')
-    
+
         #Obtenemos la fecha actual
         fecha_actual = datetime.datetime.now().date()
         if fecha_cita < fecha_actual :
             raise forms.ValidationError('La fecha de la cita no puede ser menor a la de hoy')
-    
+
         return fecha_cita
-
-
