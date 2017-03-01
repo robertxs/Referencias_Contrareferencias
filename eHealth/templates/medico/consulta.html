@@ -58,13 +58,13 @@
       {% buttons %}
         <div class="col-md-3"></div>
       <div class="col-sm-4 col-md-6 text-center">
-         {% if paciente.revision == False %}
+         {% if consulta.revision == False %}
           <a name = "boton" id = 'revision' type="button" class="btn btn-info" href = "{% url 'comenzar_revision' consulta.id %}" >
            Comenzar Revisión
          </a>
          {% endif %}
 
-         {% if paciente.revision == True %}
+         {% if consulta.revision == True %}
          <a name = "boton" id = 'revision' type="button" class="btn btn-info" href = "{% url 'comenzar_revision' consulta.id %}" disabled>
           Comenzar Revisión
         </a>

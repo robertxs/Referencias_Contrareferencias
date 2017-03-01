@@ -114,6 +114,7 @@ class Medico_Citas(models.Model):
                                     on_delete=models.CASCADE)
     fecha = models.DateField()
     descripcion = models.CharField(max_length=500, blank=False)
+    revision = models.BooleanField(default=False)
     # especialidad = models.ForeignKey(Medico_Especialidad,
     #                                 on_delete=models.CASCADE)
 

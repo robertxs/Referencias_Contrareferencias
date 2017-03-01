@@ -864,10 +864,10 @@ class Consultas(TemplateView):
 
         cita = Medico_Citas.objects.get(id=self.kwargs['id'])
         especialidad = Medico_Especialidad.objects.get(medico=cita.medico.cedula)
-        paciente = Paciente.objects.get(cedula = cita.paciente.cedula)
+#        paciente = Paciente.objects.get(cedula = cita.paciente.cedula)
         context['consulta'] = cita
         context['especialidad'] = especialidad
-        context['paciente'] = paciente
+#        context['paciente'] = paciente
         #context['revision'] = revision
         return context
 

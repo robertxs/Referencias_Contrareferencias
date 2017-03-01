@@ -465,17 +465,15 @@ def comenzar_revision(cita_id, motivos, sintomas, presion_sanguinea, temperatura
 
     try:
         cita = Medico_Citas.objects.get(pk =cita_id)
-        print(cita.paciente)
-        paciente = Paciente.objects.get(cedula = cita.paciente.cedula)
-        print(paciente)
-        revision_paciente = Paciente(cedula = paciente.cedula, first_name=paciente.first_name,
-                                    last_name = paciente.last_name, usuario = paciente.usuario, revision= 'True')
+        cita.revision = True
+
         revision = Medico_Revision(cita = cita, motivos = motivos,
                                     sintomas = sintomas, presion_sanguinea = presion_sanguinea,
                                     temperatura=temperatura, frec_respiratoria=frec_respiratoria,
                                     frec_cardiaca=frec_cardiaca, otros=otros)
 
-        revision_paciente.save()
+
+        cita.save()
         revision.save()
 
         return True

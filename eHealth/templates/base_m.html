@@ -96,11 +96,9 @@
                   <li><a href=""><i class="fa fa-table"></i>  Historial</a></li>
 
 
-                  <li><a href="{% url 'informe_medico' consulta.id %}" ><i class="fa fa-file" ></i>  Hacer Informe</a></li>
-
-                  <!-- {% if consulta.paciente.revision == False %}
-                 <li><a href="{% url 'informe_medico' consulta.id %}" disabled><i class="fa fa-file"></i>  Hacer Informe</a></li>
-                 {% endif %} -->
+                  {% if consulta.revision == True %}
+                 <li><a href="{% url 'informe_medico' consulta.id %}" ><i class="fa fa-file"></i>  Hacer Informe</a></li>
+                 {% endif %}
                   <li><a href=""><i class="fa fa-envelope"></i>  Referir Paciente</a></li>
 
                   <li><a href=""><i class="fa fa-book"></i>  Ver Historia C.</a></li>
