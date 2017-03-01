@@ -864,9 +864,10 @@ class Consultas(TemplateView):
 
         cita = Medico_Citas.objects.get(id=self.kwargs['id'])
         especialidad = Medico_Especialidad.objects.get(medico=cita.medico.cedula)
-        #revision = Medico_Revision.objects.get(cita=cita)
+        paciente = Paciente.objects.get(cedula = cita.paciente.cedula)
         context['consulta'] = cita
         context['especialidad'] = especialidad
+        context['paciente'] = paciente
         #context['revision'] = revision
         return context
 
@@ -910,8 +911,8 @@ class ComenzarRevision(CreateView):
             ComenzarRevision, self).get_context_data(**kwargs)
 
         cita = Medico_Citas.objects.get(id=self.kwargs['id'])
-        context['consulta'] = cita
 
+        context['consulta'] = cita
         return context
 
     def post(self, request, *args, **kwargs):

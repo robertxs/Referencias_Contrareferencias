@@ -58,11 +58,17 @@
       {% buttons %}
         <div class="col-md-3"></div>
       <div class="col-sm-4 col-md-6 text-center">
-          <form>
-          <a name = "boton" id = 'revision' type="button" class="btn btn-info" href = "{% url 'comenzar_revision' consulta.id %}" onclick="this.disabled=true">
+         {% if paciente.revision == False %}
+          <a name = "boton" id = 'revision' type="button" class="btn btn-info" href = "{% url 'comenzar_revision' consulta.id %}" >
            Comenzar Revisión
          </a>
-       </form>
+         {% endif %}
+
+         {% if paciente.revision == True %}
+         <a name = "boton" id = 'revision' type="button" class="btn btn-info" href = "{% url 'comenzar_revision' consulta.id %}" disabled>
+          Comenzar Revisión
+        </a>
+        {% endif %}
 
          <!-- Trigger the modal with a button -->
           <button type="button"  id = "finalizar" class="btn btn-danger" data-toggle="modal" data-target="#myModal">Finalizar Consulta</button>
@@ -74,17 +80,4 @@
 </div>
 </div>
 </div>
-{% endblock %}
-
-{% block custom_script %}
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
-<script src="{% static 'plugins/datepicker/locales/bootstrap-datepicker.es.js' %}"></script>
-<script type="text/javascript">
-
-function mifuncion(){
-  alert("Activaste la funcion");
-  $('#revision').attr("disabled", true);
-}
-
-</script>
 {% endblock %}

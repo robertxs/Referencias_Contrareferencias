@@ -21,6 +21,7 @@ class Paciente(models.Model):
     telefono = models.IntegerField(blank=True, null=True)
     usuario = models.ForeignKey(Usuario,
                                 on_delete=models.CASCADE)
+    revision = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.cedula) + "  " + self.first_name + " " + self.last_name
