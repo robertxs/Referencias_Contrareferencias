@@ -124,8 +124,7 @@ class Medico_Citas(models.Model):
         unique_together = ("paciente","medico","institucion","fecha")
 
 class Medico_Revision(models.Model):
-    cita = models.ForeignKey(Medico_Citas,
-                              on_delete=models.CASCADE)
+    cita = models.OneToOneField(Medico_Citas, on_delete=models.CASCADE, primary_key= True,)
     motivos = models.CharField(max_length=500, blank=False)
     sintomas = models.CharField(max_length=500, blank=False)
     presion_sanguinea = models.CharField(max_length=30,blank=False)
@@ -134,10 +133,11 @@ class Medico_Revision(models.Model):
     frec_cardiaca = models.CharField(max_length=50, blank = False)
     otros = models.CharField(max_length=50, blank=True)
 
+
 class Medico_Informe(models.Model):
     medico_Revision = models.ForeignKey(Medico_Revision,
                                         on_delete=models.CASCADE)
-    desc_prediagnostico = models.TextField()
+    desc_prediagnostico = models.TextField(max_length=100)
 
 class Medico_Diagnostico(models.Model):
     cita = models.ForeignKey(Medico_Citas,

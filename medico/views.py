@@ -864,8 +864,10 @@ class Consultas(TemplateView):
 
         cita = Medico_Citas.objects.get(id=self.kwargs['id'])
         especialidad = Medico_Especialidad.objects.get(medico=cita.medico.cedula)
+        #revision = Medico_Revision.objects.get(cita=cita)
         context['consulta'] = cita
         context['especialidad'] = especialidad
+        #context['revision'] = revision
         return context
 
     def post(self, request, *args, **kwargs):
@@ -908,8 +910,7 @@ class ComenzarRevision(CreateView):
             ComenzarRevision, self).get_context_data(**kwargs)
 
         cita = Medico_Citas.objects.get(id=self.kwargs['id'])
-        context['revision'] = cita
-        context['title'] = 'Comenzar'
+        context['consulta'] = cita
 
         return context
 
@@ -940,10 +941,59 @@ class ComenzarRevision(CreateView):
                 return render_to_response('medico/comenzar_revision.html',
                                           {'form': form,
                                            'title': 'Agregar'},
+                                          context_instance=RequestContext(request))
+        else:
+            return render_to_response('medico/comenzar_revision.html',
+                                      {'form': form,
+                                       'title': 'Agregar'},
+                                      context_instance=RequestContext(request))
+
+class InformeMedico(CreateView):
+    template_name = 'medico/informe_medico.html'
+    form_class = Medico_InformeForm
+
+    def get_context_data(self, **kwargs):
+
+        context = super(
+            InformeMedico, self).get_context_data(**kwargs)
+        print(context)
+        cita = Medico_Citas.objects.get(id=self.kwargs['id'])
+    #    print(cita.id)
+        revision = Medico_Revision.objects.get(cita_id=cita.id)
+        #informe = Medico_Informe.objects.get(medico_Revision=revision)
+        #print(informe)
+
+    #    print(revision.id)
+        context['consulta'] = cita
+        context['revision'] = revision
+        #context['informe'] = informe
+        return context
+
+    def post(self, request, *args, **kwargs):
+        """
+        Handles POST requests, instantiating a form instance with the passed
+        POST variables and then checked for validity.
+        """
+        form = Medico_InformeForm(request.POST)
+        print(form.is_valid())
+        if form.is_valid():
+            cita = kwargs['id']
+            revision = Medico_Revision.objects.get(cita=cita)
+            print(revision.id)
+            desc_prediagnostico = request.POST['desc_prediagnostico']
+            value = informe_medico(revision.id, desc_prediagnostico)
+            print(value)
+            if value is True:
+                return HttpResponseRedirect(reverse_lazy(
+                    'informe_medico', kwargs={'id': kwargs['id']}))
+            else:
+                return render_to_response('medico/informe_medico.html',
+                                          {'form': form,
+                                           'title': 'Agregar'},
                                           context_instance=RequestContext(
                                               request))
         else:
-            return render_to_response('medico/comenzar_revision.html',
+            return render_to_response('medico/informe_medico.html',
                                       {'form': form,
                                        'title': 'Agregar'},
                                       context_instance=RequestContext(request))

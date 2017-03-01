@@ -14,6 +14,7 @@ class Paciente(models.Model):
     last_name = models.CharField(max_length=30, blank=True, null=True)
     fecha_nacimiento = models.DateField(blank=True, null=True)
     lugar_nacimiento = models.CharField(max_length=70, blank=True, null=True)
+    sexo = models.CharField(max_length=10, blank=True, null=True)
     estado_civil = models.CharField(max_length=7, choices=ESTADOS_CIVILES, blank=True, null=True)
     ocupacion = models.CharField(max_length=30, blank=True, null=True)
     direccion = models.CharField(max_length=70, blank=True, null=True)

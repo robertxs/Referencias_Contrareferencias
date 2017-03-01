@@ -81,7 +81,6 @@
           <hr>
           <ul class="nav nav-pills nav-stacked">
               <li class="nav-header"></li>
-              {% if user.groups.all.0.name != 'admin' %}
 
                 {% if user.groups.all.0.name == 'paciente' %}
                 <li><a href=""><i class="fa fa-user"></i>  Ver Perfil</a></li>
@@ -90,13 +89,13 @@
                 {% endif %}
                 {% if user.groups.all.0.name == 'medico' %}
 
-                  <li><a href=""><i class="fa fa-edit"></i>  Iniciar Consulta</a></li>
+                  <li><a href="{% url 'consulta' consulta.id %}"><i class="fa fa-edit"></i>  Iniciar Consulta</a></li>
 
                   <li><a href=""><i class="fa fa-child"></i>  Ver Perfil Paciente</a></li>
 
                   <li><a href=""><i class="fa fa-table"></i>  Historial</a></li>
 
-                  <li><a href=""><i class="fa fa-file"></i>  Hacer Informe</a></li>
+                  <li><a href="{% url 'informe_medico' consulta.id %}"><i class="fa fa-file"></i>  Hacer Informe</a></li>
 
                   <li><a href=""><i class="fa fa-envelope"></i>  Referir Paciente</a></li>
 
@@ -105,13 +104,6 @@
                   <li><a href=""><i class="fa fa-check-square-o"></i>  Diagnóstico</a></li>
 
                 {% endif %}
-
-              {% else %}
-                <li><a href="{% url 'ver_usuarios' %}"><i class="fa fa-user"></i>  Gestionar Usuarios</a></li>
-                <li><a href="{% url 'ver_roles' %}"><i class="fa fa-users"></i>  Gestionar Roles</a></li>
-                <li><a href=""><i class="fa fa-stethoscope"></i>  Gestionar Instituciones</a></li>
-                <li><a href=""><i class="fa fa-h-square"></i>  Gestionar Especializaciones</a></li>
-              {% endif %}
           </ul>
         </div>
         <div class="col-sm-9">

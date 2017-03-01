@@ -111,5 +111,15 @@ class Medico_RevisionForm(forms.ModelForm):
     class Meta:
         model = Medico_Revision
         exclude=("cita",)
-        #fields = ['cita','motivos','sintomas','presion_sanguinea','temperatura',
-        #         'frec_cardiaca','frec_respiratoria','otros']
+
+class Medico_InformeForm(forms.ModelForm):
+
+    class Meta:
+        model = Medico_Informe
+        exclude = ('medico_Revision',)
+
+        widgets = {
+            'desc_prediagnostico': forms.Textarea(attrs={'rows':5,
+                                                        'cols':10,
+                                                        'style': 'height: 9em;width:50em'})
+        }

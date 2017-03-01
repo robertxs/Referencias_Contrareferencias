@@ -474,3 +474,12 @@ def comenzar_revision(cita_id, motivos, sintomas, presion_sanguinea, temperatura
         return True
     except:
         return False
+
+def informe_medico(revision_id, prediagnostico):
+    try:
+        revision = Medico_Revision.objects.get(pk=revision_id)
+        informe = Medico_Informe(medico_Revision=revision,desc_prediagnostico=prediagnostico)
+        informe.save()
+        return True
+    except:
+        return False

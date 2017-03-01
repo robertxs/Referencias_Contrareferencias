@@ -1,4 +1,5 @@
 {% extends "base_m.html" %}
+
 {# Load the tag library #}
 {% load bootstrap3 %}
 
@@ -31,6 +32,7 @@
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+
                 <button type="submit" id="id_submit" class="btn btn-info">
                     Aceptar
                 </button>
@@ -48,7 +50,7 @@
         {% bootstrap_form_errors form %}
       </div>
       <label for="id_paciente">Paciente: </label>
-      <span>{{revision.paciente.first_name}} {{revision.paciente.last_name}}</span>
+      <span>{{consulta.paciente.first_name}} {{consulta.paciente.last_name}}</span>
       <label for="id_motivos">Motivos</label>
       {% bootstrap_field form.motivos layout="inline" %}
       <label for="id_motivos">Síntomas</label>

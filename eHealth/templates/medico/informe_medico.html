@@ -1,0 +1,68 @@
+{% extends "base_m.html" %}
+{# Load the tag library #}
+{% load bootstrap3 %}
+
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery=1%}
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
+{% load static %}
+{% block content %}
+
+<div id="cuerpoHeredado">
+  <div id="home" class="tab-pane fade in active">
+    <center><h2>Informe Médico</h2></center>
+    <form action="" method=POST>
+
+      {% csrf_token %}
+      <div class="hidden">
+          {% bootstrap_form_errors form %}
+      </div>
+      <div class="form-group" id='informe'>
+      <label for="id_titulo">Paciente: </label>
+      <span>{{consulta.paciente.first_name}} {{consulta.paciente.last_name}}</span>
+      <label for="id_titulo">Fecha de Nacimiento: </label>
+      <span>{{consulta.paciente.fecha_nacimiento}}</span>
+      <div class="form-group">
+        <label for="id_sex">Sexo</label>
+        <select name="sex">
+          <option selected="selected">{{consulta.paciente.sexo}}</option>
+          <option value="Femenino">Femenino</option>
+          <option value="Masculino">Masculino</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="id_marital_status">Estado civil</label>
+        <select name="marital_status">
+          <option selected="selected">{{consulta.paciente.estado_civil}}</option>
+          <option value="Soltero">Soltero</option>
+          <option value="Casado">Casado</option>
+          <option value="Viudo">Viudo</option>
+          <option value="Divorciado">Divorciado</option>
+          <option value="Otro">Otro</option>
+        </select>
+      </div>
+      <div class = "form-group">
+        <label for="id_motivo">Motivo de la Consulta</label>
+        <span>{{revision.motivos}}</span>
+      </div>
+      <label for="id_diagnostico">Diagnóstico</label>
+      {% bootstrap_field form.desc_prediagnostico layout="inline" %}
+
+      <button id="id_submit" type="submit" class="btn btn-lg calculate">
+          Guardar
+      </button>
+    </div>
+
+  </form>
+  </div>
+
+
+
+
+
+</div>
+
+{% endblock %}

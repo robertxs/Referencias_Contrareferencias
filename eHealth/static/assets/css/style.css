@@ -642,3 +642,10 @@ label:hover:before {
   top: 10px;
   left: 350px;
 }
+
+#informe{
+  position: relative;
+  top: 50px;
+  left: 170px;
+  right: 988px;
+}

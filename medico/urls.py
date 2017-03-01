@@ -179,10 +179,14 @@ urlpatterns = [
         Consultas.as_view(),
         name='consulta'
     ),
-
     url(
         r'^comenzar-revision/(?P<id>\w+)$',
         ComenzarRevision.as_view(),
         name='comenzar_revision'
+    ),
+    url(
+        r'^informe-medico/(?P<id>\w+)$',
+        InformeMedico.as_view(),
+        name='informe_medico'
     ),
 ]

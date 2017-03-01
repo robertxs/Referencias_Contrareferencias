@@ -28,8 +28,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-<!-- <a id = "finalizar" class="btn btn-danger"  data-toggle="modal" data-target="#myModal" role="button">..</a> -->
-            <a type="button" class="btn btn-primary" href="{% url 'eliminar_cita' consulta.id %}">Aceptar</a>
+            <a type="button" class="btn btn-primary" href="{% url 'eliminar_cita' consulta.id %}" > Aceptar</a>
           </div>
         </div>
 
@@ -59,10 +58,13 @@
       {% buttons %}
         <div class="col-md-3"></div>
       <div class="col-sm-4 col-md-6 text-center">
-          <a id = 'revision' type="button" class="btn btn-info" href = "{% url 'comenzar_revision' consulta.id %}">
-              Comenzar Revisión
-          </a>
-          <!-- Trigger the modal with a button -->
+          <form>
+          <a name = "boton" id = 'revision' type="button" class="btn btn-info" href = "{% url 'comenzar_revision' consulta.id %}" onclick="this.disabled=true">
+           Comenzar Revisión
+         </a>
+       </form>
+
+         <!-- Trigger the modal with a button -->
           <button type="button"  id = "finalizar" class="btn btn-danger" data-toggle="modal" data-target="#myModal">Finalizar Consulta</button>
           <a id = "atras" href="{% url 'ver_citas' user.pk %}" role = "button">&laquo; Regresar</a>
 
@@ -72,4 +74,17 @@
 </div>
 </div>
 </div>
+{% endblock %}
+
+{% block custom_script %}
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
+<script src="{% static 'plugins/datepicker/locales/bootstrap-datepicker.es.js' %}"></script>
+<script type="text/javascript">
+
+function mifuncion(){
+  alert("Activaste la funcion");
+  $('#revision').attr("disabled", true);
+}
+
+</script>
 {% endblock %}
