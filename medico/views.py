@@ -655,6 +655,7 @@ class VerConsultas(TemplateView):
 
         return context
 
+
 class ModificarConsultas(CreateView):
     template_name = 'medico/agregar_consulta.html'
     form_class = Medico_HorariosForm
@@ -666,7 +667,8 @@ class ModificarConsultas(CreateView):
         context['title'] = 'Modificar'
         consulta = Medico_Especialidad.objects.get(pk=self.kwargs['id'])
         data = {'especialidad': consulta.especialidad,
-                'institucion': consulta.institucion                
+                'institucion': consulta.institucion,
+                'horario' : consulta.horario             
                 }
         form = Medico_HorariosForm(initial=data)
         context['form'] = form
@@ -685,26 +687,33 @@ class AgregarConsulta(CreateView):
 
         return context
 
-#     def post(self, request, *args, **kwargs):
-#         """
-#         Handles POST requests, instantiating a form instance with the passed
-#         POST variables and then checked for validity.
-#         """
-#         form = Medico_HorariosForm(request.POST)
-#         if form.is_valid():
-#             user_pk = request.user.pk
-#             especialidad = request.POST['especialidad']
-#             institucion = request.POST['institucion']
-#             value = agregar_citas(user_pk, especialidad, institucion)
-#             if value is True:
-#                 return HttpResponseRedirect(reverse_lazy(
-#                     'ver_consultas', kwargs={'id': request.user.pk}))
-#             else:
-#                 return render_to_response('medico/agregar_cita.html',
-#                                           {'form': form,
-#                                            'title': 'Agregar'},
-#                                           context_instance=RequestContext(
-#                                               request))
+    def post(self, request, *args, **kwargs):
+        """
+        Handles POST requests, instantiating a form instance with the passed
+        POST variables and then checked for validity.
+        """
+        print("entro en el post de views")
+        print(request.POST)
+        form = Medico_HorariosForm(request.POST)
+        print("paso el form")
+        if form.is_valid():
+            print("paso el form is valid")
+            user_pk = request.user.pk
+            especialidad = request.POST['especialidad']
+            institucion = request.POST['institucion']
+            horarios = request.POST['result_horario']
+
+
+            value = agregar_consultas(user_pk, especialidad, institucion,horario)
+            if value is True:
+                return HttpResponseRedirect(reverse_lazy(
+                    'ver_consultas', kwargs={'id': request.user.pk}))
+            else:
+                return render_to_response('medico/agregar_consultas.html',
+                                          {'form': form,
+                                           'title': 'Agregar'},
+                                          context_instance=RequestContext(
+                                              request))
         # else:
         #     messages.error(request,"Por favor verifique que los campos estan en color rojo.")
         #     return render_to_response('medico/agregar_cita.html',

@@ -114,5 +114,6 @@ class Medico_HorariosForm(forms.ModelForm):
 
         labels = {
             'especialidad' : 'Especialidad',
-            'institucion' : 'Institución'
+            'institucion' : 'Institución',
+            'horario' : 'Horarios de Consulta'
         }

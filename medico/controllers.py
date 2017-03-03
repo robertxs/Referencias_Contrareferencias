@@ -458,7 +458,8 @@ def agregar_consultas(medico_id, especialidad, institucion, hora):
         print("llegue a agregar consulta con:")
         print(medico_id)
         print(especialidad)
-        user = User.objects.get(pk=user_pk)
+        print(institucion)
+        user = User.objects.get(pk=medico_id)
         usuario = Usuario.objects.get(user=user)
         medico = Medico.objects.get(usuario=usuario)
         institucion = Institucion.objects.get(rif=institucion)
@@ -476,26 +477,15 @@ def agregar_consultas(medico_id, especialidad, institucion, hora):
         return False
 
 
-def modificar_consultas(consulta_id, medico, institucion, horario, especialidad):
+def modificar_consultas(medico_id, especialidad, institucion, hora):
     try:
         consulta = Medico_Especialidad.objects.get(
-            pk=consulta_id)
-        try:
-            fecha = datetime.datetime.strptime(fecha,
-                                               '%d-%m-%Y'
-                                               ).strftime('%Y-%m-%d')
-        except:
-            if fecha is None:
-                fecha = None
-            else:
-                cal = pdt.Calendar()
-                now = datetime.datetime.now()
-                fecha = cal.parseDT(fecha, now)[0]
+            pk=medico_id)
         paciente = Paciente.objects.get(cedula=paciente)
-        cita.paciente = paciente
-        cita.descripcion = descripcion
-        cita.fecha = fecha
-        cita.save()
+        consulta.especialidad = especialidad
+        consulta.institucion = institucion
+        consulta.horario = hora
+        consulta.save()
         return True
     except:
         return False

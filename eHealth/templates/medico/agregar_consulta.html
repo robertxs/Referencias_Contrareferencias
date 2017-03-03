@@ -25,13 +25,19 @@ $(document).ready(function()
 
   <div id="cuerpoHeredado">
     <h1 class="page-header">Gestionar Consulta</h1>
-        <form action="#" id="formid">
-            {{ form.especialidad.label}}
-            {{ form.especialidad }}
-            <br>
-            <br>
-            {{ form.institucion.label }}
-            {{ form.institucion }}
+      <form action= "" method=POST id="formSuper">
+          <input type="hidden" name="result_horario" id="result_horario" value="">
+          {% csrf_token %}
+
+          {{ form.especialidad.label}}
+          {{ form.especialidad }}
+          <br>
+          <br>
+          {{ form.institucion.label }}
+          {{ form.institucion }}
+          <br>
+          <br>
+          {{ form.horario.label }}
 
           <div style="margin-top: 2%;">
             <table id="calendario" border='0' cellpadding='0' cellspacing='0'>
@@ -43,7 +49,6 @@ $(document).ready(function()
                 <th>Jueves</th>
                 <th>Viernes</th>
               </tr>
-              <form id="formid">
               <tr>
                 <td class='time'>6:00</td>
                 <td><input type="checkbox" id="Lunes6Am" value= "Lunes6Am"/><label for="Lunes6Am"></label></td>
@@ -147,7 +152,7 @@ $(document).ready(function()
             <div class="col-md-3"></div>
             <div class="col-sm-4 col-md-6 text-center">
                 <br>
-                <a href="{% url 'ver_consultas' user.pk %}" id="enviar"> Guardar </a>
+                <button type="submit" class="btn btn-lg calculate" id="id_submit" onclick= "check()"> Guardar </button>
                 <br>
                 <br>
             </div>
@@ -156,8 +161,8 @@ $(document).ready(function()
         </form>
     </div>
 
-
-<script type="text/javascript">
+ 
+<!-- <script type="text/javascript">
   function getGET(){
    var loc = document.location.href;
    var getString = loc.split('_')[1];
@@ -171,34 +176,27 @@ $(document).ready(function()
    return get;
    
 }
-
-</script>
+</script> -->
 
 <script type="text/javascript">
-$(document).ready(function() {
-    $('#enviar').click(function(){
-        var selected = '';    
-        $('#formid input[type=checkbox]').each(function(){
+function check() {  
+        var selected = '';   
+        var horas = document.getElementById("result_horario").value;    
+        $('#formSuper input[type=checkbox]').each(function(){
             if (this.checked) {
-                selected += $(this).val()+', ';
-                // print("hola"+str(selected))
-                // document.location.href
-                var id = getGET()
-                var medico_id = id.id
-                agregar_consultas(medico_id, especialidad, institucion, $(this).val())
+                selected += $(this).val()+', ';         
             }
         }); 
+        alert('hola');
+        document.getElementById("result_horario").value = selected;
+        alert(document.getElementById("result_horario").value);
 
         if (selected != '') 
             alert('Has seleccionado: '+selected);
-            // alert('lo otro es '+document.location.href)  
-            // alert(medico_id);
         else
             alert('Debes seleccionar al menos una opción.');
-
-        return false;
-    });         
-});    
+        return selected;
+    }          
 </script>
 
 {% endblock %}
