@@ -3,6 +3,7 @@
 from django.shortcuts import render_to_response
 from django.core.urlresolvers import reverse_lazy
 from django.http import HttpResponseRedirect
+from django.http import HttpResponse
 from django.template import RequestContext
 from django.shortcuts import render
 from django.contrib.auth import *
@@ -17,6 +18,7 @@ from administrador.models import *
 import datetime
 import calendar
 import parsedatetime as pdt
+from reportlab.pdfgen import canvas
 
 
 class PerfilMedico(CreateView):
@@ -865,7 +867,6 @@ class Consultas(TemplateView):
 
         cita = Medico_Citas.objects.get(id=self.kwargs['id'])
         especialidad = Medico_Especialidad.objects.get(medico=cita.medico.cedula)
-#        paciente = Paciente.objects.get(cedula = cita.paciente.cedula)
         context['consulta'] = cita
         context['especialidad'] = especialidad
         return context
@@ -905,7 +906,6 @@ class ComenzarRevision(CreateView):
     form_class = Medico_RevisionForm
 
     def get_context_data(self, **kwargs):
-        print("get")
         context = super(
             ComenzarRevision, self).get_context_data(**kwargs)
 
@@ -952,14 +952,14 @@ class InformeMedico(CreateView):
     template_name = 'medico/informe_medico.html'
     form_class = Medico_InformeForm
 
-
+    print("InformeMedico")
     def get_context_data(self, **kwargs):
 
         context = super(
             InformeMedico, self).get_context_data(**kwargs)
-        print(context)
+
         cita = Medico_Citas.objects.get(id=self.kwargs['id'])
-    #    print(cita.id)
+
         revision = Medico_Revision.objects.get(cita_id=cita.id)
 
         context['consulta'] = cita
@@ -972,13 +972,11 @@ class InformeMedico(CreateView):
         POST variables and then checked for validity.
         """
         form = Medico_InformeForm(request.POST)
-        #form1 = PacienteForm(request.POST)
         print(form.is_valid())
         if form.is_valid():
             cita = kwargs['id']
             revision = Medico_Revision.objects.get(pk=cita)
             desc_prediagnostico = request.POST['desc_prediagnostico']
-            print(desc_prediagnostico)
             value = informe_medico(revision.pk, desc_prediagnostico)
             if value is True:
                 return HttpResponseRedirect(reverse_lazy(
@@ -994,3 +992,51 @@ class InformeMedico(CreateView):
                                       {'form': form,
                                        'title': 'Agregar'},
                                       context_instance=RequestContext(request))
+
+
+
+class MyPDFView(DetailView):
+
+    def cabecera(self,pdf):
+        #Utilizamos el Banner de STPeHM
+        archivo_imagen = 'eHealth/static/assets/img/Banner-STPeHM.png'
+        #Definimos el tamaño de la imagen a cargar y las coordenadas correspondientes
+        pdf.drawImage(archivo_imagen, 100, 750, 450, 60,preserveAspectRatio=True)
+
+    def get(self, request, *args, **kwargs):
+
+        cita = Medico_Citas.objects.get(id=self.kwargs['id'])
+        revision = Medico_Revision.objects.get(pk=cita)
+        informe = Medico_Informe.objects.get(medico_Revision=revision.pk)
+        # Create the HttpResponse object with the appropriate PDF headers.
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename=InformeMedico.pdf'
+
+        # Create the PDF object, using the response object as its "file."
+        p = canvas.Canvas(response)
+        #Llamamos la funcion cabecera
+        self.cabecera(p)
+
+        # Draw things on the PDF. Here's where the PDF generation happens.
+        # See the ReportLab documentation for the full list of functionality.
+        p.drawString(450, 730, ("Fecha: " + str(cita.fecha)))
+        p.drawString(100, 700, ("Institución Médica: " + str(cita.institucion.name)))
+        p.drawString(100, 650, ("Paciente: " ))
+        p.drawString(125, 630, (str(cita.paciente)))
+        p.drawString(100, 600, ("Fecha de Nacimiento: "))
+        p.drawString(125, 580, (str(cita.paciente.fecha_nacimiento)))
+        p.drawString(100, 550, ("Sexo: " ))
+        p.drawString(125, 530, (str(cita.paciente.sexo)))
+        p.drawString(100, 500, ("Estado Civil: " ))
+        p.drawString(125, 480, (str(cita.paciente.estado_civil)))
+        p.drawString(100, 450, ("Motivo de la Consulta: " ))
+        p.drawString(125, 430, (str(revision.motivos)))
+        p.drawString(100, 400, ("Diagnóstico: " ))
+        p.drawString(125, 380, (str(informe.desc_prediagnostico)))
+        p.drawString(100, 350, ("Médico Tratante: " ))
+        p.drawString(125, 330, (str(cita.medico)))
+
+        # Close the PDF object cleanly, and we're done.
+        p.showPage()
+        p.save()
+        return response

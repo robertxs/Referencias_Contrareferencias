@@ -189,4 +189,10 @@ urlpatterns = [
         InformeMedico.as_view(),
         name='informe_medico'
     ),
+
+    url(
+        r'^pdf-informe/(?P<id>\w+)$',
+        MyPDFView.as_view(),
+        name='generarPDF'
+    ),
 ]
