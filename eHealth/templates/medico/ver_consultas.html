@@ -8,6 +8,7 @@
       <tr>
         <th>Institucion</th>
         <th>Especialidad</th>
+        <th>Horario</th>
         <th style="text-align: center">
           <a id="add_consultation" href="{% url 'agregar_consulta' user.pk %}">
             <i class="fa fa-plus-circle" style="font-size:20px;color:white"></i>
@@ -18,8 +19,9 @@
         <tr>
           <td>{{consultation.institucion.name}}</td>
           <td>{{consultation.especialidad}}</td>
+          <td>{{consultation.horario}}</td>
           <td style="text-align: center;">
-           <a href="{% url 'modificar_consulta' user.pk %}"><i class="fa fa-pencil" style="font-size:20px;color:#5882FA"></i></a>
+           <a href="{% url 'modificar_consulta' user.pk consultation.pk %}"><i class="fa fa-pencil" style="font-size:20px;color:#5882FA"></i></a>
            <a href="{% url 'eliminar_consulta' consultation.pk %}"><i class="fa fa-trash" style="font-size:20px;color:#5882FA"></i></a>
           </td>
         </tr>

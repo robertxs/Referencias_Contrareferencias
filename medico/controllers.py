@@ -6,6 +6,11 @@ import parsedatetime as pdt
 from django.core.urlresolvers import reverse_lazy
 from django.http import HttpResponseRedirect
 
+dicDias = {'Monday':'Lunes','Tuesday':'Martes','Wednesday':'Miercoles',
+            'Thursday':'Jueves','Friday':'Viernes','Saturday':'Sabado',
+            'Sunday':'Domingo'}
+
+
 
 def editar_medico(user, nombre, apellido, email, sexo, fecha, estado_civil,
                   telefono, direccion):
@@ -86,7 +91,6 @@ def modificar_estudios(estudio_id, titulo, fecha_graduacion, descripcion,
         estudio.descripcion = descripcion
         estudio.institucion = institucion
         estudio.save()
-        print("MODIFICAR Estudios")
         return True
     except:
         return False
@@ -392,13 +396,14 @@ def eliminar_eventos(request, id):
         'perfil_medico', kwargs={'id': request.user.pk}))
 
 
-def agregar_citas(user_pk, paciente, institucion, descripcion, fecha):
+def agregar_citas(user_pk, paciente, institucion, descripcion, fecha, hora, especialidad):
     try:
         user = User.objects.get(pk=user_pk)
         usuario = Usuario.objects.get(user=user)
         medico = Medico.objects.get(usuario=usuario)
         paciente = Paciente.objects.get(cedula=paciente)
         institucion = Institucion.objects.get(rif=institucion)
+        especialidad = Especialidad.objects.get(nombre_especialidad=especialidad)
         try:
             fecha = datetime.datetime.strptime(fecha,
                                                '%d-%m-%Y'
@@ -414,7 +419,9 @@ def agregar_citas(user_pk, paciente, institucion, descripcion, fecha):
                             medico=medico,
                             institucion = institucion,
                             descripcion=descripcion,
-                            fecha=fecha)
+                            fecha=fecha,
+                            hora=hora,
+                            especialidad=especialidad)
         cita.save()
         return True
     except:
@@ -455,17 +462,11 @@ def eliminar_citas(request, id):
 
 def agregar_consultas(medico_id, especialidad, institucion, hora):
     try:
-        print("llegue a agregar consulta con:")
-        print(medico_id)
-        print(especialidad)
-        print(institucion)
         user = User.objects.get(pk=medico_id)
         usuario = Usuario.objects.get(user=user)
         medico = Medico.objects.get(usuario=usuario)
         institucion = Institucion.objects.get(rif=institucion)
         especialidad = Especialidad.objects.get(nombre_especialidad=especialidad)
-        
-
         consulta = Medico_Especialidad(medico=medico,
                             institucion = institucion,
                             especialidad=especialidad,
@@ -473,15 +474,19 @@ def agregar_consultas(medico_id, especialidad, institucion, hora):
         consulta.save()
         return True
     except:
-        print("llegue a agregar consulta con error:")
         return False
 
 
-def modificar_consultas(medico_id, especialidad, institucion, hora):
+def modificar_consultas(consulta_id, medico_id, especialidad, institucion, hora):
     try:
         consulta = Medico_Especialidad.objects.get(
-            pk=medico_id)
-        paciente = Paciente.objects.get(cedula=paciente)
+            pk=consulta_id)
+        user = User.objects.get(pk=medico_id)
+        usuario = Usuario.objects.get(user=user)
+        medico = Medico.objects.get(usuario=usuario)
+        institucion = Institucion.objects.get(rif=institucion)
+        especialidad = Especialidad.objects.get(nombre_especialidad=especialidad)
+        consulta.medico = medico
         consulta.especialidad = especialidad
         consulta.institucion = institucion
         consulta.horario = hora

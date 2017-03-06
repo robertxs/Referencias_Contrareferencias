@@ -120,12 +120,12 @@ urlpatterns = [
         name='ver_consultas'
     ),
     url(
-        r'^agregar-consulta/_id=(?P<id>\w+)$',
+        r'^agregar-consulta/(?P<id>\w+)$',
         AgregarConsulta.as_view(),
         name='agregar_consulta'
     ),
     url(
-        r'^modificar-consulta/(?P<id>\w+)$',
+        r'^modificar-consulta/(?P<user>\w+)/(?P<id>\w+)$',
         ModificarConsultas.as_view(),
         name='modificar_consulta'
     ),

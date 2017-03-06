@@ -184,12 +184,11 @@ function check() {
         var horas = document.getElementById("result_horario").value;    
         $('#formSuper input[type=checkbox]').each(function(){
             if (this.checked) {
-                selected += $(this).val()+', ';         
+                selected += $(this).val()+',';         
             }
         }); 
-        alert('hola');
         document.getElementById("result_horario").value = selected;
-        alert(document.getElementById("result_horario").value);
+        // alert(document.getElementById("result_horario").value);
 
         if (selected != '') 
             alert('Has seleccionado: '+selected);

@@ -41,7 +41,7 @@ INSTALLED_APPS = (
     'administrador',
     'bootstrap3_datetime',
     'medico',
-    'paciente'
+    'paciente',
 )
 
 MIDDLEWARE_CLASSES = (

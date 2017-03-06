@@ -649,7 +649,7 @@ class VerConsultas(TemplateView):
             VerConsultas, self).get_context_data(**kwargs)
         user = User.objects.get(pk=self.kwargs['id'])
         consultas = Medico_Especialidad.objects.filter(
-            medico__usuario__user=user).order_by('institucion')
+            medico__usuario__user=user).order_by('especialidad')
 
         context['consultations'] = consultas
 
@@ -668,11 +668,48 @@ class ModificarConsultas(CreateView):
         consulta = Medico_Especialidad.objects.get(pk=self.kwargs['id'])
         data = {'especialidad': consulta.especialidad,
                 'institucion': consulta.institucion,
-                'horario' : consulta.horario             
+                'horario' : consulta.horario,
+                'medico' : consulta.medico             
                 }
         form = Medico_HorariosForm(initial=data)
         context['form'] = form
         return context
+
+    def post(self, request, *args, **kwargs):
+        """
+        Handles POST requests, instantiating a form instance with the passed
+        POST variables and then checked for validity.
+        """
+        form = Medico_HorariosForm(request.POST)
+        if form.is_valid():
+            consulta_id = kwargs['id']
+            medico = kwargs['user']
+            especialidad = request.POST['especialidad']
+            institucion = request.POST['institucion']
+            horarios = request.POST['result_horario']
+            hora = horarios.split(",")
+            agrega_dis = ' si,'.join(hora)
+            nueva = agrega_dis.split(',')
+            horario=[]
+            for x in nueva :
+                if not(x==''):
+                    y= x.split(' ')
+                    horario.append(y)
+            value = modificar_consultas(consulta_id, medico, especialidad, institucion,horario)
+            if value is True:
+                return HttpResponseRedirect(reverse_lazy(
+                    'ver_consultas', kwargs={'id': request.user.pk}))
+            else:
+                return render_to_response('medico/agregar_consulta.html',
+                                          {'form': form,
+                                           'title': 'Modificar'},
+                                          context_instance=RequestContext(
+                                              request))
+        else:
+            return render_to_response('medico/agregar_consulta.html',
+                                      {'form': form,
+                                       'title': 'Modificar'},
+                                      context_instance=RequestContext(request))
 
 
 class AgregarConsulta(CreateView):
@@ -692,34 +729,36 @@ class AgregarConsulta(CreateView):
         Handles POST requests, instantiating a form instance with the passed
         POST variables and then checked for validity.
         """
-        print("entro en el post de views")
-        print(request.POST)
         form = Medico_HorariosForm(request.POST)
-        print("paso el form")
         if form.is_valid():
-            print("paso el form is valid")
             user_pk = request.user.pk
             especialidad = request.POST['especialidad']
             institucion = request.POST['institucion']
             horarios = request.POST['result_horario']
-
-
+            hora = horarios.split(",")
+            horario=[]
+            for x in hora :
+                if not(x==''):
+                    y= x.split(' ')
+                    horario.append(y)
+            print("horario es: "+str(horario))
+            print(len(horario))
             value = agregar_consultas(user_pk, especialidad, institucion,horario)
             if value is True:
                 return HttpResponseRedirect(reverse_lazy(
                     'ver_consultas', kwargs={'id': request.user.pk}))
             else:
-                return render_to_response('medico/agregar_consultas.html',
+                return render_to_response('medico/agregar_consulta.html',
                                           {'form': form,
                                            'title': 'Agregar'},
                                           context_instance=RequestContext(
                                               request))
-        # else:
-        #     messages.error(request,"Por favor verifique que los campos estan en color rojo.")
-        #     return render_to_response('medico/agregar_cita.html',
-        #                               {'form': form,
-        #                                'title': 'Agregar'},
-        #                               context_instance=RequestContext(request))
+        else:
+            messages.error(request,"Por favor verifique que los campos estan en color rojo.")
+            return render_to_response('medico/agregar_consulta.html',
+                                      {'form': form,
+                                       'title': 'Agregar'},
+                                      context_instance=RequestContext(request))
 
 
 class BuscarPaciente(TemplateView):
@@ -782,15 +821,18 @@ class AgregarCitas(CreateView):
         Handles POST requests, instantiating a form instance with the passed
         POST variables and then checked for validity.
         """
-        form = Medico_CitasForm(request.POST)
+        form = Medico_CitasForm(request.POST,medico=request.user.pk)
         if form.is_valid():
             user_pk = request.user.pk
             paciente = request.POST['paciente']
             institucion = request.POST['institucion']
             fecha = request.POST['fecha']
+            hora = request.POST['hora']
             descripcion = request.POST['descripcion']
+            especialidad = request.POST['especialidad']
             value = agregar_citas(user_pk, paciente, institucion, descripcion,
-                                  fecha)
+                                  fecha,hora,especialidad)
+            print(value)
             if value is True:
                 return HttpResponseRedirect(reverse_lazy(
                     'ver_citas', kwargs={'id': request.user.pk}))
@@ -935,9 +977,9 @@ class Consultas(TemplateView):
         context = super(
             Consultas, self).get_context_data(**kwargs)
         cita = Medico_Citas.objects.get(id=self.kwargs['id'])
-        especialidad = Medico_Especialidad.objects.get(medico=cita.medico.cedula)
+        # especialidad = Medico_Especialidad.objects.get(medico=cita.medico.cedula)
         context['consulta'] = cita
-        context['especialidad'] = especialidad
+        # context['especialidad'] = especialidad
         return context
 
     def post(self, request, *args, **kwargs):

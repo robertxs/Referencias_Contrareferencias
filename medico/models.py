@@ -2,6 +2,7 @@ from django.db import models
 from administrador.models import *
 from paciente.models import *
 from django.core.validators import MaxValueValidator
+from smart_selects.db_fields import GroupedForeignKey
 
 class Medico(models.Model):
     cedula = models.IntegerField(primary_key=True,
@@ -36,18 +37,21 @@ class Institucion(models.Model):
 
 # Se contempla tener aqui donde trabaja el medico y la especialidad
 class Medico_Especialidad(models.Model):
-    DISPONIBILIDAD = (
-                    ('Si', 'Si'),
-                    ('No', 'No')
-                    )
+    # DISPONIBILIDAD = (
+    #                 ('Si', 'Si'),
+    #                 ('No', 'No')
+    #                 )
     especialidad = models.ForeignKey(Especialidad,
                                      on_delete=models.CASCADE)
     medico = models.ForeignKey(Medico,
                                on_delete=models.CASCADE)
     institucion = models.ForeignKey(Institucion,
                                     on_delete= models.CASCADE)
-    horario = models.CharField(max_length=10, blank=False)
-    disponibilidad = models.CharField(max_length=2, choices=DISPONIBILIDAD, blank=False, null=False, default='Si' )
+    horario = models.CharField(max_length=1000, blank=False)
+    # disponibilidad = models.CharField(max_length=2, choices=DISPONIBILIDAD, blank=False, null=False, default='Si' )
+
+    def __str__(self):
+        return str(self.horario)
 
 
 class Medico_Estudios(models.Model):
@@ -106,19 +110,53 @@ class Medico_Eventos(models.Model):
 
 
 class Medico_Citas(models.Model):
+    HORARIOS = (
+                ("6Am","6Am"),
+                ("7Am","7Am"),
+                ("8Am","8Am"),
+                ("9Am","9Am"),
+                ("10Am","10Am"),
+                ("11Am","11Am"),
+                ("12Pm","12Pm"),
+                ("1Pm","1Pm"),
+                ("2Pm","2Pm"),
+                ("3Pm","3Pm"),
+                ("4Pm","4Pm"),
+                ("5Pm","5Pm")
+                )
     paciente = models.ForeignKey(Paciente,
                                  on_delete=models.CASCADE)
     medico = models.ForeignKey(Medico,
                                on_delete=models.CASCADE)
     institucion = models.ForeignKey(Institucion,
                                     on_delete=models.CASCADE)
+    # especialidad = GroupedForeignKey(Medico_Especialidad,"especialidad")
+    # especialidad = ChainedForeignKey(
+    #     Medico_Especialidad,
+    #     chained_field="medico",
+    #     chained_model_field="medico",
+    #     show_all=False,
+    #     auto_choose=True,
+    #     sort=True)
+    # institucion = ChainedForeignKey(
+    #     Medico_Especialidad,
+    #     chained_field="especialidad",
+    #     chained_model_field="especialidad",
+    #     show_all=False,
+    #     auto_choose=True,
+    #     sort=True)
+    # hora = ChainedForeignKey(
+    #     Medico_Especialidad,
+    #     chained_field="medico",
+    #     chained_model_field="medico",
+    #     show_all=False,
+    #     auto_choose=True,
+    #     sort=True)
     fecha = models.DateField()
     descripcion = models.CharField(max_length=500, blank=False)
-    # especialidad = models.ForeignKey(Medico_Especialidad,
-    #                                 on_delete=models.CASCADE)
-
-    def __unicode__(self):
-        return self.name
+    hora = models.CharField(max_length=5, choices=HORARIOS,blank=False)
+    especialidad = models.ForeignKey(Especialidad,
+                                     on_delete=models.CASCADE)
 
     class Meta:
         unique_together = ("paciente","medico","institucion","fecha")
