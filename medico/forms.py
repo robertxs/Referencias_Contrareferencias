@@ -78,7 +78,7 @@ class Medico_CitasForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         self.medico = kwargs.pop('medico',None)
-        super(Medico_CitasForm,self).__init__(*args,**kwargs) 
+        super(Medico_CitasForm,self).__init__(*args,**kwargs)
 
     def clean(self):
         data = self.cleaned_data
@@ -136,10 +136,10 @@ class Medico_CitasForm(forms.ModelForm):
             # raise forms.ValidationError('El Medico no atiende ese dia a esa hora.Por favor'+
             #         ' elija algunas de estos horarios')
 
-        
+
             # raise forms.ValidationError('La fecha de la cita no puede ser menor a la de hoy')
 
-        
+
         return data
 
 
@@ -185,4 +185,23 @@ class Medico_HorariosForm(forms.ModelForm):
             'especialidad' : 'Especialidad',
             'institucion' : 'Institución',
             'horario' : 'Horarios de Consulta'
+
+
+class Medico_RevisionForm(forms.ModelForm):
+
+    class Meta:
+        model = Medico_Revision
+        exclude=("cita",)
+
+
+class Medico_InformeForm(forms.ModelForm):
+
+    class Meta:
+        model = Medico_Informe
+        exclude = ('medico_Revision',)
+
+        widgets = {
+            'desc_prediagnostico': forms.Textarea(attrs={'rows':5,
+                                                        'cols':10,
+                                                        'style': 'height: 9em;width:50em'})
         }

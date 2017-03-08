@@ -619,7 +619,7 @@ label:hover:before {
 
 #finalizar{
   position: relative;
-  top: 60px;
+  top: 70px;
   left: 220px;
 }
 
@@ -633,6 +633,19 @@ label:hover:before {
 
 #atras{
   position: relative;
-  top: -230px;
+  top: -310px;
   left: 410px;
+}
+
+#cancelar{
+  position: relative;
+  top: 10px;
+  left: 350px;
+}
+
+#informe{
+  position: relative;
+  top: 50px;
+  left: 170px;
+  right: 988px;
 }

@@ -9,11 +9,12 @@
       <link href="{% static 'assets/css/bootstrap.css' %}" rel="stylesheet">
       <link href="{% static 'assets/css/bootstrap-theme.css' %}" rel="stylesheet">
       <link href="{% static 'assets/css/style.css' %}" rel="stylesheet">
-      <link href="{% static 'assets/css/modal.css' %}" rel="stylesheet">
+      <!-- <link href="{% static 'assets/css/modal.css' %}" rel="stylesheet"> -->
       <link href="{% static 'assets/css/search.css' %}" rel="stylesheet">
       <link href="{% static 'assets/css/jquery.dataTables.min.css' %}" rel="stylesheet">
       <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
 
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
       <!--script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script-->
       <script type="text/javascript" src="{% static 'assets/js/jquery-1.12.2.min.js' %}"></script>
       <script type="text/javascript" src="{% static 'assets/js/bootstrap.min.js' %}"></script>
@@ -36,6 +37,8 @@
 
       <script src="{% static 'assets/js/angular/ng-table.min.js' %}"></script>
 
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
       <title>{% block title %} STPeHM {% endblock %} </title>
     {% endblock %}
   </head>
@@ -78,7 +81,6 @@
           <hr>
           <ul class="nav nav-pills nav-stacked">
               <li class="nav-header"></li>
-              {% if user.groups.all.0.name != 'admin' %}
 
                 {% if user.groups.all.0.name == 'paciente' %}
                 <li><a href=""><i class="fa fa-user"></i>  Ver Perfil</a></li>
@@ -87,14 +89,20 @@
                 {% endif %}
                 {% if user.groups.all.0.name == 'medico' %}
 
-                  <li><a href=""><i class="fa fa-edit"></i>  Iniciar Consulta</a></li>
+                  <li><a href="{% url 'consulta' consulta.id %}"><i class="fa fa-edit"></i>  Iniciar Consulta</a></li>
 
                   <li><a href=""><i class="fa fa-child"></i>  Ver Perfil Paciente</a></li>
 
                   <li><a href=""><i class="fa fa-table"></i>  Historial</a></li>
 
-                  <li><a href=""><i class="fa fa-file"></i>  Hacer Informe</a></li>
 
+                  {% if consulta.revision == True and consulta.informe = False %}
+                 <li><a href="{% url 'informe_medico' consulta.id %}" ><i class="fa fa-file"></i>  Hacer Informe</a></li>
+                 {% endif %}
+
+                 {% if consulta.informe = True %}
+                <li><a href="{% url 'generarPDF' consulta.id %}" ><i class="fa fa-file"></i>  Descargar Informe</a></li>
+                {% endif %}
                   <li><a href=""><i class="fa fa-envelope"></i>  Referir Paciente</a></li>
 
                   <li><a href=""><i class="fa fa-book"></i>  Ver Historia C.</a></li>
@@ -102,13 +110,6 @@
                   <li><a href=""><i class="fa fa-check-square-o"></i>  Diagnóstico</a></li>
 
                 {% endif %}
-        
-              {% else %}
-                <li><a href="{% url 'ver_usuarios' %}"><i class="fa fa-user"></i>  Gestionar Usuarios</a></li>
-                <li><a href="{% url 'ver_roles' %}"><i class="fa fa-users"></i>  Gestionar Roles</a></li>
-                <li><a href=""><i class="fa fa-stethoscope"></i>  Gestionar Instituciones</a></li>
-                <li><a href=""><i class="fa fa-h-square"></i>  Gestionar Especializaciones</a></li>
-              {% endif %}
           </ul>
         </div>
         <div class="col-sm-9">

@@ -14,12 +14,14 @@ class Paciente(models.Model):
     last_name = models.CharField(max_length=30, blank=True, null=True)
     fecha_nacimiento = models.DateField(blank=True, null=True)
     lugar_nacimiento = models.CharField(max_length=70, blank=True, null=True)
+    sexo = models.CharField(max_length=10, blank=True, null=True)
     estado_civil = models.CharField(max_length=7, choices=ESTADOS_CIVILES, blank=True, null=True)
     ocupacion = models.CharField(max_length=30, blank=True, null=True)
     direccion = models.CharField(max_length=70, blank=True, null=True)
     telefono = models.IntegerField(blank=True, null=True)
     usuario = models.ForeignKey(Usuario,
                                 on_delete=models.CASCADE)
+
 
     def __str__(self):
         return str(self.cedula) + "  " + self.first_name + " " + self.last_name

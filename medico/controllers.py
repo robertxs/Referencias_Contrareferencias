@@ -455,6 +455,7 @@ def modificar_citas(cita_id, paciente, descripcion, fecha):
 
 def eliminar_citas(request, id):
     cita = Medico_Citas.objects.get(pk=id)
+    print(cita.id)
     cita.delete()
     return HttpResponseRedirect(reverse_lazy(
                     'ver_citas', kwargs={'id': request.user.pk}))
@@ -507,3 +508,35 @@ def eliminar_historia_clinica(request, id):
     historia.delete()
     return HttpResponseRedirect(reverse_lazy(
         'historias_clinicas'))
+
+def comenzar_revision(cita_id, motivos, sintomas, presion_sanguinea, temperatura,
+                    frec_respiratoria, frec_cardiaca, otros):
+
+    try:
+        cita = Medico_Citas.objects.get(pk =cita_id)
+        cita.revision = True
+
+        revision = Medico_Revision(cita = cita, motivos = motivos,
+                                    sintomas = sintomas, presion_sanguinea = presion_sanguinea,
+                                    temperatura=temperatura, frec_respiratoria=frec_respiratoria,
+                                    frec_cardiaca=frec_cardiaca, otros=otros)
+
+
+        cita.save()
+        revision.save()
+
+        return True
+    except:
+        return False
+
+def informe_medico(revision_id, prediagnostico):
+    try:
+        revision = Medico_Revision.objects.get(pk=revision_id)
+        cita = Medico_Citas.objects.get(pk = revision_id)
+        cita.informe = True
+        informe = Medico_Informe(medico_Revision=revision,desc_prediagnostico=prediagnostico)
+        cita.save()
+        informe.save()
+        return True
+    except:
+        return False

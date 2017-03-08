@@ -1,0 +1,66 @@
+{% extends "base_m.html" %}
+{# Load the tag library #}
+{% load bootstrap3 %}
+
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery=1%}
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
+{% load static %}
+{% block content %}
+
+<div id="cuerpoHeredado">
+  <div id="home" class="tab-pane fade in active">
+    <center><h2>Informe Médico</h2></center>
+    <form action="" method=POST>
+
+      {% csrf_token %}
+      <div class="hidden">
+          {% bootstrap_form_errors form %}
+      </div>
+      <div class="form-group" id='fecha'>
+      <label for="id_titulo">Fecha: </label>
+      <span>{{consulta.fecha}}</span>
+      <div class="form-group" id='informe'>
+      <label for="id_titulo">Paciente: </label>
+      <span>{{consulta.paciente.first_name}} {{consulta.paciente.last_name}}</span>
+      <label for="id_titulo">Fecha de Nacimiento: </label>
+      <span>{{consulta.paciente.fecha_nacimiento}}</span>
+      <div class="form-group">
+        <label for="id_sex">Sexo</label>
+        <span>{{consulta.paciente.sexo}}</span>
+      </div>
+      <div class="form-group">
+        <label for="id_marital_status">Estado civil</label>
+        <span>{{consulta.paciente.estado_civil}}</span>
+      </div>
+      <div class = "form-group">
+        <label for="id_motivo">Motivo de la Consulta</label>
+        <span>{{revision.motivos}}</span>
+      </div>
+      <div class = "form-group">
+        <label for="id_diagnostico">Diagnóstico</label>
+       {% bootstrap_field form.desc_prediagnostico layout="inline" %}
+      </div>
+      {% buttons %}
+        <div class="col-sm-6 col-md-12">
+            <button id="id_submit" type="submit" class="btn btn-lg">
+                Guardar
+            </button>
+        </div>
+        <div class="col-md-3"></div>
+    {% endbuttons %}
+    </div>
+
+  </form>
+  </div>
+
+
+
+
+
+</div>
+
+{% endblock %}
