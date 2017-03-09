@@ -44,8 +44,7 @@ class Migration(migrations.Migration):
             name='Medico_Especialidad',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('horario', models.DateField()),
-                ('disponibilidad', models.CharField(max_length=2, choices=[(b'Si', b'Si'), (b'No', b'No')])),
+                ('horario', models.CharField(max_length=1000)),
                 ('especialidad', models.ForeignKey(to='medico.Especialidad')),
                 ('institucion', models.ForeignKey(to='medico.Institucion')),
                 ('medico', models.ForeignKey(to='medico.Medico')),

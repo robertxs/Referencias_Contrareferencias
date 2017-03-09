@@ -185,7 +185,7 @@ class Medico_HorariosForm(forms.ModelForm):
             'especialidad' : 'Especialidad',
             'institucion' : 'Institución',
             'horario' : 'Horarios de Consulta'
-
+}
 
 class Medico_RevisionForm(forms.ModelForm):
 
