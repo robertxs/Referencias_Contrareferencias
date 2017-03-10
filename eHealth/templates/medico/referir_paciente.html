@@ -1,0 +1,106 @@
+{% extends "base_m.html" %}
+{# Load the tag library #}
+{% load bootstrap3 %}
+
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery=1%}
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
+{% load static %}
+{% block content %}
+
+<div id="cuerpoHeredado">
+
+      <ul class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" href="#refeir">Referir a Médico</a></li>
+        <li><a data-toggle="tab" href="#menu1">Referir a Laboratorio</a></li>
+      </ul>
+
+    <div class="tab-content">
+    <div id="referir" class="tab-pane fade in active">
+
+    <div class="col-md-8 col-sm-6 col-xs-12 personal-info">
+        <form action="{% url 'referir_paciente' consulta.id %}" method=POST>
+
+        {% csrf_token %}
+	    <input type="hidden" name="paciente" id="id_paciente" value="self.paciente">
+	    <div class="hidden">
+	        {% bootstrap_form_errors form %}
+	    </div>
+
+	    {% if messages %}
+	    <ul class="messages">
+	      {% for mes in messages %}
+	      <li{% if mes.tags  %}
+	      class="{{ mes.tag }}"
+	      {% endif%}>{{ mes }}
+	      </li>
+	      {% endfor %}
+	    </ul>
+	    {% endif %}
+
+    	  <label for="paciente">Nombre del Paciente</label>
+          <span>{{consulta.paciente}}</span>
+	      <label for="id_medico">Médico</label>
+	       {% bootstrap_field form.medico layout="inline" %}
+	      <label for="id_fecha">Institución Médica</label>
+	      {% bootstrap_field form.institucion layout="inline" %}
+	      <label for="id_especialidad">Especialidad</label>
+	      {% bootstrap_field form.especialidad layout="inline" %}
+	      <label for="id_fecha">Fecha</label>
+	      {% bootstrap_field form.fecha layout="inline" %}
+	      <label for="id_hora">Hora</label>
+	        {% bootstrap_field form.hora layout="inline" %}
+	      <label for="id_descripcion">Descripción</label>
+	      {% bootstrap_field form.descripcion layout="inline" %}
+	      {% buttons %}
+	        <div class="col-md-3"></div>
+	        <div class="col-sm-4 col-md-6 text-center">
+	            <br>
+	            <button id="id_submit" type="submit" class="btn btn-lg calculate" onclick="obtenerId()">
+	                Guardar
+	            </button>
+	            <br>
+	            <br>
+	        </div>
+	        <div class="col-md-3"></div>
+	    {% endbuttons %}
+    </form>
+  </div>
+{% endblock %}
+
+<script type="text/javascript">
+$(document).ready(function(){
+  $( "#id_fecha" ).datepicker({ format: 'yyyy-mm-dd' });
+});
+</script>
+
+<script type="text/javascript">
+  function getGET(){
+   var loc = document.location.href;
+   var getString = loc.split('_')[1];
+   var GET = getString.split('&');
+   var get = {};//this object will be filled with the key-value pairs and returned.
+
+   for(var i = 0, l = GET.length; i < l; i++){
+      var tmp = GET[i].split('=');
+      get[tmp[0]] = unescape(decodeURI(tmp[1]));
+   }
+   return get;  
+}
+</script>
+
+<script type="text/javascript">
+  function obtenerId(){
+    var valores=getGET();
+    alert(valores);
+    if(valores) {
+      var medico = valores[id];
+    }
+    document.getElementById("id_medico2").value = medico;
+    alert(document.getElementById("id_medico2").value());
+  }
+</script>
+

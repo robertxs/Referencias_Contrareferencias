@@ -983,35 +983,35 @@ class Consultas(TemplateView):
         context['consulta'] = cita
         return context
 
-    def post(self, request, *args, **kwargs):
-        """
-        Handles POST requests, instantiating a form instance with the passed
-        POST variables and then checked for validity.
-        """
-        form = Medico_CitasForm(request.POST)
-        if form.is_valid():
-            user_pk = request.user.pk
-            paciente = request.POST['paciente']
-            institucion = request.POST['institucion']
-            fecha = request.POST['fecha']
-            descripcion = request.POST['descripcion']
-            value = agregar_citas(user_pk, paciente, institucion, descripcion,
-                                  fecha)
-            if value is True:
-                return HttpResponseRedirect(reverse_lazy(
-                    'ver_citas', kwargs={'id': request.user.pk}))
-            else:
-                return render_to_response('medico/agregar_cita.html',
-                                          {'form': form,
-                                           'title': 'Agregar'},
-                                          context_instance=RequestContext(
-                                              request))
-        else:
-            messages.error(request,"Por favor verifique que los campos estan en color rojo.")
-            return render_to_response('medico/agregar_cita.html',
-                                      {'form': form,
-                                       'title': 'Agregar'},
-                                      context_instance=RequestContext(request))
+    # def post(self, request, *args, **kwargs):
+    #     """
+    #     Handles POST requests, instantiating a form instance with the passed
+    #     POST variables and then checked for validity.
+    #     """
+    #     form = Medico_CitasForm(request.POST)
+    #     if form.is_valid():
+    #         user_pk = request.user.pk
+    #         paciente = request.POST['paciente']
+    #         institucion = request.POST['institucion']
+    #         fecha = request.POST['fecha']
+    #         descripcion = request.POST['descripcion']
+    #         value = agregar_citas(user_pk, paciente, institucion, descripcion,
+    #                               fecha)
+    #         if value is True:
+    #             return HttpResponseRedirect(reverse_lazy(
+    #                 'ver_citas', kwargs={'id': request.user.pk}))
+    #         else:
+    #             return render_to_response('medico/agregar_cita.html',
+    #                                       {'form': form,
+    #                                        'title': 'Agregar'},
+    #                                       context_instance=RequestContext(
+    #                                           request))
+    #     else:
+    #         messages.error(request,"Por favor verifique que los campos estan en color rojo.")
+    #         return render_to_response('medico/agregar_cita.html',
+    #                                   {'form': form,
+    #                                    'title': 'Agregar'},
+    #                                   context_instance=RequestContext(request))
 
 class ComenzarRevision(CreateView):
     template_name = 'medico/comenzar_revision.html'
@@ -1105,8 +1105,6 @@ class InformeMedico(CreateView):
                                        'title': 'Agregar'},
                                       context_instance=RequestContext(request))
 
-
-
 class MyPDFView(DetailView):
 
     def cabecera(self,pdf):
@@ -1152,3 +1150,66 @@ class MyPDFView(DetailView):
         p.showPage()
         p.save()
         return response
+
+class ReferirPaciente(CreateView):
+
+    template_name = 'medico/referir_paciente.html'
+    form_class = ReferirForm
+
+    def get_context_data(self, **kwargs):
+        context = super(
+        ReferirPaciente, self).get_context_data(**kwargs)
+        print("GET")
+
+        cita = Medico_Citas.objects.get(id=self.kwargs['id'])
+
+        context['consulta'] = cita
+        return context
+
+    def post(self, request, *args, **kwargs):
+        """
+        Handles POST requests, instantiating a form instance with the passed
+        POST variables and then checked for validity.
+        """
+        print("entro a post")
+        form = ReferirForm(request.POST)
+        print(form.is_valid())
+        if form.is_valid():
+            id_cita = kwargs['id']
+            cita = Medico_Citas.objects.get(id=id_cita)
+
+            paciente = Paciente.objects.get(cedula=cita.paciente.cedula)
+            print(paciente)
+            id_medico = request.POST['medico']
+            medico1 = Usuario.objects.get(ci=id_medico)
+            medico = medico1.user_id
+            print("medico es: "+str(medico))
+
+            paciente = Paciente.objects.get(cedula=paciente.cedula)
+
+            institucion = request.POST['institucion']
+            fecha = request.POST['fecha']
+            hora = request.POST['hora']
+            descripcion = request.POST['descripcion']
+            especialidad = request.POST['especialidad']
+            print("antes de valueeeee")
+            value = agregar_citas(medico, paciente.cedula, institucion, descripcion,
+                                  fecha,hora,especialidad)
+            print("valueee es: ")
+            print(value)
+            if value is True:
+                return HttpResponseRedirect(reverse_lazy(
+                    'consulta', kwargs={'id': kwargs['id']}))
+            else:
+                return render_to_response('medico/referir_paciente.html',
+                                          {'form': form,
+                                           'title': 'Agregar'},
+                                          context_instance=RequestContext(
+                                              request))
+                
+        else:
+            messages.error(request,"Por favor verifique que los campos estan en color rojo.")
+            return render_to_response('medico/agregar_cita.html',
+                                      {'form': form,
+                                       'title': 'Agregar'},
+                                      context_instance=RequestContext(request))

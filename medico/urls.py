@@ -205,4 +205,11 @@ urlpatterns = [
         MyPDFView.as_view(),
         name='generarPDF'
     ),
+
+
+    url(
+        r'^referir-paciente/(?P<id>\w+)$',
+        ReferirPaciente.as_view(),
+        name='referir_paciente'
+    ),
 ]

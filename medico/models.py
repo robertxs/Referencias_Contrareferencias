@@ -137,6 +137,7 @@ class Medico_Citas(models.Model):
                                      on_delete=models.CASCADE)
     revision = models.BooleanField(default=False)
     informe = models.BooleanField(default=False)
+    es_referido = models.BooleanField(default=False)
 
     def __unicode__(self):
         return self.name
@@ -184,9 +185,9 @@ class Emergencia(models.Model):
         unique_together = ('paciente','medico','institucion')
 
 class Referencia(models.Model):
-  informe = models.ForeignKey(Medico_Informe,
-                              on_delete=models.CASCADE)
-  medico_referido = models.ForeignKey(Medico,
-                                    on_delete=models.CASCADE)
-  fecha_referencia = models.DateField()
-  hora_referencia = models.DateTimeField()
+    informe = models.ForeignKey(Medico_Informe,
+                                  on_delete=models.CASCADE)
+    medico_referido = models.ForeignKey(Medico,
+                                        on_delete=models.CASCADE)
+    fecha_referencia = models.DateField()
+    hora_referencia = models.DateTimeField()

@@ -102,8 +102,9 @@
 
                  {% if consulta.informe = True %}
                 <li><a href="{% url 'generarPDF' consulta.id %}" ><i class="fa fa-file"></i>  Descargar Informe</a></li>
+               
+                  <li><a href="{% url 'referir_paciente' consulta.id %}"><i class="fa fa-envelope"></i>  Referir Paciente</a></li>
                 {% endif %}
-                  <li><a href=""><i class="fa fa-envelope"></i>  Referir Paciente</a></li>
 
                   <li><a href=""><i class="fa fa-book"></i>  Ver Historia C.</a></li>
 
