@@ -19,7 +19,7 @@
     <form action="" method=POST>
     {% endif %}
     {% csrf_token %}
-    <input type="hidden" name="medico" id="id_medico2" value="self.medico">
+    
     <div class="hidden">
         {% bootstrap_form_errors form %}
     </div>
@@ -33,6 +33,21 @@
       </li>
       {% endfor %}
     </ul>
+    {% endif %}
+
+    {% if form.errors %}
+        {% for field in form %}
+            {% for error in field.errors %}
+                <div class="alert alert-danger">
+                    <strong>{{ error|escape }}</strong>
+                </div>
+            {% endfor %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}
+            <div class="alert alert-danger">
+                <strong>{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
     {% endif %}
 
       {% if user.groups.all.0.name == 'paciente' %}
@@ -57,7 +72,7 @@
         <div class="col-md-3"></div>
         <div class="col-sm-4 col-md-6 text-center">
             <br>
-            <button id="id_submit" type="submit" class="btn btn-lg calculate" onclick="obtenerId()">
+            <button id="id_submit" type="submit" class="btn btn-lg calculate" >
                 Guardar
             </button>
             <br>
@@ -78,7 +93,7 @@ $(document).ready(function(){
 });
 </script>
 
-<script type="text/javascript">
+<!-- <script type="text/javascript">
   function getGET(){
    var loc = document.location.href;
    var getString = loc.split('_')[1];
@@ -104,7 +119,7 @@ $(document).ready(function(){
     document.getElementById("id_medico2").value = medico;
     alert(document.getElementById("id_medico2").value());
   }
-</script>
+</script> -->
 
 <!-- <script type="text/javascript">
 function seleccionar_hora() {  

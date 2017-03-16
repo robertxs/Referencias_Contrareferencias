@@ -653,8 +653,21 @@ class VerConsultas(TemplateView):
         user = User.objects.get(pk=self.kwargs['id'])
         consultas = Medico_Especialidad.objects.filter(
             medico__usuario__user=user).order_by('especialidad')
+        # b = []
+        # for c in consultas :
+        #     horario= c.horario
+        #     horario2=horario.split(', ')
+        #     i = 0
+        #     a = ''
+        #     for x in horario2 :
+        #         ulti = i == (len(horario2)-1)
+        #         elem=volverElemlista(x,ulti)
+        #         a = a + elem + ', '
+        #         i = i+1
+        #     b.append(a)
 
         context['consultations'] = consultas
+        # context['horario'] = b
 
         return context
 
@@ -732,7 +745,8 @@ class AgregarConsulta(CreateView):
         Handles POST requests, instantiating a form instance with the passed
         POST variables and then checked for validity.
         """
-        form = Medico_HorariosForm(request.POST)
+        form = Medico_HorariosForm(request.POST,medico=request.user.pk)
+        
         if form.is_valid():
             user_pk = request.user.pk
             especialidad = request.POST['especialidad']
@@ -740,13 +754,14 @@ class AgregarConsulta(CreateView):
             horarios = request.POST['result_horario']
             hora = horarios.split(",")
             horario=[]
+            
             for x in hora :
                 if not(x==''):
                     y= x.split(' ')
                     horario.append(y)
-            print("horario es: "+str(horario))
-            print(len(horario))
+
             value = agregar_consultas(user_pk, especialidad, institucion,horario)
+            
             if value is True:
                 return HttpResponseRedirect(reverse_lazy(
                     'ver_consultas', kwargs={'id': request.user.pk}))
@@ -835,7 +850,6 @@ class AgregarCitas(CreateView):
             especialidad = request.POST['especialidad']
             value = agregar_citas(user_pk, paciente, institucion, descripcion,
                                   fecha,hora,especialidad)
-            print(value)
             if value is True:
                 return HttpResponseRedirect(reverse_lazy(
                     'ver_citas', kwargs={'id': request.user.pk}))

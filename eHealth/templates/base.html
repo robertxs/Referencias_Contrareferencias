@@ -88,7 +88,7 @@
                 {% if user.groups.all.0.name == 'medico' %}
                   <li><a href="{% url 'inbox' %}"><i class="fa fa-envelope"></i>  Inbox</a></li>
                   <li><a href="{% url 'perfil_medico' user.pk %}"><i class="fa fa-user"></i>  Ver Perfil</a></li>
-                  <li><a href="{% url 'ver_consultas' user.pk %}"><i class="fa fa-calendar"></i>  Ver Consultas</a></li>
+                  <li><a href="{% url 'ver_consultas' user.pk %}"><i class="fa fa-calendar"></i>  Ver Horario De Consultas</a></li>
                   <li><a href="{% url 'historias_clinicas' %}"><i class="fa fa-folder-open"></i>  Historias Clínicas</a></li>
                   <li><a href="{% url 'buscar_paciente' %}"><i class="fa fa-search "></i>  Buscar paciente</a></li>
                   <li><a href="{% url 'buscar_medico' %}"><i class="fa fa-search "></i>  Buscar médico</a></li>

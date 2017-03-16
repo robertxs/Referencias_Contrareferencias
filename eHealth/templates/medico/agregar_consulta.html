@@ -28,6 +28,35 @@ $(document).ready(function()
       <form action= "" method=POST id="formSuper">
           <input type="hidden" name="result_horario" id="result_horario" value="">
           {% csrf_token %}
+          <div class="hidden">
+              {% bootstrap_form_errors form %}
+          </div>
+
+          {% if messages %}
+          <ul class="messages">
+            {% for mes in messages %}
+            <li{% if mes.tags  %}
+            class="{{ mes.tag }}"
+            {% endif%}>{{ mes }}
+            </li>
+            {% endfor %}
+          </ul>
+          {% endif %}
+
+          {% if form.errors %}
+            {% for field in form %}
+                {% for error in field.errors %}
+                    <div class="alert alert-danger">
+                        <strong>{{ error|escape }}</strong>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+                <div class="alert alert-danger">
+                    <strong>{{ error|escape }}</strong>
+                </div>
+            {% endfor %}
+          {% endif %}
 
           {{ form.especialidad.label}}
           {{ form.especialidad }}

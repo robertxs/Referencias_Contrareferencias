@@ -511,7 +511,6 @@ def eliminar_historia_clinica(request, id):
 
 def comenzar_revision(cita_id, motivos, sintomas, presion_sanguinea, temperatura,
                     frec_respiratoria, frec_cardiaca, otros):
-
     try:
         cita = Medico_Citas.objects.get(pk =cita_id)
         cita.revision = True
