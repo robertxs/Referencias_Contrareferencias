@@ -212,4 +212,6 @@ urlpatterns = [
         ReferirPaciente.as_view(),
         name='referir_paciente'
     ),
+
+
 ]

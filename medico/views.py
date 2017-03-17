@@ -744,8 +744,7 @@ class AgregarConsulta(CreateView):
                 if not(x==''):
                     y= x.split(' ')
                     horario.append(y)
-            print("horario es: "+str(horario))
-            print(len(horario))
+
             value = agregar_consultas(user_pk, especialidad, institucion,horario)
             if value is True:
                 return HttpResponseRedirect(reverse_lazy(
@@ -835,7 +834,7 @@ class AgregarCitas(CreateView):
             especialidad = request.POST['especialidad']
             value = agregar_citas(user_pk, paciente, institucion, descripcion,
                                   fecha,hora,especialidad)
-            print(value)
+
             if value is True:
                 return HttpResponseRedirect(reverse_lazy(
                     'ver_citas', kwargs={'id': request.user.pk}))
@@ -1032,10 +1031,9 @@ class ComenzarRevision(CreateView):
         POST variables and then checked for validity.
         """
         form = Medico_RevisionForm(request.POST)
-        print(form.is_valid())
+
         if form.is_valid():
             cita = kwargs['id']
-            print(cita)
             motivos = request.POST['motivos']
             sintomas = request.POST['sintomas']
             presion_sanguinea = request.POST['presion_sanguinea']
@@ -1063,8 +1061,6 @@ class ComenzarRevision(CreateView):
 class InformeMedico(CreateView):
     template_name = 'medico/informe_medico.html'
     form_class = Medico_InformeForm
-
-    print("InformeMedico")
     def get_context_data(self, **kwargs):
 
         context = super(
@@ -1084,7 +1080,6 @@ class InformeMedico(CreateView):
         POST variables and then checked for validity.
         """
         form = Medico_InformeForm(request.POST)
-        print(form.is_valid())
         if form.is_valid():
             cita = kwargs['id']
             revision = Medico_Revision.objects.get(pk=cita)
@@ -1129,6 +1124,7 @@ class MyPDFView(DetailView):
 
         # Draw things on the PDF. Here's where the PDF generation happens.
         # See the ReportLab documentation for the full list of functionality.
+        p.drawString(450, 730, ("INFORME MÉDICO " ))
         p.drawString(450, 730, ("Fecha: " + str(cita.fecha)))
         p.drawString(100, 700, ("Institución Médica: " + str(cita.institucion.name)))
         p.drawString(100, 650, ("Paciente: " ))
@@ -1154,13 +1150,12 @@ class MyPDFView(DetailView):
 class ReferirPaciente(CreateView):
 
     template_name = 'medico/referir_paciente.html'
-    form_class = ReferirForm
+    form_class = ReferenciaForm
 
     def get_context_data(self, **kwargs):
+
         context = super(
         ReferirPaciente, self).get_context_data(**kwargs)
-        print("GET")
-
         cita = Medico_Citas.objects.get(id=self.kwargs['id'])
 
         context['consulta'] = cita
@@ -1171,45 +1166,50 @@ class ReferirPaciente(CreateView):
         Handles POST requests, instantiating a form instance with the passed
         POST variables and then checked for validity.
         """
-        print("entro a post")
-        form = ReferirForm(request.POST)
-        print(form.is_valid())
-        if form.is_valid():
+        form = ReferenciaForm(request.POST,request.FILES)
+
+        if form.is_valid() :
             id_cita = kwargs['id']
             cita = Medico_Citas.objects.get(id=id_cita)
+            cita.es_referido = True
+            cita.save()
+            archivo = request.FILES['archivo']
 
-            paciente = Paciente.objects.get(cedula=cita.paciente.cedula)
-            print(paciente)
-            id_medico = request.POST['medico']
-            medico1 = Usuario.objects.get(ci=id_medico)
-            medico = medico1.user_id
-            print("medico es: "+str(medico))
+            paciente = Paciente.objects.get(cedula = cita.paciente.cedula)
 
-            paciente = Paciente.objects.get(cedula=paciente.cedula)
+            rif_institucion = request.POST['institucion']
+            institucion = Institucion.objects.get(rif=rif_institucion)
+            id_medico=request.user.pk
+            medico = Usuario.objects.get(user = id_medico)
 
-            institucion = request.POST['institucion']
+            medico1=Medico.objects.get(pk = medico.ci)
+
             fecha = request.POST['fecha']
             hora = request.POST['hora']
             descripcion = request.POST['descripcion']
-            especialidad = request.POST['especialidad']
-            print("antes de valueeeee")
-            value = agregar_citas(medico, paciente.cedula, institucion, descripcion,
-                                  fecha,hora,especialidad)
-            print("valueee es: ")
-            print(value)
-            if value is True:
+            name_especialidad = request.POST['especialidad']
+            especialidad = Especialidad.objects.get(nombre_especialidad=name_especialidad)
+            subirInforme = Referencia(cita=cita, archivo=archivo,paciente=paciente,
+                                medico=medico1, institucion=institucion,
+                                descripcion= descripcion, fecha= fecha,
+                                hora= hora, especialidad= especialidad)
+            subirInforme.save()
+            new_cita = agregar_citas(id_medico, paciente.cedula, rif_institucion, descripcion,
+                                  fecha, hora, name_especialidad)
+
+
+            if new_cita is True:
                 return HttpResponseRedirect(reverse_lazy(
                     'consulta', kwargs={'id': kwargs['id']}))
             else:
                 return render_to_response('medico/referir_paciente.html',
                                           {'form': form,
                                            'title': 'Agregar'},
-                                          context_instance=RequestContext(
-                                              request))
-                
+                                          context_instance=RequestContext(request))
+
         else:
             messages.error(request,"Por favor verifique que los campos estan en color rojo.")
-            return render_to_response('medico/agregar_cita.html',
+            return render_to_response('medico/referir_paciente.html',
                                       {'form': form,
-                                       'title': 'Agregar'},
+                                      'title': 'Agregar'},
                                       context_instance=RequestContext(request))
