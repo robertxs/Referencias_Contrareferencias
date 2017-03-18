@@ -6,6 +6,11 @@ import parsedatetime as pdt
 from django.core.urlresolvers import reverse_lazy
 from django.http import HttpResponseRedirect
 
+dicDias = {'Monday':'Lunes','Tuesday':'Martes','Wednesday':'Miercoles',
+            'Thursday':'Jueves','Friday':'Viernes','Saturday':'Sabado',
+            'Sunday':'Domingo'}
+
+
 
 def editar_medico(user, nombre, apellido, email, sexo, fecha, estado_civil,
                   telefono, direccion):
@@ -86,7 +91,6 @@ def modificar_estudios(estudio_id, titulo, fecha_graduacion, descripcion,
         estudio.descripcion = descripcion
         estudio.institucion = institucion
         estudio.save()
-        print("MODIFICAR Estudios")
         return True
     except:
         return False
@@ -392,13 +396,14 @@ def eliminar_eventos(request, id):
         'perfil_medico', kwargs={'id': request.user.pk}))
 
 
-def agregar_citas(user_pk, paciente, institucion, descripcion, fecha):
+def agregar_citas(user_pk, paciente, institucion, descripcion, fecha, hora, especialidad):
     try:
         user = User.objects.get(pk=user_pk)
         usuario = Usuario.objects.get(user=user)
         medico = Medico.objects.get(usuario=usuario)
         paciente = Paciente.objects.get(cedula=paciente)
         institucion = Institucion.objects.get(rif=institucion)
+        especialidad = Especialidad.objects.get(nombre_especialidad=especialidad)
         try:
             fecha = datetime.datetime.strptime(fecha,
                                                '%d-%m-%Y'
@@ -414,7 +419,9 @@ def agregar_citas(user_pk, paciente, institucion, descripcion, fecha):
                             medico=medico,
                             institucion = institucion,
                             descripcion=descripcion,
-                            fecha=fecha)
+                            fecha=fecha,
+                            hora=hora,
+                            especialidad=especialidad)
         cita.save()
         return True
     except:
@@ -448,9 +455,52 @@ def modificar_citas(cita_id, paciente, descripcion, fecha):
 
 def eliminar_citas(request, id):
     cita = Medico_Citas.objects.get(pk=id)
+    print(cita.id)
     cita.delete()
     return HttpResponseRedirect(reverse_lazy(
                     'ver_citas', kwargs={'id': request.user.pk}))
+
+
+def agregar_consultas(medico_id, especialidad, institucion, hora):
+    try:
+        user = User.objects.get(pk=medico_id)
+        usuario = Usuario.objects.get(user=user)
+        medico = Medico.objects.get(usuario=usuario)
+        institucion = Institucion.objects.get(rif=institucion)
+        especialidad = Especialidad.objects.get(nombre_especialidad=especialidad)
+        consulta = Medico_Especialidad(medico=medico,
+                            institucion = institucion,
+                            especialidad=especialidad,
+                            horario=hora)
+        consulta.save()
+        return True
+    except:
+        return False
+
+
+def modificar_consultas(consulta_id, medico_id, especialidad, institucion, hora):
+    try:
+        consulta = Medico_Especialidad.objects.get(
+            pk=consulta_id)
+        user = User.objects.get(pk=medico_id)
+        usuario = Usuario.objects.get(user=user)
+        medico = Medico.objects.get(usuario=usuario)
+        institucion = Institucion.objects.get(rif=institucion)
+        especialidad = Especialidad.objects.get(nombre_especialidad=especialidad)
+        consulta.medico = medico
+        consulta.especialidad = especialidad
+        consulta.institucion = institucion
+        consulta.horario = hora
+        consulta.save()
+        return True
+    except:
+        return False
+
+def eliminar_consultas(request, id):
+    consulta = Medico_Especialidad.objects.get(pk=id)
+    consulta.delete()
+    return HttpResponseRedirect(reverse_lazy(
+                    'ver_consultas', kwargs={'id': request.user.pk}))
 
 
 def eliminar_historia_clinica(request, id):
@@ -458,3 +508,34 @@ def eliminar_historia_clinica(request, id):
     historia.delete()
     return HttpResponseRedirect(reverse_lazy(
         'historias_clinicas'))
+
+def comenzar_revision(cita_id, motivos, sintomas, presion_sanguinea, temperatura,
+                    frec_respiratoria, frec_cardiaca, otros):
+    try:
+        cita = Medico_Citas.objects.get(pk =cita_id)
+        cita.revision = True
+
+        revision = Medico_Revision(cita = cita, motivos = motivos,
+                                    sintomas = sintomas, presion_sanguinea = presion_sanguinea,
+                                    temperatura=temperatura, frec_respiratoria=frec_respiratoria,
+                                    frec_cardiaca=frec_cardiaca, otros=otros)
+
+
+        cita.save()
+        revision.save()
+
+        return True
+    except:
+        return False
+
+def informe_medico(revision_id, prediagnostico):
+    try:
+        revision = Medico_Revision.objects.get(pk=revision_id)
+        cita = Medico_Citas.objects.get(pk = revision_id)
+        cita.informe = True
+        informe = Medico_Informe(medico_Revision=revision,desc_prediagnostico=prediagnostico)
+        cita.save()
+        informe.save()
+        return True
+    except:
+        return False

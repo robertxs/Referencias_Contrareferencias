@@ -19,10 +19,11 @@
     <form action="" method=POST>
     {% endif %}
     {% csrf_token %}
+    
     <div class="hidden">
         {% bootstrap_form_errors form %}
     </div>
-    
+
     {% if messages %}
     <ul class="messages">
       {% for mes in messages %}
@@ -32,6 +33,22 @@
       </li>
       {% endfor %}
     </ul>
+    {% endif %}
+
+
+    {% if form.errors %}
+        {% for field in form %}
+            {% for error in field.errors %}
+                <div class="alert alert-danger">
+                    <strong>{{ error|escape }}</strong>
+                </div>
+            {% endfor %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}
+            <div class="alert alert-danger">
+                <strong>{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
     {% endif %}
 
       {% if user.groups.all.0.name == 'paciente' %}
@@ -44,15 +61,19 @@
       {% endif %}
       <label for="id_fecha">Institución Médica</label>
       {% bootstrap_field form.institucion layout="inline" %}
+      <label for="id_especialidad">Especialidad</label>
+      {% bootstrap_field form.especialidad layout="inline" %}
       <label for="id_fecha">Fecha</label>
       {% bootstrap_field form.fecha layout="inline" %}
+      <label for="id_hora">Hora</label>
+        {% bootstrap_field form.hora layout="inline" %}
       <label for="id_descripcion">Descripción</label>
       {% bootstrap_field form.descripcion layout="inline" %}
       {% buttons %}
         <div class="col-md-3"></div>
         <div class="col-sm-4 col-md-6 text-center">
             <br>
-            <button id="id_submit" type="submit" class="btn btn-lg calculate">
+            <button id="id_submit" type="submit" class="btn btn-lg calculate" >
                 Guardar
             </button>
             <br>
@@ -66,9 +87,55 @@
 {% block custom_script %}
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
 <script src="{% static 'plugins/datepicker/locales/bootstrap-datepicker.es.js' %}"></script>
+
 <script type="text/javascript">
 $(document).ready(function(){
   $( "#id_fecha" ).datepicker({ format: 'yyyy-mm-dd' });
 });
 </script>
+
+<!-- <script type="text/javascript">
+  function getGET(){
+   var loc = document.location.href;
+   var getString = loc.split('_')[1];
+   var GET = getString.split('&');
+   var get = {};//this object will be filled with the key-value pairs and returned.
+
+   for(var i = 0, l = GET.length; i < l; i++){
+      var tmp = GET[i].split('=');
+      get[tmp[0]] = unescape(decodeURI(tmp[1]));
+   }
+   return get;
+   
+}
+</script>
+
+<script type="text/javascript">
+  function obtenerId(){
+    var valores=getGET();
+    alert(valores);
+    if(valores) {
+      var medico = valores[id];
+    }
+    document.getElementById("id_medico2").value = medico;
+    alert(document.getElementById("id_medico2").value());
+  }
+</script> -->
+
+<!-- <script type="text/javascript">
+function seleccionar_hora() {  
+        var seleccion = document.getElementById("Horas");
+        var index = seleccion.selectedIndex;
+        var opcion = seleccion.options[index].value;
+        // alert(opcion);   
+        var hora = document.getElementById("result_hora").value;  
+        document.getElementById("result_hora").value = opcion;
+
+        if (opcion == 0) 
+            alert('Debes seleccionar al menos una opción.');
+        // else
+        //     alert('Has seleccionado: '+opcion);
+        return seleccion;
+    }          
+</script> -->
 {% endblock %}

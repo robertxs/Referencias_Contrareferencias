@@ -20,12 +20,14 @@
   <div id="show-appointments"><table>
     <tr>
       <th>Fecha</th>
+      <th>Hora</th>
       {% if user.groups.all.0.name == 'medico' %}
       <th>Paciente</th>
       {% elif user.groups.all.0.name == 'paciente' %}
       <th>Médico</th>
       {% endif %}
       <th>Institución</th>
+
       <th>Descripción</th>
       <th style="text-align: center">
         <a id="add_appointment" href="{% url 'agregar_cita' user.pk %}">
@@ -36,12 +38,14 @@
     {% for a in appointments %}
       <tr onclick="location.href='{% url 'consulta' a.id %}'">
         <td>{{a.fecha}}</td>
+        <td>{{a.hora}}</td>
         {% if user.groups.all.0.name == 'medico' %}
         <td>{{a.paciente.first_name}} {{a.paciente.last_name}}</td>
         {% else %}
         <td>{{a.medico.first_name}} {{a.medico.last_name}}</td>
         {% endif %}
         <td>{{a.institucion.name}}</td>
+        
         <td>{{a.descripcion}}</td>
         <td style="text-align: center;">
           <a href="{% url 'modificar_cita' a.pk %}"><i class="fa fa-pencil" style="font-size:20px;color:#5882FA"></i></a>

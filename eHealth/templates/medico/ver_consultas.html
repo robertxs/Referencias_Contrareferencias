@@ -1,28 +1,50 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
+
 <div id="cuerpoHeredado">
-  <center><h2>Mis Consultas</h2></center>
+  <center><h2>Mis Horarios De Consultas</h2></center>
     <div id="show-consultations"><table>
       <tr>
         <th>Institucion</th>
-        <th>Consulta</th>
-        <th style="text-align: right">
-          <a id="add_consultation" href="{% url 'agregar_consulta' %}">
+        <th>Especialidad</th>
+        <th>Horario</th>
+        <th style="text-align: center">
+          <a id="add_consultation" href="{% url 'agregar_consulta' user.pk %}">
             <i class="fa fa-plus-circle" style="font-size:20px;color:white"></i>
           </a>
         </th>
       </tr>
       {% for consultation in consultations %}
         <tr>
-          <td>{{consultation.institution}}</td>
-          <td>{{consultation.speciality}}</td>
-          <td style="text-align: right;">
-            <a><i class="fa fa-pencil" style="font-size:16px;color:black"></i></a>
-            <button id="delete_consultation"><i class="fa fa-trash" style="font-size:16px;color:black"></i></button>
+          <td>{{consultation.institucion.name}}</td>
+          <td>{{consultation.especialidad}}</td>
+          <td>{{consultation.horario}}</td>
+          <td style="text-align: center;">
+           <a href="{% url 'modificar_consulta' user.pk consultation.pk %}"><i class="fa fa-pencil" style="font-size:20px;color:#5882FA"></i></a>
+           <a href="{% url 'eliminar_consulta' consultation.pk %}"><i class="fa fa-trash" style="font-size:20px;color:#5882FA"></i></a>
           </td>
         </tr>
       {% endfor%}
     </table></div>
   </div>
 {% endblock %}
+
+
+<!-- <div class="modal-wrapper" id="popup">
+  <div class="popup-contenedor">
+    <h2> Modificar Consulta </h2>
+    <form> </form>
+    <a class="popup-cerrar" href="{% url 'modificar_consulta' consultation.pk %}"> Aceptar </a>
+    <a class="popup-cerrar" href="#"> Cancelar </a>    
+  </div>
+</div> -->
+
+<!-- <div class="modal-wrapper" id="popup_confirmacion">
+  <div class="popup-contenedor">
+    <h2> Eliminar Consulta </h2>
+    <p> Esta seguro de que quiere eliminar sus horarios de consulta? </p>
+    <a class="popup-aceptar" href="{% url 'eliminar_consulta' consultation.pk %}"> Aceptar </a>
+    <a class="popup-cerrar" href="#"> Cancelar </a>    
+  </div>
+</div> -->

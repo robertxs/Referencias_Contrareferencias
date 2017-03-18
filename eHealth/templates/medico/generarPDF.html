@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+
+<head>
+
+   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+</head>
+
+<body>
+
+    </br>
+
+<a href="{% url "pagina_detalle"  slug=object.slug %}"> Generar PDF de {{object.title}}</a>
+
+<h1>{{ entry.title }}</h1>
+
+
+
+    <i>{{entry.modified}}</i>
+
+        {{entry.body|safe}}
+
+</body>

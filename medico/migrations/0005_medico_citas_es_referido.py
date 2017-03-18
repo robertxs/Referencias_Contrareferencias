@@ -7,12 +7,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('medico', '0002_auto_20170218_0440'),
+        ('medico', '0004_auto_20170308_1524'),
     ]
 
     operations = [
-        migrations.AlterUniqueTogether(
-            name='medico_citas',
-            unique_together=set([]),
+        migrations.AddField(
+            model_name='medico_citas',
+            name='es_referido',
+            field=models.BooleanField(default=False),
         ),
     ]

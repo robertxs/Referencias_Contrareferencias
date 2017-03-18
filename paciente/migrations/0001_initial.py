@@ -54,6 +54,7 @@ class Migration(migrations.Migration):
                 ('last_name', models.CharField(max_length=30, null=True, blank=True)),
                 ('fecha_nacimiento', models.DateField(null=True, blank=True)),
                 ('lugar_nacimiento', models.CharField(max_length=70, null=True, blank=True)),
+                ('sexo', models.CharField(max_length=10, null=True, blank=True)),
                 ('estado_civil', models.CharField(blank=True, max_length=7, null=True, choices=[(b'Soltero', b'Soltero'), (b'Casado', b'Casado')])),
                 ('ocupacion', models.CharField(max_length=30, null=True, blank=True)),
                 ('direccion', models.CharField(max_length=70, null=True, blank=True)),

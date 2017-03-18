@@ -10,13 +10,63 @@
 {% bootstrap_messages %}
 {% load static %}
 {% block content %}
+
+<script type="text/javascript">
+$(document).ready(function()
+{
+  $("#boton").click(function () {  
+    alert($('input:checkbox[name=colorfavorito]:checked').val());
+    $("#formulario").submit();
+  });
+});
+</script>
+
+
+
   <div id="cuerpoHeredado">
     <h1 class="page-header">Gestionar Consulta</h1>
-        <form action="#">
-            {{ form.especialidad.label}}
-            {{ form.especialidad }}
-            {{ form.hospital.label }}
-            {{ form.hospital }}
+      <form action= "" method=POST id="formSuper">
+          <input type="hidden" name="result_horario" id="result_horario" value="">
+          {% csrf_token %}
+          <div class="hidden">
+              {% bootstrap_form_errors form %}
+          </div>
+
+          {% if messages %}
+          <ul class="messages">
+            {% for mes in messages %}
+            <li{% if mes.tags  %}
+            class="{{ mes.tag }}"
+            {% endif%}>{{ mes }}
+            </li>
+            {% endfor %}
+          </ul>
+          {% endif %}
+
+          {% if form.errors %}
+            {% for field in form %}
+                {% for error in field.errors %}
+                    <div class="alert alert-danger">
+                        <strong>{{ error|escape }}</strong>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+                <div class="alert alert-danger">
+                    <strong>{{ error|escape }}</strong>
+                </div>
+            {% endfor %}
+          {% endif %}
+
+          {{ form.especialidad.label}}
+          {{ form.especialidad }}
+          <br>
+          <br>
+          {{ form.institucion.label }}
+          {{ form.institucion }}
+          <br>
+          <br>
+          {{ form.horario.label }}
 
           <div style="margin-top: 2%;">
             <table id="calendario" border='0' cellpadding='0' cellspacing='0'>
@@ -29,104 +79,152 @@
                 <th>Viernes</th>
               </tr>
               <tr>
-                <td class='time'>6.00</td>
-                <td><input type="checkbox" id="Lunes6Am"/><label for="Lunes6Am"></label></td>
-                <td><input type="checkbox" id="Martes6Am"/><label for="Martes6Am"></label></td>
-                <td><input type="checkbox" id="Miercoles6Am"/><label for="Miercoles6Am"></label></td>
-                <td><input type="checkbox" id="Jueves6Am"/><label for="Jueves6Am"></label></td>
-                <td><input type="checkbox" id="Viernes6Am"/><label for="Viernes6Am"></label></td>
+                <td class='time'>6:00</td>
+                <td><input type="checkbox" id="Lunes6Am" value= "Lunes6Am"/><label for="Lunes6Am"></label></td>
+                <td><input type="checkbox" id="Martes6Am" value= "Martes6Am"/><label for="Martes6Am"></label></td>
+                <td><input type="checkbox" id="Miercoles6Am" value= "Miercoles6Am"/><label for="Miercoles6Am"></label></td>
+                <td><input type="checkbox" id="Jueves6Am" value= "Jueves6Am"/><label for="Jueves6Am"></label></td>
+                <td><input type="checkbox" id="Viernes6Am" value= "Viernes6Am"/><label for="Viernes6Am"></label></td>
               </tr>
               <tr>
-                <td class='time'>7.00</td>
-                <td><input type="checkbox" id="Lunes7Am"/><label for="Lunes7Am"></label></td>
-                <td><input type="checkbox" id="Martes7Am"/><label for="Martes7Am"></label></td>
-                <td><input type="checkbox" id="Miercoles7Am"/><label for="Miercoles7Am"></label></td>
-                <td><input type="checkbox" id="Jueves7Am"/><label for="Jueves7Am"></label></td>
-                <td><input type="checkbox" id="Viernes7Am"/><label for="Viernes7Am"></label></td>
+                <td class='time'>7:00</td>
+                <td><input type="checkbox" id="Lunes7Am" value= "Lunes7Am"/><label for="Lunes7Am"></label></td>
+                <td><input type="checkbox" id="Martes7Am" value= "Martes7Am"/><label for="Martes7Am"></label></td>
+                <td><input type="checkbox" id="Miercoles7Am" value= "Miercoles7Am"/><label for="Miercoles7Am"></label></td>
+                <td><input type="checkbox" id="Jueves7Am" value= "Jueves7Am"/><label for="Jueves7Am"></label></td>
+                <td><input type="checkbox" id="Viernes7Am" value= "Viernes7Am"/><label for="Viernes7Am"></label></td>
               </tr>
               <tr>
-                <td class='time'>8.00</td>
-                <td><input type="checkbox" id="Lunes8Am"/><label for="Lunes8Am"></label></td>
-                <td><input type="checkbox" id="Martes8Am"/><label for="Martes8Am"></label></td>
-                <td><input type="checkbox" id="Miercoles8Am"/><label for="Miercoles8Am"></label></td>
-                <td><input type="checkbox" id="Jueves8Am"/><label for="Jueves8Am"></label></td>
-                <td><input type="checkbox" id="Viernes8Am"/><label for="Viernes8Am"></label></td>
+                <td class='time'>8:00</td>
+                <td><input type="checkbox" id="Lunes8Am" value= "Lunes8Am"/><label for="Lunes8Am"></label></td>
+                <td><input type="checkbox" id="Martes8Am" value= "Martes8Am"/><label for="Martes8Am"></label></td>
+                <td><input type="checkbox" id="Miercoles8Am" value= "Miercoles8Am"/><label for="Miercoles8Am"></label></td>
+                <td><input type="checkbox" id="Jueves8Am" value= "Jueves8Am"/><label for="Jueves8Am"></label></td>
+                <td><input type="checkbox" id="Viernes8Am" value= "Viernes8Am"/><label for="Viernes8Am"></label></td>
               </tr>
               <tr>
-                <td class='time'>9.00</td>
-                <td><input type="checkbox" id="Lunes9Am"/><label for="Lunes9Am"></label></td>
-                <td><input type="checkbox" id="Martes9Am"/><label for="Martes9Am"></label></td>
-                <td><input type="checkbox" id="Miercoles9Am"/><label for="Miercoles9Am"></label></td>
-                <td><input type="checkbox" id="Jueves9Am"/><label for="Jueves9Am"></label></td>
-                <td><input type="checkbox" id="Viernes9Am"/><label for="Viernes9Am"></label></td>
+                <td class='time'>9:00</td>
+                <td><input type="checkbox" id="Lunes9Am" value= "Lunes9Am"/><label for="Lunes9Am"></label></td>
+                <td><input type="checkbox" id="Martes9Am" value= "Martes9Am"/><label for="Martes9Am"></label></td>
+                <td><input type="checkbox" id="Miercoles9Am" value= "Miercoles9Am"/><label for="Miercoles9Am"></label></td>
+                <td><input type="checkbox" id="Jueves9Am" value= "Jueves9Am"/><label for="Jueves9Am"></label></td>
+                <td><input type="checkbox" id="Viernes9Am" value= "Viernes9Am"/><label for="Viernes9Am"></label></td>
               </tr>
               <tr>
-                <td class='time'>10.00</td>
-                <td><input type="checkbox" id="Lunes10Am"/><label for="Lunes10Am"></label></td>
-                <td><input type="checkbox" id="Martes10Am"/><label for="Martes10Am"></label></td>
-                <td><input type="checkbox" id="Miercoles10Am"/><label for="Miercoles10Am"></label></td>
-                <td><input type="checkbox" id="Jueves10Am"/><label for="Jueves10Am"></label></td>
-                <td><input type="checkbox" id="Viernes10Am"/><label for="Viernes10Am"></label></td>
+                <td class='time'>10:00</td>
+                <td><input type="checkbox" id="Lunes10Am" value= "Lunes10Am"/><label for="Lunes10Am"></label></td>
+                <td><input type="checkbox" id="Martes10Am" value= "Martes10Am"/><label for="Martes10Am"></label></td>
+                <td><input type="checkbox" id="Miercoles10Am" value= "Miercoles10Am"/><label for="Miercoles10Am"></label></td>
+                <td><input type="checkbox" id="Jueves10Am" value= "Jueves10Am"/><label for="Jueves10Am"></label></td>
+                <td><input type="checkbox" id="Viernes10Am" value= "Viernes10Am"/><label for="Viernes10Am"></label></td>
               </tr>
               <tr>
-                <td class='time'>11.00</td>
-                <td><input type="checkbox" id="Lunes11Am"/><label for="Lunes11Am"></label></td>
-                <td><input type="checkbox" id="Martes11Am"/><label for="Martes11Am"></label></td>
-                <td><input type="checkbox" id="Miercoles11Am"/><label for="Miercoles11Am"></label></td>
-                <td><input type="checkbox" id="Jueves11Am"/><label for="Jueves11Am"></label></td>
-                <td><input type="checkbox" id="Viernes11Am"/><label for="Viernes11Am"></label></td>
+                <td class='time'>11:00</td>
+                <td><input type="checkbox" id="Lunes11Am" value= "Lunes11Am"/><label for="Lunes11Am"></label></td>
+                <td><input type="checkbox" id="Martes11Am" value= "Martes11Am"/><label for="Martes11Am"></label></td>
+                <td><input type="checkbox" id="Miercoles11Am" value= "Miercoles11Am"/><label for="Miercoles11Am"></label></td>
+                <td><input type="checkbox" id="Jueves11Am" value= "Jueves11Am"/><label for="Jueves11Am"></label></td>
+                <td><input type="checkbox" id="Viernes11Am" value= "Viernes11Am"/><label for="Viernes11Am"></label></td>
               </tr>
               <tr>
-                <td class='time'>12.00</td>
-                <td><input type="checkbox" id="Lunes12Pm"/><label for="Lunes12Pm"></label></td>
-                <td><input type="checkbox" id="Martes12Pm"/><label for="Martes12Pm"></label></td>
-                <td><input type="checkbox" id="Miercoles12Pm"/><label for="Miercoles12Pm"></label></td>
-                <td><input type="checkbox" id="Jueves12Pm"/><label for="Jueves12Pm"></label></td>
-                <td><input type="checkbox" id="Viernes12Pm"/><label for="Viernes12Pm"></label></td>
+                <td class='time'>12:00</td>
+                <td><input type="checkbox" id="Lunes12Pm" value= "Lunes12Pm"/><label for="Lunes12Pm"></label></td>
+                <td><input type="checkbox" id="Martes12Pm" value= "Martes12Pm"/><label for="Martes12Pm"></label></td>
+                <td><input type="checkbox" id="Miercoles12Pm" value= "Miercoles12Pm"/><label for="Miercoles12Pm"></label></td>
+                <td><input type="checkbox" id="Jueves12Pm" value= "Jueves12Pm"/><label for="Jueves12Pm"></label></td>
+                <td><input type="checkbox" id="Viernes12Pm" value= "Viernes12Pm"/><label for="Viernes12Pm"></label></td>
               </tr>
               <tr>
-                <td class='time'>13.00</td>
-                <td><input type="checkbox" id="Lunes1Pm"/><label for="Lunes1Pm"></label></td>
-                <td><input type="checkbox" id="Martes1Pm"/><label for="Martes1Pm"></label></td>
-                <td><input type="checkbox" id="Miercoles1Pm"/><label for="Miercoles1Pm"></label></td>
-                <td><input type="checkbox" id="Jueves1Pm"/><label for="Jueves1Pm"></label></td>
-                <td><input type="checkbox" id="Viernes1Pm"/><label for="Viernes1Pm"></label></td>
+                <td class='time'>13:00</td>
+                <td><input type="checkbox" id="Lunes1Pm" value= "Lunes1Pm"/><label for="Lunes1Pm"></label></td>
+                <td><input type="checkbox" id="Martes1Pm" value= "Martes1Pm"/><label for="Martes1Pm"></label></td>
+                <td><input type="checkbox" id="Miercoles1Pm" value= "Miercoles1Pm"/><label for="Miercoles1Pm"></label></td>
+                <td><input type="checkbox" id="Jueves1Pm" value= "Jueves1Pm"/><label for="Jueves1Pm"></label></td>
+                <td><input type="checkbox" id="Viernes1Pm" value= "Viernes1Pm"/><label for="Viernes1Pm"></label></td>
               </tr>
               <tr>
-                <td class='time'>14.00</td>
-                <td><input type="checkbox" id="Lunes2Pm"/><label for="Lunes2Pm"></label></td>
-                <td><input type="checkbox" id="Martes2Pm"/><label for="Martes2Pm"></label></td>
-                <td><input type="checkbox" id="Miercoles2Pm"/><label for="Miercoles2Pm"></label></td>
-                <td><input type="checkbox" id="Jueves2Pm"/><label for="Jueves2Pm"></label></td>
-                <td><input type="checkbox" id="Viernes2Pm"/><label for="Viernes2Pm"></label></td>
+                <td class='time'>14:00</td>
+                <td><input type="checkbox" id="Lunes2Pm" value= "Lunes2Pm"/><label for="Lunes2Pm"></label></td>
+                <td><input type="checkbox" id="Martes2Pm" value= "Martes2Pm"/><label for="Martes2Pm"></label></td>
+                <td><input type="checkbox" id="Miercoles2Pm" value= "Miercoles2Pm"/><label for="Miercoles2Pm"></label></td>
+                <td><input type="checkbox" id="Jueves2Pm" value= "Jueves2Pm"/><label for="Jueves2Pm"></label></td>
+                <td><input type="checkbox" id="Viernes2Pm" value= "Viernes2Pm"/><label for="Viernes2Pm"></label></td>
               </tr>
               <tr>
-                <td class='time'>15.00</td>
-                <td><input type="checkbox" id="Lunes3Pm"/><label for="Lunes3Pm"></label></td>
-                <td><input type="checkbox" id="Martes3Pm"/><label for="Martes3Pm"></label></td>
-                <td><input type="checkbox" id="Miercoles3Pm"/><label for="Miercoles3Pm"></label></td>
-                <td><input type="checkbox" id="Jueves3Pm"/><label for="Jueves3Pm"></label></td>
-                <td><input type="checkbox" id="Viernes3Pm"/><label for="Viernes3Pm"></label></td>
+                <td class='time'>15:00</td>
+                <td><input type="checkbox" id="Lunes3Pm" value= "Lunes3Pm"/><label for="Lunes3Pm"></label></td>
+                <td><input type="checkbox" id="Martes3Pm" value= "Martes3Pm"/><label for="Martes3Pm"></label></td>
+                <td><input type="checkbox" id="Miercoles3Pm" value= "Miercoles3Pm"/><label for="Miercoles3Pm"></label></td>
+                <td><input type="checkbox" id="Jueves3Pm" value= "Jueves3Pm"/><label for="Jueves3Pm"></label></td>
+                <td><input type="checkbox" id="Viernes3Pm" value= "Viernes3Pm"/><label for="Viernes3Pm"></label></td>
               </tr>
               <tr>
-                <td class='time'>16.00</td>
-                <td><input type="checkbox" id="Lunes4Pm"/><label for="Lunes4Pm"></label></td>
-                <td><input type="checkbox" id="Martes4Pm"/><label for="Martes4Pm"></label></td>
-                <td><input type="checkbox" id="Miercoles4Pm"/><label for="Miercoles4Pm"></label></td>
-                <td><input type="checkbox" id="Jueves4Pm"/><label for="Jueves4Pm"></label></td>
-                <td><input type="checkbox" id="Viernes4Pm"/><label for="Viernes4Pm"></label></td>
+                <td class='time'>16:00</td>
+                <td><input type="checkbox" id="Lunes4Pm" value= "Lunes4Pm"/><label for="Lunes4Pm"></label></td>
+                <td><input type="checkbox" id="Martes4Pm" value= "Martes4Pm"/><label for="Martes4Pm"></label></td>
+                <td><input type="checkbox" id="Miercoles4Pm" value= "Miercoles4Pm"/><label for="Miercoles4Pm"></label></td>
+                <td><input type="checkbox" id="Jueves4Pm" value= "Jueves4Pm"/><label for="Jueves4Pm"></label></td>
+                <td><input type="checkbox" id="Viernes4Pm" value= "Viernes4Pm"/><label for="Viernes4Pm"></label></td>
               </tr>
               <tr>
-                <td class='time'>17.00</td>
-                <td><input type="checkbox" id="Lunes5Pm"/><label for="Lunes5Pm"></label></td>
-                <td><input type="checkbox" id="Martes5Pm"/><label for="Martes5Pm"></label></td>
-                <td><input type="checkbox" id="Miercoles5Pm"/><label for="Miercoles5Pm"></label></td>
-                <td><input type="checkbox" id="Jueves5Pm"/><label for="Jueves5Pm"></label></td>
-                <td><input type="checkbox" id="Viernes5Pm"/><label for="Viernes5Pm"></label></td>
+                <td class='time'>17:00</td>
+                <td><input type="checkbox" id="Lunes5Pm" value= "Lunes5Pm"/><label for="Lunes5Pm"></label></td>
+                <td><input type="checkbox" id="Martes5Pm" value= "Martes5Pm"/><label for="Martes5Pm"></label></td>
+                <td><input type="checkbox" id="Miercoles5Pm" value= "Miercoles5Pm"/><label for="Miercoles5Pm"></label></td>
+                <td><input type="checkbox" id="Jueves5Pm" value= "Jueves5Pm"/><label for="Jueves5Pm"></label></td>
+                <td><input type="checkbox" id="Viernes5Pm" value= "Viernes5Pm"/><label for="Viernes5Pm"></label></td>
               </tr>
+              </form>
             </table>
           </div>
-          {{ form.submit }}
+          {% buttons %}
+            <div class="col-md-3"></div>
+            <div class="col-sm-4 col-md-6 text-center">
+                <br>
+                <button type="submit" class="btn btn-lg calculate" id="id_submit" onclick= "check()"> Guardar </button>
+                <br>
+                <br>
+            </div>
+            <div class="col-md-3"></div>
+          {% endbuttons %} 
         </form>
     </div>
+
+ 
+<!-- <script type="text/javascript">
+  function getGET(){
+   var loc = document.location.href;
+   var getString = loc.split('_')[1];
+   var GET = getString.split('&');
+   var get = {};//this object will be filled with the key-value pairs and returned.
+
+   for(var i = 0, l = GET.length; i < l; i++){
+      var tmp = GET[i].split('=');
+      get[tmp[0]] = unescape(decodeURI(tmp[1]));
+   }
+   return get;
+   
+}
+</script> -->
+
+<script type="text/javascript">
+function check() {  
+        var selected = '';   
+        var horas = document.getElementById("result_horario").value;    
+        $('#formSuper input[type=checkbox]').each(function(){
+            if (this.checked) {
+                selected += $(this).val()+',';         
+            }
+        }); 
+        document.getElementById("result_horario").value = selected;
+        // alert(document.getElementById("result_horario").value);
+
+        if (selected != '') 
+            alert('Has seleccionado: '+selected);
+        else
+            alert('Debes seleccionar al menos una opción.');
+        return selected;
+    }          
+</script>
+
 {% endblock %}

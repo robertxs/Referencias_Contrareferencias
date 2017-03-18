@@ -1,0 +1,85 @@
+{% extends "base_m.html" %}
+
+{# Load the tag library #}
+{% load bootstrap3 %}
+
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery=1%}
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
+{% load static %}
+{% block content %}
+<div id="cuerpoHeredado">
+
+    <h2> Revisión Médica</h2>
+    <form action="" method=POST>
+
+      <div class="container">
+        <!-- Modal -->
+        <div class="modal fade" id="myModal" role="dialog">
+          <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Finalizar Revisión</h4>
+              </div>
+              <div class="modal-body">
+                <p>¿Está seguro que desea finalizar esta revisión?</p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+
+                <button type="submit" id="id_submit" class="btn btn-info">
+                    Aceptar
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+
+      {% csrf_token %}
+      <div class="hidden">
+        {% bootstrap_form_errors form %}
+      </div>
+      <label for="id_paciente">Paciente: </label>
+      <span>{{consulta.paciente.first_name}} {{consulta.paciente.last_name}}</span>
+      <label for="id_motivos">Motivos</label>
+      {% bootstrap_field form.motivos layout="inline" %}
+      <label for="id_motivos">Síntomas</label>
+      {% bootstrap_field form.sintomas layout="inline" %}
+     <label for="id_motivos">Presión Sanguínea</label>
+      {% bootstrap_field form.presion_sanguinea layout="inline" %}
+      <label for="id_motivos">Temperatura</label>
+      {% bootstrap_field form.temperatura layout="inline" %}
+      <label for="id_motivos">Frecuencia Respiratoria</label>
+      {% bootstrap_field form.frec_respiratoria layout="inline" %}
+      <label for="id_motivos">Frecuencia Cardíaca</label>
+      {% bootstrap_field form.frec_cardiaca layout="inline" %}
+      <label for="id_motivos">Otros</label>
+      {% bootstrap_field form.otros layout="inline" %}
+      {% buttons %}
+      <div class="col-md-3"></div>
+      <div class="col-sm-4 col-md-6 text-center">
+
+        <row>
+
+          <button type="button" id="submit" class="btn btn-info" data-toggle="modal" data-target="#myModal">
+              Finalizar Revisión
+          </button>
+          <a id="cancelar" type="button" class="btn btn-danger" href = "javascript:window.history.back()">
+              Cancelar
+          </a>
+        </row>
+      </div>
+      <div class="col-md-3"></div>
+  {% endbuttons %}
+</div>
+{% endblock %}

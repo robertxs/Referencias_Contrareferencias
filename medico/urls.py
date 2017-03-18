@@ -120,9 +120,19 @@ urlpatterns = [
         name='ver_consultas'
     ),
     url(
-        r'^agregar-consulta/$',
+        r'^agregar-consulta/(?P<id>\w+)$',
         AgregarConsulta.as_view(),
         name='agregar_consulta'
+    ),
+    url(
+        r'^modificar-consulta/(?P<user>\w+)/(?P<id>\w+)$',
+        ModificarConsultas.as_view(),
+        name='modificar_consulta'
+    ),
+    url(
+        r'^eliminar-consulta/(?P<id>\w+)$',
+        'medico.controllers.eliminar_consultas',
+        name='eliminar_consulta'
     ),
     url(
         r'^buscar-paciente$',
@@ -178,5 +188,28 @@ urlpatterns = [
         r'^consulta/(?P<id>\w+)$',
         Consultas.as_view(),
         name='consulta'
+    ),
+    url(
+        r'^comenzar-revision/(?P<id>\w+)$',
+        ComenzarRevision.as_view(),
+        name='comenzar_revision'
+    ),
+    url(
+        r'^informe-medico/(?P<id>\w+)$',
+        InformeMedico.as_view(),
+        name='informe_medico'
+    ),
+
+    url(
+        r'^pdf-informe/(?P<id>\w+)$',
+        MyPDFView.as_view(),
+        name='generarPDF'
+    ),
+
+
+    url(
+        r'^referir-paciente/(?P<id>\w+)$',
+        ReferirPaciente.as_view(),
+        name='referir_paciente'
     ),
 ]

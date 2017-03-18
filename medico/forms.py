@@ -8,6 +8,24 @@ from medico.models import Medico
 from paciente.models import Historiadetriaje, Paciente
 import datetime
 
+dicDias = {'Monday':'Lunes','Tuesday':'Martes','Wednesday':'Miercoles',
+            'Thursday':'Jueves','Friday':'Viernes','Saturday':'Sabado',
+            'Sunday':'Domingo'}
+
+def Conocer_dia(fecha):
+    # fecha = datetime.date(anio,mes,dia)
+    day = dicDias[fecha.strftime('%A')]
+    return day
+
+
+def volverElemlista(lista,ultimo):
+    x = "'"
+    indice= lista.index(x)
+    if ultimo :
+        return lista[indice+1:len(lista)-3]
+    else :
+        return lista[indice+1:len(lista)-2]
+
 
 class Medico_EstudiosForm(forms.ModelForm):
 
@@ -56,23 +74,87 @@ class Medico_CitasForm(forms.ModelForm):
     class Meta:
         model = Medico_Citas
     #    exclude = ("medico",)
-        fields = ['paciente','institucion', 'fecha','descripcion']
+        fields = ['paciente','institucion', 'fecha','descripcion','especialidad','hora']
         # '__all__'
 
-    def clean_fecha(self):
-        fecha_cita = self.cleaned_data.get('fecha')
-        num_pacientes= Medico_Citas.objects.filter(fecha=fecha_cita).count()
-        print(num_pacientes)
-        print(fecha_cita)
-        #Obtenemos la fecha actual
-        fecha_actual = datetime.datetime.now().date()
-        if fecha_cita < fecha_actual :
-            raise forms.ValidationError('La fecha de la cita no puede ser menor a la de hoy')
+    def __init__(self, *args, **kwargs):
+        self.medico = kwargs.pop('medico',None)
+        super(Medico_CitasForm,self).__init__(*args,**kwargs)
 
-        if num_pacientes > 10:
-            raise forms.ValidationError('La fecha solicitada no se encuentra disponible')
-        return fecha_cita
+    def clean(self):
+        data = self.cleaned_data
+        fecha = self.cleaned_data.get('fecha')
+        hora = self.cleaned_data.get('hora')
+        especialidad = self.cleaned_data.get('especialidad')
+        inst = self.cleaned_data.get('institucion')
+        institucion = Institucion.objects.get(name=inst)
+        paciente = self.cleaned_data.get('paciente')
+        user = User.objects.get(pk=self.medico)
+        usuario = Usuario.objects.get(user=user)
+        med = Medico.objects.get(usuario=usuario)
+        medico = med.cedula
+        num_paciente = Medico_Citas.objects.filter(paciente=paciente,fecha=fecha,
+            hora=hora).count()
+        dia= Conocer_dia(fecha)
+        dia_hora=dia+hora
+        cantidad = Medico_Especialidad.objects.filter(medico=medico,
+            institucion=institucion.rif,especialidad=especialidad).count()
+        
+        if cantidad > 0 :
+            disponibilidad =Medico_Especialidad.objects.get(medico=medico,
+                institucion=institucion.rif,especialidad=especialidad)
+            horario= disponibilidad.horario
+            horario2=horario.split(', ')
+            i = 0
+            a = ''
+            for x in horario2 :
+                ulti = i == (len(horario2)-1)
+                elem=volverElemlista(x,ulti)
+                boo = (dia_hora == elem)
+                a = a + elem + ', '
+                if boo :
+                    break
+                i = i+1
+            fecha_actual = datetime.datetime.now().date()
+            if fecha < fecha_actual :
+                msj = "La fecha de la cita no puede ser menor a la de hoy. "
+                self.add_error('fecha',msj)
 
+            if num_paciente == 1:
+                msj="Cambie la hora y fecha de su consulta porque ya tiene otra cita a esa hora. "
+                self.add_error('paciente',msj)
+
+            if boo :
+                num_citas = Medico_Citas.objects.filter(fecha=fecha, hora=hora,
+                    especialidad=especialidad,medico=medico,institucion=institucion).count()
+                if num_citas == 1 :
+                    msj = "La fecha y hora solicitadas no se encuentran disponibles. Por favor elija algunas de estos horarios: "
+                    # for x in horario :
+                    #     msj = msj + str(x) + ', '
+                    msj = msj + a
+                    self.add_error('hora',msj)
+                    # raise forms.ValidationError('La fecha y hora solicitadas no se encuentran disponibles. Por favor'+
+                    #     ' elija algunas de estos horarios')
+            else :
+                msj = "El Medico no atiende ese dia a esa hora. Por favor elija algunas de estos horarios: "
+                # for x in horario :
+                #     msj = msj + str(x) + ', '
+                msj = msj + a
+                self.add_error('hora',msj)
+                # raise forms.ValidationError('El Medico no atiende ese dia a esa hora.Por favor'+
+                #         ' elija algunas de estos horarios')
+                # raise forms.ValidationError('La fecha de la cita no puede ser menor a la de hoy')
+        else :
+            cantidad = Medico_Especialidad.objects.filter(medico=medico)
+            especialidad = ''
+            institucion = ''
+            msj = "El Medico no atiende esta especialidad en esta institucion. Las especialidades que atiende "
+            msj = msj + " en la correspondiente institucion son: "
+            for c in cantidad :
+                msj = msj + str(c.especialidad) + ' en ' + str(c.institucion) + ', '
+            self.add_error('institucion',msj)
+
+        return data
 
 
 class HistoriaClinicaForm(forms.ModelForm):
@@ -105,3 +187,132 @@ class Medico_ConsultasForm(forms.ModelForm):
             'institucion' : 'Institución',
             'fecha' : 'Fecha',
         }
+
+
+class Medico_HorariosForm(forms.ModelForm):
+
+    class Meta:
+        model = Medico_Especialidad
+        fields = ["especialidad", "institucion"]
+
+        labels = {
+            'especialidad' : 'Especialidad',
+            'institucion' : 'Institución',
+            'horario' : 'Horarios de Consulta'
+        }
+
+    def __init__(self, *args, **kwargs):
+        self.medico = kwargs.pop('medico',None)
+        super(Medico_HorariosForm,self).__init__(*args,**kwargs)
+
+
+    def clean(self):
+        data = self.cleaned_data
+        especialidad = self.cleaned_data.get('especialidad')
+        institucion = self.cleaned_data.get('institucion')
+        user = User.objects.get(pk=self.medico)
+        usuario = Usuario.objects.get(user=user)
+        med = Medico.objects.get(usuario=usuario)
+        medico = med.cedula
+        inst = Institucion.objects.get(name=institucion)
+        institucion = inst.rif
+        num_horarios = Medico_Especialidad.objects.filter(medico=medico,
+            institucion=institucion, especialidad=especialidad).count()
+        print(num_horarios)
+
+        if num_horarios == 1:
+            msj="Ya tiene horarios para esta especialidad en esta institución, seleccione otros por favor."
+            self.add_error('especialidad',msj)
+
+        return data
+
+
+class Medico_RevisionForm(forms.ModelForm):
+
+    class Meta:
+        model = Medico_Revision
+        exclude=("cita",)
+
+
+class Medico_InformeForm(forms.ModelForm):
+
+    class Meta:
+        model = Medico_Informe
+        exclude = ('medico_Revision',)
+
+        widgets = {
+            'desc_prediagnostico': forms.Textarea(attrs={'rows':5,
+                                                        'cols':10,
+                                                        'style': 'height: 9em;width:50em'})
+        }
+
+
+class ReferirForm(forms.ModelForm):
+
+    class Meta:
+        model = Medico_Citas
+    #    exclude = ("medico",)
+        fields = ['medico','institucion', 'fecha','descripcion','especialidad','hora']
+
+    def __init__(self, *args, **kwargs):
+        self.paciente = kwargs.pop('paciente',None)
+        super(ReferirForm,self).__init__(*args,**kwargs)
+
+    # def clean(self):
+    #     data = self.cleaned_data
+    #     fecha = self.cleaned_data.get('fecha')
+    #     hora = self.cleaned_data.get('hora')
+    #     especialidad = self.cleaned_data.get('especialidad')
+    #     institucion = self.cleaned_data.get('institucion')
+    #     medico = self.cleaned_data.get('medico')
+    #     user = User.objects.get(pk=self.medico)
+    #     usuario = Usuario.objects.get(user=user)
+    #     med = Medico.objects.get(usuario=usuario)
+    #     medico = med.cedula
+    #     num_paciente = Medico_Citas.objects.filter(paciente=paciente,fecha=fecha,
+    #         hora=hora).count()
+    #     dia= Conocer_dia(fecha)
+    #     dia_hora=dia+hora
+    #     disponibilidad =Medico_Especialidad.objects.get(medico=medico,
+    #         institucion=institucion,especialidad=especialidad)
+    #     horario= disponibilidad.horario
+    #     horario2=horario.split(', ')
+    #     print(num_paciente)
+    #     i = 0
+    #     for x in horario2 :
+    #         ulti = i == (len(horario2)-1)
+    #         elem=volverElemlista(x,ulti)
+    #         boo = (dia_hora == elem)
+    #         if boo :
+    #             break
+    #         i = i+1
+    #     print("boo es: "+str(boo))
+    #     fecha_actual = datetime.datetime.now().date()
+    #     if fecha < fecha_actual :
+    #         msj = "La fecha de la cita no puede ser menor a la de hoy. "
+    #         self.add_error('fecha',msj)
+
+    #     if num_paciente == 1:
+    #         msj="Cambie la hora y fecha de su consulta porque ya tiene otra cita a esa hora. "
+    #         self.add_error('paciente',msj)
+
+    #     if boo :
+    #         num_citas = Medico_Citas.objects.filter(fecha=fecha, hora=hora,
+    #             especialidad=especialidad,medico=medico,institucion=institucion).count()
+    #         if num_citas == 1 :
+    #             msj = "La fecha y hora solicitadas no se encuentran disponibles. Por favor elija algunas de estos horarios: "
+    #             msj = msj + str(horario)
+    #             self.add_error('hora',msj)
+    #             self.add_error('fecha',msj)
+    #             # raise forms.ValidationError('La fecha y hora solicitadas no se encuentran disponibles. Por favor'+
+    #             #     ' elija algunas de estos horarios')
+    #     else :
+    #         msj = "El Medico no atiende ese dia a esa hora. Por favor elija algunas de estos horarios: "
+    #         msj = msj + str(horario)
+    #         self.add_error('hora',msj)
+    #         self.add_error('fecha',msj)
+    #         # raise forms.ValidationError('El Medico no atiende ese dia a esa hora.Por favor'+
+    #         #         ' elija algunas de estos horarios')
+    #         # raise forms.ValidationError('La fecha de la cita no puede ser menor a la de hoy')
+
+    #     return data
