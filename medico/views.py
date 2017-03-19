@@ -981,11 +981,11 @@ class Consultas(TemplateView):
         cita = Medico_Citas.objects.get(id=self.kwargs['id'])
         print(cita.id)
         print(cita.es_referido)
-    #    if cita.es_referido == True:
+        if cita.es_referido == True:
             #print(Referencia.objects.get.cita)
-    #        referencia = Referencia.objects.get(paciente_id = cita.paciente)
-#
-#            context['referencia'] = referencia
+            referencia = Referencia.objects.get(descripcion = cita.descripcion)
+        #    descripcion = Referencia.objects.get(descripcion = cita.)
+            context['referencia'] = referencia
         context['consulta'] = cita
 
         return context
@@ -1191,31 +1191,35 @@ class ReferirPaciente(CreateView):
         if form.is_valid() :
             id_cita = kwargs['id']
             cita = Medico_Citas.objects.get(id=id_cita)
-            #cita.es_referido = True
-            #cita.save()
+
             archivo = request.FILES['archivo']
 
             paciente = Paciente.objects.get(cedula = cita.paciente.cedula)
 
             rif_institucion = request.POST['institucion']
             institucion = Institucion.objects.get(rif=rif_institucion)
-            id_medico=request.user.pk
-            medico = Usuario.objects.get(user = id_medico)
+        #    id_medico=request.user.pk
+            medico = request.POST['medico']
 
-            medico1=Medico.objects.get(pk = medico.ci)
+            medico1=Medico.objects.get(cedula = medico)
 
+            usuarioMedico = Usuario.objects.get(id = medico1.usuario_id )
+            user_pk = User.objects.get(pk = usuarioMedico.user_id)
+            print("supuetso medico")
+            print(usuarioMedico.user_id)
             fecha = request.POST['fecha']
             hora = request.POST['hora']
             descripcion = request.POST['descripcion']
             name_especialidad = request.POST['especialidad']
+            print(name_especialidad)
             especialidad = Especialidad.objects.get(nombre_especialidad=name_especialidad)
             subirInforme = Referencia(cita=cita, archivo=archivo,paciente=paciente,
                                 medico=medico1, institucion=institucion,
                                 descripcion= descripcion, fecha= fecha,
                                 hora= hora, especialidad= especialidad)
             subirInforme.save()
-            new_cita = agregar_citas(id_medico, paciente.cedula, rif_institucion, descripcion,
-                                  fecha, hora, name_especialidad, es_referido=True)
+            new_cita = agregar_citas(user_pk.id, paciente.cedula, rif_institucion, descripcion,
+                                   fecha, hora, name_especialidad, es_referido=True)
 
 
             if new_cita is True:
