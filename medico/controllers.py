@@ -396,7 +396,7 @@ def eliminar_eventos(request, id):
         'perfil_medico', kwargs={'id': request.user.pk}))
 
 
-def agregar_citas(user_pk, paciente, institucion, descripcion, fecha, hora, especialidad):
+def agregar_citas(user_pk, paciente, institucion, descripcion, fecha, hora, especialidad, es_referido):
     try:
         user = User.objects.get(pk=user_pk)
         usuario = Usuario.objects.get(user=user)
@@ -421,7 +421,8 @@ def agregar_citas(user_pk, paciente, institucion, descripcion, fecha, hora, espe
                             descripcion=descripcion,
                             fecha=fecha,
                             hora=hora,
-                            especialidad=especialidad)
+                            especialidad=especialidad,
+                            es_referido = es_referido)
         cita.save()
         return True
     except:

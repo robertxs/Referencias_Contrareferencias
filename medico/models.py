@@ -214,4 +214,4 @@ class Referencia(models.Model):
     hora = models.CharField(max_length=5, choices=HORARIOS,blank=False)
     especialidad = models.ForeignKey(Especialidad,
                                     on_delete=models.CASCADE)
-    archivo = models.FileField()
+    archivo = models.FileField(upload_to='informes/')

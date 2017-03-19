@@ -833,7 +833,7 @@ class AgregarCitas(CreateView):
             descripcion = request.POST['descripcion']
             especialidad = request.POST['especialidad']
             value = agregar_citas(user_pk, paciente, institucion, descripcion,
-                                  fecha,hora,especialidad)
+                                  fecha,hora,especialidad, es_referido= False)
 
             if value is True:
                 return HttpResponseRedirect(reverse_lazy(
@@ -979,7 +979,15 @@ class Consultas(TemplateView):
         context = super(
             Consultas, self).get_context_data(**kwargs)
         cita = Medico_Citas.objects.get(id=self.kwargs['id'])
+        print(cita.id)
+        print(cita.es_referido)
+    #    if cita.es_referido == True:
+            #print(Referencia.objects.get.cita)
+    #        referencia = Referencia.objects.get(paciente_id = cita.paciente)
+#
+#            context['referencia'] = referencia
         context['consulta'] = cita
+
         return context
 
     # def post(self, request, *args, **kwargs):
@@ -1011,6 +1019,18 @@ class Consultas(TemplateView):
     #                                   {'form': form,
     #                                    'title': 'Agregar'},
     #                                   context_instance=RequestContext(request))
+
+
+
+    def download(request, path):
+        file_path = os.path.join(settings.MEDIA_ROOT, path)
+        if os.path.exists(file_path):
+            with open(file_path, 'rb') as fh:
+                response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
+                response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
+                return response
+        else:
+            raise Http404
 
 class ComenzarRevision(CreateView):
     template_name = 'medico/comenzar_revision.html'
@@ -1171,8 +1191,8 @@ class ReferirPaciente(CreateView):
         if form.is_valid() :
             id_cita = kwargs['id']
             cita = Medico_Citas.objects.get(id=id_cita)
-            cita.es_referido = True
-            cita.save()
+            #cita.es_referido = True
+            #cita.save()
             archivo = request.FILES['archivo']
 
             paciente = Paciente.objects.get(cedula = cita.paciente.cedula)
@@ -1195,7 +1215,7 @@ class ReferirPaciente(CreateView):
                                 hora= hora, especialidad= especialidad)
             subirInforme.save()
             new_cita = agregar_citas(id_medico, paciente.cedula, rif_institucion, descripcion,
-                                  fecha, hora, name_especialidad)
+                                  fecha, hora, name_especialidad, es_referido=True)
 
 
             if new_cita is True:
