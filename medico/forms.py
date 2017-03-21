@@ -213,7 +213,7 @@ class ReferenciaForm(forms.ModelForm):
         exclude = ('cita', 'paciente')
 
         widgets={
-                'archivo':forms.FileInput (attrs={'class':'form-control'})
+                'archivo':forms.FileInput (attrs={'class':'form-control','accept':'.pdf'})
                 }
 
     # def validate_file_extension(value):
