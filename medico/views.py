@@ -19,6 +19,8 @@ import datetime
 import calendar
 import parsedatetime as pdt
 from reportlab.pdfgen import canvas
+from reportlab.platypus import Paragraph
+from reportlab.lib.styles import getSampleStyleSheet
 
 
 class PerfilMedico(CreateView):
@@ -978,12 +980,19 @@ class Consultas(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(
             Consultas, self).get_context_data(**kwargs)
+
         cita = Medico_Citas.objects.get(id=self.kwargs['id'])
         print(cita.id)
         print(cita.es_referido)
+        print("pk del medico")
+        print(cita.medico.usuario.user.pk)
         if cita.es_referido == True:
-            #print(Referencia.objects.get.cita)
-            referencia = Referencia.objects.get(descripcion = cita.descripcion)
+            print(cita.id)
+            print(cita.fecha)
+            referencia = Referencia.objects.get(fecha = cita.fecha,
+                                                paciente=cita.paciente_id,
+                                                medico = cita.medico)
+            print(referencia.id)
         #    descripcion = Referencia.objects.get(descripcion = cita.)
             context['referencia'] = referencia
         context['consulta'] = cita
@@ -1019,18 +1028,6 @@ class Consultas(TemplateView):
     #                                   {'form': form,
     #                                    'title': 'Agregar'},
     #                                   context_instance=RequestContext(request))
-
-
-
-    def download(request, path):
-        file_path = os.path.join(settings.MEDIA_ROOT, path)
-        if os.path.exists(file_path):
-            with open(file_path, 'rb') as fh:
-                response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
-                response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
-                return response
-        else:
-            raise Http404
 
 class ComenzarRevision(CreateView):
     template_name = 'medico/comenzar_revision.html'
@@ -1139,28 +1136,30 @@ class MyPDFView(DetailView):
 
         # Create the PDF object, using the response object as its "file."
         p = canvas.Canvas(response)
-        #Llamamos la funcion cabecera
+                #Llamamos la funcion cabecera
         self.cabecera(p)
+        style = getSampleStyleSheet()
+        p.setFont('Times-Bold', 16)
 
         # Draw things on the PDF. Here's where the PDF generation happens.
         # See the ReportLab documentation for the full list of functionality.
-        p.drawString(450, 730, ("INFORME MÉDICO " ))
+        p.drawString(250, 700, ("INFORME MÉDICO " ))
         p.drawString(450, 730, ("Fecha: " + str(cita.fecha)))
-        p.drawString(100, 700, ("Institución Médica: " + str(cita.institucion.name)))
-        p.drawString(100, 650, ("Paciente: " ))
-        p.drawString(125, 630, (str(cita.paciente)))
-        p.drawString(100, 600, ("Fecha de Nacimiento: "))
-        p.drawString(125, 580, (str(cita.paciente.fecha_nacimiento)))
-        p.drawString(100, 550, ("Sexo: " ))
-        p.drawString(125, 530, (str(cita.paciente.sexo)))
-        p.drawString(100, 500, ("Estado Civil: " ))
-        p.drawString(125, 480, (str(cita.paciente.estado_civil)))
-        p.drawString(100, 450, ("Motivo de la Consulta: " ))
-        p.drawString(125, 430, (str(revision.motivos)))
-        p.drawString(100, 400, ("Diagnóstico: " ))
-        p.drawString(125, 380, (str(informe.desc_prediagnostico)))
-        p.drawString(100, 350, ("Médico Tratante: " ))
-        p.drawString(125, 330, (str(cita.medico)))
+        p.drawString(100, 675, ("Institución Médica: " + str(cita.institucion.name)))
+        p.drawString(100, 650, ("Médico Tratante: " ))
+        p.drawString(125, 630, (str(cita.medico)))
+        p.drawString(100, 600, ("Paciente: " ))
+        p.drawString(125, 580, (str(cita.paciente)))
+        p.drawString(100, 550, ("Fecha de Nacimiento: "))
+        p.drawString(125, 530, (str(cita.paciente.fecha_nacimiento)))
+        p.drawString(100, 500, ("Sexo: " ))
+        p.drawString(125, 480, (str(cita.paciente.sexo)))
+        p.drawString(100, 450, ("Estado Civil: " ))
+        p.drawString(125, 430, (str(cita.paciente.estado_civil)))
+        p.drawString(100, 400, ("Motivo de la Consulta: " ))
+        p.drawString(125, 380, (str(revision.motivos)))
+        p.drawString(100, 350, ("Diagnóstico: " ))
+        p.drawString(125, 330, (str(informe.desc_prediagnostico)))
 
         # Close the PDF object cleanly, and we're done.
         p.showPage()
@@ -1198,11 +1197,8 @@ class ReferirPaciente(CreateView):
 
             rif_institucion = request.POST['institucion']
             institucion = Institucion.objects.get(rif=rif_institucion)
-        #    id_medico=request.user.pk
             medico = request.POST['medico']
-
             medico1=Medico.objects.get(cedula = medico)
-
             usuarioMedico = Usuario.objects.get(id = medico1.usuario_id )
             user_pk = User.objects.get(pk = usuarioMedico.user_id)
             print("supuetso medico")

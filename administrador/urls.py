@@ -1,5 +1,6 @@
 from django.conf.urls import url, patterns
 from administrador.views import *
+from django.conf.urls.static import static
 
 urlpatterns = patterns(
     '',
@@ -66,3 +67,6 @@ urlpatterns = patterns(
         name='agregar_rol'
     ),
 )
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
