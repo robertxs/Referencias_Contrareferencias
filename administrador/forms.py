@@ -53,7 +53,36 @@ class UsuarioForm(forms.ModelForm):
             raise forms.ValidationError(u'Este nombre de usuario ya está siendo utilizado.')
         return username
 
+    # def clean(self):
+    #     data = self.cleaned_data
+    #     print("aquiiiii!")
+    #     print(data)
+    #     print(self)
+    #     username = self.cleaned_data.get('username')
+    #     # institucion = self.cleaned_data.get('institucion')
+    #     # user = User.objects.get(pk=self.medico)
+    #     # usuario = Usuario.objects.get(user=user)
+    #     # med = Medico.objects.get(usuario=usuario)
+    #     # medico = med.cedula
+    #     # inst = Institucion.objects.get(name=institucion)
+    #     # institucion = inst.rif
+    #     # num_horarios = Medico_Especialidad.objects.filter(medico=medico,
+    #     #     institucion=institucion, especialidad=especialidad).count()
+    #     # print(num_horarios)
+
+    #     # if num_horarios == 1:
+    #     #     msj="Ya tiene horarios para esta especialidad en esta institución, seleccione otros por favor."
+    #     #     self.add_error('especialidad',msj)
+
+    #     if User.objects.filter(username=username).count() != 0:
+    #         msj="Este nombre de usuario ya está siendo utilizado."
+    #         self.add_error('username',msj)
+
+    #     return data
+
+
     def save(self, commit=True):
+        print("ENTROOO EN SAVE DE ADMIN!")
         user = super(UsuarioForm, self).save(commit=False)
         user.email = self.cleaned_data['email']
         user.username = self.cleaned_data['username']
@@ -111,6 +140,7 @@ class ModificarUsuarioForm(forms.ModelForm):
 
 
     def save(self, commit=True):
+        print("ENTROOO EN SAVE DE ADMIN DE MODIFICAR!")
         user = super(UsuarioForm, self).save(commit=False)
         user.email = self.cleaned_data['email']
         user.username = self.cleaned_data['username']

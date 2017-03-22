@@ -63,6 +63,8 @@ class PerfilMedico(CreateView):
         Handles POST requests, instantiating a form instance with the passed
         POST variables and then checked for validity.
         """
+        print("aquiiiii")
+        print(request.POST)
         form = UsuarioForm(request.POST)
         form.fields['username'].required = False
         form.fields['passw'].required = False

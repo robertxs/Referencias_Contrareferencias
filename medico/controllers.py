@@ -16,10 +16,14 @@ def editar_medico(user, nombre, apellido, email, sexo, fecha, estado_civil,
                   telefono, direccion):
     try:
         usuario = Usuario.objects.get(user=user)
+        user = User.objects.get(pk=usuario.user.pk)
         medico = Medico.objects.get(usuario=usuario)
-        medico.usuario.user.first_name = nombre
-        medico.usuario.user.last_name = apellido
-        medico.usuario.user.email = email
+        medico.first_name = nombre
+        user.first_name = nombre
+        medico.last_name = apellido
+        user.last_name = apellido
+        medico.email = email
+        user.email = email
         medico.sexo = sexo
         try:
             fecha = datetime.datetime.strptime(fecha,
@@ -38,6 +42,7 @@ def editar_medico(user, nombre, apellido, email, sexo, fecha, estado_civil,
         medico.telefono = telefono
         medico.direccion = direccion
         medico.save()
+        user.save()
         return True
 
     except:

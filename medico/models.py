@@ -2,7 +2,7 @@ from django.db import models
 from administrador.models import *
 from paciente.models import *
 from django.core.validators import MaxValueValidator
-from smart_selects.db_fields import GroupedForeignKey
+
 
 class Medico(models.Model):
     cedula = models.IntegerField(primary_key=True,
@@ -18,7 +18,7 @@ class Medico(models.Model):
                                 on_delete=models.CASCADE)
 
     def __str__(self):
-        return str(self.cedula) + "  " + self.first_name + " " + self.last_name
+        return str(self.cedula) + " " + self.first_name + " " + self.last_name
 
 class Especialidad(models.Model):
     nombre_especialidad = models.CharField(primary_key=True, max_length=30)
