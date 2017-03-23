@@ -1,10 +1,52 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from django import forms
+from django.core.validators import RegexValidator
+#from django.core.validators import validate_email
 from administrador.models import *
 
 
 class UsuarioForm(forms.ModelForm):
+
+    name_validator = RegexValidator(
+    regex   = '^[A-Za-záéíóúñÑÁÉÍÓÚäëïöüÄËÏÖÜ\'\- ]+$',
+    message = 'La entrada debe ser un nombre en Español sin símbolos especiales.')
+
+    email_validator = RegexValidator(
+        regex   = r'(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)',
+        message = 'La dirección de correo electrónico debe ser de la forma: correo@xxx.com.')
+
+    ci_validator = RegexValidator(
+        regex   = '^[1-9][0-9]{4}[0-9]+$',
+        message = 'Introduzca un CI con un formato válido de la forma')
+
+    first_name = forms.CharField(
+            required   = True,
+            label      = "Nombre",
+            validators = [name_validator],
+            widget     = forms.TextInput(attrs =
+                { 'placeholder' : 'Nombre'
+                , 'required' : 'true'
+                , 'pattern'     : name_validator.regex.pattern
+                , 'message'     : name_validator.message
+
+                }
+            )
+    )
+
+    last_name = forms.CharField(
+            required   = True,
+            label      = "Apellido",
+            validators = [name_validator],
+            widget     = forms.TextInput(attrs =
+                { 'placeholder' : 'Apellido'
+                , 'required'    : 'true'
+                , 'pattern'     : name_validator.regex.pattern
+                , 'message'     : name_validator.message
+
+                }
+            )
+    )
 
     rol = forms.ChoiceField(
         required=True,
@@ -15,37 +57,33 @@ class UsuarioForm(forms.ModelForm):
         ]
     )
 
-    ci = forms.CharField(required=True, label="Cédula de identidad")
+
+
+    email = forms.CharField(
+            required = True,
+            label = "Correo Electrónico",
+            validators = [email_validator],
+            widget = forms.TextInput(attrs =
+            {'placeholder' : "Correo"
+             , 'required'  : 'true'
+             , 'pattern'   : email_validator.regex.pattern
+             , 'message'   : email_validator.message
+             }
+            )
+    )
+
+    ci = forms.CharField(
+            required=True,
+            label="Cédula de Identidad",
+            validators=[ci_validator],
+            widget = forms.TextInput(attrs=
+            { 'placeholder': "Cédula"
+              , 'required':'true'
+              , 'pattern' : ci_validator.regex.pattern
+              , 'message' : ci_validator.message}))
     username = forms.CharField(required=True, label="Nombre de usuario")
     passw = forms.CharField(label="Contraseña", required=True,
                             widget=forms.PasswordInput())
-    class Meta:
-        model = User
-        fields = ("first_name", "last_name", "email")
-
-        error_messages = {
-            'first_name': {
-                'required': "Este campo es requerido"
-            },
-            'last_name': {
-                'required': "Este campo es requerido"
-            },
-            'ci': {
-                'required': "Este campo es requerido"
-            }
-        }
-
-        widgets = {
-            'email': forms.TextInput(attrs={'required': 'true'}),
-            'first_name': forms.TextInput(attrs={'required': 'true'}),
-            'last_name': forms.TextInput(attrs={'required': 'true'})
-        }
-
-        labels = {
-            'email': 'Correo',
-            'first_name': 'Nombre',
-            'last_name': 'Apellido',
-        }
 
     def clean_username(self):
         username = self.cleaned_data.get('username')

@@ -72,9 +72,7 @@ class Medico_CitasForm(forms.ModelForm):
 
     class Meta:
         model = Medico_Citas
-    #    exclude = ("medico",)
         fields = ['paciente','institucion', 'fecha','descripcion','especialidad','hora']
-        # '__all__'
 
     def __init__(self, *args, **kwargs):
         self.medico = kwargs.pop('medico',None)
