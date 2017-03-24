@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
+from django.views.static import serve
 from medico.views import *
 
 
@@ -212,4 +213,5 @@ urlpatterns = [
         ReferirPaciente.as_view(),
         name='referir_paciente'
     ),
+
 ]

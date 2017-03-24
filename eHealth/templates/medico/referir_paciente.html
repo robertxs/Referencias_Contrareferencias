@@ -22,39 +22,47 @@
     <div id="referir" class="tab-pane fade in active">
 
     <div class="col-md-8 col-sm-6 col-xs-12 personal-info">
-        <form action="{% url 'referir_paciente' consulta.id %}" method=POST>
-
+      {% if form.is_multipart %}
+      <form enctype="multipart/form-data" method="POST" action="{% url 'referir_paciente' consulta.id %}">
+      {% else %}
+      <form action="{% url 'referir_paciente' consulta.id %}" method=POST>
+      {% endif %}
         {% csrf_token %}
-	    <input type="hidden" name="paciente" id="id_paciente" value="self.paciente">
+
 	    <div class="hidden">
 	        {% bootstrap_form_errors form %}
 	    </div>
 
-	    {% if messages %}
-	    <ul class="messages">
-	      {% for mes in messages %}
-	      <li{% if mes.tags  %}
-	      class="{{ mes.tag }}"
-	      {% endif%}>{{ mes }}
-	      </li>
-	      {% endfor %}
-	    </ul>
-	    {% endif %}
 
-    	  <label for="paciente">Nombre del Paciente</label>
+  	    {% if messages %}
+  	    <ul class="messages">
+  	      {% for mes in messages %}
+  	      <li{% if mes.tags  %}
+  	      class="{{ mes.tag }}"
+  	      {% endif%}>{{ mes }}
+  	      </li>
+  	      {% endfor %}
+  	    </ul>
+  	    {% endif %}
+
+        <label for="">Nombre del Paciente</label>
+      
           <span>{{consulta.paciente}}</span>
-	      <label for="id_medico">Médico</label>
-	       {% bootstrap_field form.medico layout="inline" %}
-	      <label for="id_fecha">Institución Médica</label>
-	      {% bootstrap_field form.institucion layout="inline" %}
-	      <label for="id_especialidad">Especialidad</label>
-	      {% bootstrap_field form.especialidad layout="inline" %}
-	      <label for="id_fecha">Fecha</label>
-	      {% bootstrap_field form.fecha layout="inline" %}
-	      <label for="id_hora">Hora</label>
-	        {% bootstrap_field form.hora layout="inline" %}
-	      <label for="id_descripcion">Descripción</label>
-	      {% bootstrap_field form.descripcion layout="inline" %}
+          <label for="id_medico">Médico</label>
+ 	       {% bootstrap_field form.medico layout="inline" %}
+ 	      <label for="id_fecha">Institución Médica</label>
+ 	      {% bootstrap_field form.institucion layout="inline" %}
+ 	      <label for="id_especialidad">Especialidad</label>
+ 	      {% bootstrap_field form.especialidad layout="inline" %}
+ 	      <label for="id_fecha">Fecha</label>
+ 	      {% bootstrap_field form.fecha layout="inline" %}
+ 	      <label for="id_hora">Hora</label>
+ 	        {% bootstrap_field form.hora layout="inline" %}
+ 	      <label for="id_descripcion">Descripción</label>
+          {% bootstrap_field form.descripcion layout="inline" %}
+        <label for="id_archivo">Adjuntar Informe</label>
+         {{ form.archivo   }}
+
 	      {% buttons %}
 	        <div class="col-md-3"></div>
 	        <div class="col-sm-4 col-md-6 text-center">
@@ -67,6 +75,7 @@
 	        </div>
 	        <div class="col-md-3"></div>
 	    {% endbuttons %}
+    </form>
     </form>
   </div>
 {% endblock %}
@@ -88,7 +97,7 @@ $(document).ready(function(){
       var tmp = GET[i].split('=');
       get[tmp[0]] = unescape(decodeURI(tmp[1]));
    }
-   return get;  
+   return get;
 }
 </script>
 
@@ -103,4 +112,3 @@ $(document).ready(function(){
     alert(document.getElementById("id_medico2").value());
   }
 </script>
-

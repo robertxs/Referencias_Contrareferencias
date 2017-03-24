@@ -247,16 +247,24 @@ class Medico_InformeForm(forms.ModelForm):
         }
 
 
-class ReferirForm(forms.ModelForm):
+class ReferenciaForm(forms.ModelForm):
 
     class Meta:
-        model = Medico_Citas
-    #    exclude = ("medico",)
-        fields = ['medico','institucion', 'fecha','descripcion','especialidad','hora']
+        model = Referencia
 
-    def __init__(self, *args, **kwargs):
-        self.paciente = kwargs.pop('paciente',None)
-        super(ReferirForm,self).__init__(*args,**kwargs)
+        exclude = ('cita', 'paciente')
+
+        widgets={
+                'archivo':forms.FileInput (attrs={'class':'form-control','accept':'.pdf'})
+                }
+
+    # def validate_file_extension(value):
+    #     if not value.name.endswith('.pdf'):
+    #         raise ValidationError(u'Error message')
+
+    # def __init__(self, *args, **kwargs):
+    #     self.paciente = kwargs.pop('paciente',None)
+    #     super(ReferenciaForm,self).__init__(*args,**kwargs)
 
     # def clean(self):
     #     data = self.cleaned_data

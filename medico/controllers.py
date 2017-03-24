@@ -401,8 +401,9 @@ def eliminar_eventos(request, id):
         'perfil_medico', kwargs={'id': request.user.pk}))
 
 
-def agregar_citas(user_pk, paciente, institucion, descripcion, fecha, hora, especialidad):
+def agregar_citas(user_pk, paciente, institucion, descripcion, fecha, hora, especialidad, es_referido):
     try:
+
         user = User.objects.get(pk=user_pk)
         usuario = Usuario.objects.get(user=user)
         medico = Medico.objects.get(usuario=usuario)
@@ -426,7 +427,8 @@ def agregar_citas(user_pk, paciente, institucion, descripcion, fecha, hora, espe
                             descripcion=descripcion,
                             fecha=fecha,
                             hora=hora,
-                            especialidad=especialidad)
+                            especialidad=especialidad,
+                            es_referido = es_referido)
         cita.save()
         return True
     except:
@@ -460,7 +462,6 @@ def modificar_citas(cita_id, paciente, descripcion, fecha):
 
 def eliminar_citas(request, id):
     cita = Medico_Citas.objects.get(pk=id)
-    print(cita.id)
     cita.delete()
     return HttpResponseRedirect(reverse_lazy(
                     'ver_citas', kwargs={'id': request.user.pk}))

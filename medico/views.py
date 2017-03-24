@@ -19,6 +19,8 @@ import datetime
 import calendar
 import parsedatetime as pdt
 from reportlab.pdfgen import canvas
+from reportlab.platypus import Paragraph
+from reportlab.lib.styles import getSampleStyleSheet
 
 
 class PerfilMedico(CreateView):
@@ -851,7 +853,12 @@ class AgregarCitas(CreateView):
             descripcion = request.POST['descripcion']
             especialidad = request.POST['especialidad']
             value = agregar_citas(user_pk, paciente, institucion, descripcion,
+<<<<<<< HEAD
                                   fecha,hora,especialidad)
+=======
+                                  fecha,hora,especialidad, es_referido= False)
+
+>>>>>>> d419a1813ded6e305eba5c1c710eb58caf734413
             if value is True:
                 return HttpResponseRedirect(reverse_lazy(
                     'ver_citas', kwargs={'id': request.user.pk}))
@@ -995,8 +1002,23 @@ class Consultas(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(
             Consultas, self).get_context_data(**kwargs)
+
         cita = Medico_Citas.objects.get(id=self.kwargs['id'])
+        print(cita.id)
+        print(cita.es_referido)
+        print("pk del medico")
+        print(cita.medico.usuario.user.pk)
+        if cita.es_referido == True:
+            print(cita.id)
+            print(cita.fecha)
+            referencia = Referencia.objects.get(fecha = cita.fecha,
+                                                paciente=cita.paciente_id,
+                                                medico = cita.medico)
+            print(referencia.id)
+        #    descripcion = Referencia.objects.get(descripcion = cita.)
+            context['referencia'] = referencia
         context['consulta'] = cita
+
         return context
 
     # def post(self, request, *args, **kwargs):
@@ -1048,10 +1070,9 @@ class ComenzarRevision(CreateView):
         POST variables and then checked for validity.
         """
         form = Medico_RevisionForm(request.POST)
-        print(form.is_valid())
+
         if form.is_valid():
             cita = kwargs['id']
-            print(cita)
             motivos = request.POST['motivos']
             sintomas = request.POST['sintomas']
             presion_sanguinea = request.POST['presion_sanguinea']
@@ -1079,8 +1100,6 @@ class ComenzarRevision(CreateView):
 class InformeMedico(CreateView):
     template_name = 'medico/informe_medico.html'
     form_class = Medico_InformeForm
-
-    print("InformeMedico")
     def get_context_data(self, **kwargs):
 
         context = super(
@@ -1100,7 +1119,6 @@ class InformeMedico(CreateView):
         POST variables and then checked for validity.
         """
         form = Medico_InformeForm(request.POST)
-        print(form.is_valid())
         if form.is_valid():
             cita = kwargs['id']
             revision = Medico_Revision.objects.get(pk=cita)
@@ -1140,27 +1158,30 @@ class MyPDFView(DetailView):
 
         # Create the PDF object, using the response object as its "file."
         p = canvas.Canvas(response)
-        #Llamamos la funcion cabecera
+                #Llamamos la funcion cabecera
         self.cabecera(p)
+        style = getSampleStyleSheet()
+        p.setFont('Times-Bold', 16)
 
         # Draw things on the PDF. Here's where the PDF generation happens.
         # See the ReportLab documentation for the full list of functionality.
+        p.drawString(250, 700, ("INFORME MÉDICO " ))
         p.drawString(450, 730, ("Fecha: " + str(cita.fecha)))
-        p.drawString(100, 700, ("Institución Médica: " + str(cita.institucion.name)))
-        p.drawString(100, 650, ("Paciente: " ))
-        p.drawString(125, 630, (str(cita.paciente)))
-        p.drawString(100, 600, ("Fecha de Nacimiento: "))
-        p.drawString(125, 580, (str(cita.paciente.fecha_nacimiento)))
-        p.drawString(100, 550, ("Sexo: " ))
-        p.drawString(125, 530, (str(cita.paciente.sexo)))
-        p.drawString(100, 500, ("Estado Civil: " ))
-        p.drawString(125, 480, (str(cita.paciente.estado_civil)))
-        p.drawString(100, 450, ("Motivo de la Consulta: " ))
-        p.drawString(125, 430, (str(revision.motivos)))
-        p.drawString(100, 400, ("Diagnóstico: " ))
-        p.drawString(125, 380, (str(informe.desc_prediagnostico)))
-        p.drawString(100, 350, ("Médico Tratante: " ))
-        p.drawString(125, 330, (str(cita.medico)))
+        p.drawString(100, 675, ("Institución Médica: " + str(cita.institucion.name)))
+        p.drawString(100, 650, ("Médico Tratante: " ))
+        p.drawString(125, 630, (str(cita.medico)))
+        p.drawString(100, 600, ("Paciente: " ))
+        p.drawString(125, 580, (str(cita.paciente)))
+        p.drawString(100, 550, ("Fecha de Nacimiento: "))
+        p.drawString(125, 530, (str(cita.paciente.fecha_nacimiento)))
+        p.drawString(100, 500, ("Sexo: " ))
+        p.drawString(125, 480, (str(cita.paciente.sexo)))
+        p.drawString(100, 450, ("Estado Civil: " ))
+        p.drawString(125, 430, (str(cita.paciente.estado_civil)))
+        p.drawString(100, 400, ("Motivo de la Consulta: " ))
+        p.drawString(125, 380, (str(revision.motivos)))
+        p.drawString(100, 350, ("Diagnóstico: " ))
+        p.drawString(125, 330, (str(informe.desc_prediagnostico)))
 
         # Close the PDF object cleanly, and we're done.
         p.showPage()
@@ -1170,13 +1191,12 @@ class MyPDFView(DetailView):
 class ReferirPaciente(CreateView):
 
     template_name = 'medico/referir_paciente.html'
-    form_class = ReferirForm
+    form_class = ReferenciaForm
 
     def get_context_data(self, **kwargs):
+
         context = super(
         ReferirPaciente, self).get_context_data(**kwargs)
-        print("GET")
-
         cita = Medico_Citas.objects.get(id=self.kwargs['id'])
 
         context['consulta'] = cita
@@ -1187,45 +1207,51 @@ class ReferirPaciente(CreateView):
         Handles POST requests, instantiating a form instance with the passed
         POST variables and then checked for validity.
         """
-        print("entro a post")
-        form = ReferirForm(request.POST)
-        print(form.is_valid())
-        if form.is_valid():
+        form = ReferenciaForm(request.POST,request.FILES)
+
+        if form.is_valid() :
             id_cita = kwargs['id']
             cita = Medico_Citas.objects.get(id=id_cita)
 
-            paciente = Paciente.objects.get(cedula=cita.paciente.cedula)
-            print(paciente)
-            id_medico = request.POST['medico']
-            medico1 = Usuario.objects.get(ci=id_medico)
-            medico = medico1.user_id
-            print("medico es: "+str(medico))
+            archivo = request.FILES['archivo']
 
-            paciente = Paciente.objects.get(cedula=paciente.cedula)
+            paciente = Paciente.objects.get(cedula = cita.paciente.cedula)
 
-            institucion = request.POST['institucion']
+            rif_institucion = request.POST['institucion']
+            institucion = Institucion.objects.get(rif=rif_institucion)
+            medico = request.POST['medico']
+            medico1=Medico.objects.get(cedula = medico)
+            usuarioMedico = Usuario.objects.get(id = medico1.usuario_id )
+            user_pk = User.objects.get(pk = usuarioMedico.user_id)
+            print("supuetso medico")
+            print(usuarioMedico.user_id)
             fecha = request.POST['fecha']
             hora = request.POST['hora']
             descripcion = request.POST['descripcion']
-            especialidad = request.POST['especialidad']
-            print("antes de valueeeee")
-            value = agregar_citas(medico, paciente.cedula, institucion, descripcion,
-                                  fecha,hora,especialidad)
-            print("valueee es: ")
-            print(value)
-            if value is True:
+            name_especialidad = request.POST['especialidad']
+            print(name_especialidad)
+            especialidad = Especialidad.objects.get(nombre_especialidad=name_especialidad)
+            subirInforme = Referencia(cita=cita, archivo=archivo,paciente=paciente,
+                                medico=medico1, institucion=institucion,
+                                descripcion= descripcion, fecha= fecha,
+                                hora= hora, especialidad= especialidad)
+            subirInforme.save()
+            new_cita = agregar_citas(user_pk.id, paciente.cedula, rif_institucion, descripcion,
+                                   fecha, hora, name_especialidad, es_referido=True)
+
+
+            if new_cita is True:
                 return HttpResponseRedirect(reverse_lazy(
                     'consulta', kwargs={'id': kwargs['id']}))
             else:
                 return render_to_response('medico/referir_paciente.html',
                                           {'form': form,
                                            'title': 'Agregar'},
-                                          context_instance=RequestContext(
-                                              request))
-                
+                                          context_instance=RequestContext(request))
+
         else:
             messages.error(request,"Por favor verifique que los campos estan en color rojo.")
-            return render_to_response('medico/agregar_cita.html',
+            return render_to_response('medico/referir_paciente.html',
                                       {'form': form,
-                                       'title': 'Agregar'},
+                                      'title': 'Agregar'},
                                       context_instance=RequestContext(request))

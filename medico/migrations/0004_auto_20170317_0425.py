@@ -7,13 +7,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('medico', '0004_auto_20170308_1524'),
+        ('medico', '0003_auto_20170317_0421'),
     ]
 
     operations = [
-        migrations.AddField(
-            model_name='medico_citas',
-            name='es_referido',
-            field=models.BooleanField(default=False),
+        migrations.AlterField(
+            model_name='referencia',
+            name='archivo',
+            field=models.FileField(upload_to=b'informes/'),
         ),
     ]

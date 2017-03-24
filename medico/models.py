@@ -2,7 +2,10 @@ from django.db import models
 from administrador.models import *
 from paciente.models import *
 from django.core.validators import MaxValueValidator
+<<<<<<< HEAD
 
+=======
+>>>>>>> d419a1813ded6e305eba5c1c710eb58caf734413
 
 class Medico(models.Model):
     cedula = models.IntegerField(primary_key=True,
@@ -100,6 +103,7 @@ class Medico_Publicaciones(models.Model):
     fecha = models.DateField()
 
 
+
 class Medico_Eventos(models.Model):
     medico = models.ForeignKey(Medico,
                                on_delete=models.CASCADE)
@@ -185,9 +189,33 @@ class Emergencia(models.Model):
         unique_together = ('paciente','medico','institucion')
 
 class Referencia(models.Model):
-    informe = models.ForeignKey(Medico_Informe,
-                                  on_delete=models.CASCADE)
-    medico_referido = models.ForeignKey(Medico,
+
+    HORARIOS = (
+                ("6Am","6Am"),
+                ("7Am","7Am"),
+                ("8Am","8Am"),
+                ("9Am","9Am"),
+                ("10Am","10Am"),
+                ("11Am","11Am"),
+                ("12Pm","12Pm"),
+                ("1Pm","1Pm"),
+                ("2Pm","2Pm"),
+                ("3Pm","3Pm"),
+                ("4Pm","4Pm"),
+                ("5Pm","5Pm")
+                )
+    cita = models.ForeignKey(Medico_Citas,
                                         on_delete=models.CASCADE)
-    fecha_referencia = models.DateField()
-    hora_referencia = models.DateTimeField()
+
+    paciente = models.ForeignKey(Paciente,
+                                 on_delete=models.CASCADE)
+    medico = models.ForeignKey(Medico,
+                               on_delete=models.CASCADE)
+    institucion = models.ForeignKey(Institucion,
+                                    on_delete=models.CASCADE)
+    fecha = models.DateField()
+    descripcion = models.CharField(max_length=500, blank=False)
+    hora = models.CharField(max_length=5, choices=HORARIOS,blank=False)
+    especialidad = models.ForeignKey(Especialidad,
+                                    on_delete=models.CASCADE)
+    archivo = models.FileField(upload_to='informes/')
