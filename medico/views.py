@@ -19,8 +19,13 @@ import datetime
 import calendar
 import parsedatetime as pdt
 from reportlab.pdfgen import canvas
-from reportlab.platypus import Paragraph
 from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.platypus import SimpleDocTemplate, Paragraph, TableStyle
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import Table
+from reportlab.lib.enums  import *
+from io import BytesIO
 
 
 class PerfilMedico(CreateView):
@@ -1132,38 +1137,73 @@ class MyPDFView(DetailView):
         informe = Medico_Informe.objects.get(medico_Revision=revision.pk)
         # Create the HttpResponse object with the appropriate PDF headers.
         response = HttpResponse(content_type='application/pdf')
-        response['Content-Disposition'] = 'attachment; filename=InformeMedico.pdf'
-
+        pdf_name = "InformeMedico.pdf"
+            #response['Content-Disposition'] = 'attachment; filename=InformeMedico.pdf'
+        buff = BytesIO()
         # Create the PDF object, using the response object as its "file."
         p = canvas.Canvas(response)
                 #Llamamos la funcion cabecera
         self.cabecera(p)
-        style = getSampleStyleSheet()
-        p.setFont('Times-Bold', 16)
+        doc = SimpleDocTemplate(buff,
+                            pagesize=letter,
+                            rightMargin=40,
+                            leftMargin=40,
+                            topMargin=60,
+                            bottomMargin=18,
+                            )
 
-        # Draw things on the PDF. Here's where the PDF generation happens.
-        # See the ReportLab documentation for the full list of functionality.
-        p.drawString(250, 700, ("INFORME MÉDICO " ))
-        p.drawString(450, 730, ("Fecha: " + str(cita.fecha)))
-        p.drawString(100, 675, ("Institución Médica: " + str(cita.institucion.name)))
-        p.drawString(100, 650, ("Médico Tratante: " ))
-        p.drawString(125, 630, (str(cita.medico)))
-        p.drawString(100, 600, ("Paciente: " ))
-        p.drawString(125, 580, (str(cita.paciente)))
-        p.drawString(100, 550, ("Fecha de Nacimiento: "))
-        p.drawString(125, 530, (str(cita.paciente.fecha_nacimiento)))
-        p.drawString(100, 500, ("Sexo: " ))
-        p.drawString(125, 480, (str(cita.paciente.sexo)))
-        p.drawString(100, 450, ("Estado Civil: " ))
-        p.drawString(125, 430, (str(cita.paciente.estado_civil)))
-        p.drawString(100, 400, ("Motivo de la Consulta: " ))
-        p.drawString(125, 380, (str(revision.motivos)))
-        p.drawString(100, 350, ("Diagnóstico: " ))
-        p.drawString(125, 330, (str(informe.desc_prediagnostico)))
+        elementos = []
+        #Definimos los estilos para el documento
+        estilo = getSampleStyleSheet()
+        estilo_tabla = estilo["BodyText"]
+        estilo_tabla.alignment = TA_LEFT
+        estilo_tabla.fontName = "Helvetica"
+        estilo_tabla.fontSize = 12
+        estilo_tabla.leading = 15
 
-        # Close the PDF object cleanly, and we're done.
-        p.showPage()
-        p.save()
+        estilo_titulo = estilo["Normal"]
+        estilo_titulo.alignment = TA_CENTER
+        estilo_titulo.fontName = "Helvetica"
+        estilo_titulo.fontSize = 15
+        estilo_titulo.leading = 18
+
+        estilo_fecha = estilo["BodyText"]
+        estilo_fecha.alignment = TA_RIGHT
+        estilo_fecha.fontName = "Helvetica"
+        estilo_fecha.fontSize = 10
+        estilo_fecha.leading = 25
+
+        elementos.append(Paragraph('Fecha: ' + str(cita.fecha), estilo_fecha))
+        elementos.append(Paragraph('INFORME MÉDICO', estilo_titulo))
+
+
+        data = [
+        [''],
+        ['', Paragraph('<b>Institución Médica: </b> ', estilo_tabla),Paragraph(str(cita.institucion.name),
+        estilo_tabla), ''],
+        ['', Paragraph('<b> Médico Tratante: </b> ', estilo_tabla), Paragraph(str(cita.medico), estilo_tabla),''],
+        ['', Paragraph('<b> Paciente: </b> ', estilo_tabla), Paragraph(str(cita.paciente),estilo_tabla),''],
+        ['', Paragraph('<b> Fecha de Nacimiento: </b> ', estilo_tabla), Paragraph(str(cita.paciente.fecha_nacimiento),estilo_tabla),''],
+        ['', Paragraph('<b> Sexo: </b> ', estilo_tabla), Paragraph(str(cita.paciente.sexo), estilo_tabla),''],
+        ['', Paragraph('<b> Estado Civil: </b> ', estilo_tabla), Paragraph(str(cita.paciente.estado_civil),estilo_tabla),''],
+        ['', Paragraph('<b> Motivo de la Consulta: </b> ', estilo_tabla), Paragraph(str(revision.motivos), estilo_tabla),''],
+        ['', Paragraph('<b> Diagnóstico: </b> ', estilo_tabla), Paragraph(str(informe.desc_prediagnostico),estilo_tabla),'']
+        ]
+
+        t = Table(data )
+        # t.setStyle(TableStyle([('VALIGN',(1,0),(1,8),'MIDDLE')]))
+        t.setStyle(TableStyle(
+            [
+        ('GRID', (0, 10), (8, -9), 1, colors.dodgerblue),
+        ('LINEBELOW', (0, 0), (-1, 0), 2, colors.darkblue)
+            ]
+        ))
+
+        elementos.append(t)
+        #Construimos el documento
+        doc.build(elementos)
+        response.write(buff.getvalue())
+        buff.close()
         return response
 
 class ReferirPaciente(CreateView):
