@@ -17,6 +17,70 @@ import datetime
 import calendar
 import parsedatetime as pdt
 
+class Perfil(CreateView):
+    template_name = 'medico/perfil_medico.html'
+    form_class = UsuarioForm
+
+    def get_context_data(self, **kwargs):
+        context = super(
+            Perfil, self).get_context_data(**kwargs)
+        user = self.request.user
+        usuario = Usuario.objects.get(user=user)
+        try:
+            paciente = Paciente.objects.get(usuario=usuario)
+        except:
+            paciente = Paciente(cedula=usuario.ci, first_name=user.first_name,
+                            last_name=user.last_name, fecha_nacimiento=None,
+                            lugar_nacimiento='', ocupacion='',
+                            sexo='', estado_civil='', telefono='',
+                            direccion='', usuario=usuario)
+            paciente.save()
+        data = {'first_name': paciente.usuario.user.first_name,
+                'last_name': paciente.usuario.user.last_name,
+                'email': paciente.usuario.user.email}
+        form = UsuarioForm(initial=data)
+        context['paciente'] = paciente
+        context['form'] = form
+        return context
+
+    def post(self, request, *args, **kwargs):
+        """
+        Handles POST requests, instantiating a form instance with the passed
+        POST variables and then checked for validity.
+        """
+        form = UsuarioForm(request.POST)
+        form.fields['username'].required = False
+        form.fields['passw'].required = False
+        form.fields['ci'].required = False
+        form.fields['rol'].required = False
+        if form.is_valid():
+            nombre = request.POST['first_name']
+            apellido = request.POST['last_name']
+            sexo = request.POST['sex']
+            fecha = request.POST['birth_date']
+            estado_civil = request.POST['marital_status']
+            lugar = request.POST['lugar']
+            telefono = request.POST['phone']
+            email = request.POST['email']
+            direccion = request.POST['address']
+            ocupacion = request.POST['ocupacion']
+            print("antes del value")
+            value = editar_paciente(request.user, nombre, apellido, sexo, ocupacion,
+                                  fecha, lugar, estado_civil, telefono, direccion, email)
+            print("despues de valueeee" + str(value))
+            if value is True:
+                return HttpResponseRedirect(reverse_lazy(
+                    'perfil_medico', kwargs={'id': request.user.pk}))
+            else:
+                return render_to_response('medico/perfil_medico.html',
+                                          {'form': form},
+                                          context_instance=RequestContext(
+                                              request))
+        else:
+            return render_to_response('medico/perfil_medico.html',
+                                      {'form': form},
+                                      context_instance=RequestContext(request))
+
 
 class BuscarMedico(TemplateView):
     template_name = 'medico/buscar.html'
@@ -30,6 +94,7 @@ class BuscarMedico(TemplateView):
         context['result'] = medicos
 
         return context
+
 
 class VerCitasPaciente(TemplateView):
     template_name = 'paciente/ver_citas_paciente.html'
@@ -47,7 +112,7 @@ class VerCitasPaciente(TemplateView):
 
 
 class AgregarCitasPaciente(CreateView):
-    template_name = 'paciente/agregar_cita_paciente.html'
+    template_name = 'medico/agregar_cita.html'
     form_class = Paciente_CitasForm
 
     def get_context_data(self, **kwargs):
@@ -63,7 +128,7 @@ class AgregarCitasPaciente(CreateView):
         Handles POST requests, instantiating a form instance with the passed
         POST variables and then checked for validity.
         """
-        form = Paciente_CitasForm(request.POST)
+        form = Paciente_CitasForm(request.POST,paciente=request.user.pk)
         print(form.is_valid())
         if form.is_valid():
             user_pk = request.user.pk
@@ -72,19 +137,19 @@ class AgregarCitasPaciente(CreateView):
             fecha = request.POST['fecha']
             descripcion = request.POST['descripcion']
             value = agregar_citas_paciente(user_pk, medico, institucion, descripcion,
-                                  fecha)
+                                  fecha,hora,especialidad, es_referido= False)
             if value is True:
                 return HttpResponseRedirect(reverse_lazy(
                     'ver_citas_paciente', kwargs={'id': request.user.pk}))
             else:
-                return render_to_response('paciente/agregar_cita_paciente.html',
+                return render_to_response('medico/agregar_cita.html',
                                           {'form': form,
                                            'title': 'Agregar'},
                                           context_instance=RequestContext(
                                               request))
         else:
             messages.error(request,"Por favor verifique que los campos estan en color rojo.")
-            return render_to_response('paciente/agregar_cita_paciente.html',
+            return render_to_response('medico/agregar_cita.html',
                                       {'form': form,
                                        'title': 'Agregar'},
                                       context_instance=RequestContext(request))
@@ -96,15 +161,16 @@ class ModificarCitasPaciente(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super(
-            ModificarCitas, self).get_context_data(**kwargs)
+            ModificarCitasPaciente, self).get_context_data(**kwargs)
 
         context['title'] = 'Modificar'
         cita = Medico_Citas.objects.get(pk=self.kwargs['id'])
         data = {'paciente': cita.paciente,
                 'descripcion': cita.descripcion,
-                'fecha': cita.fecha
+                'fecha': cita.fecha,
+                'institucion': cita.institucion
                 }
-        form = Paciente_CitasForm(initial=data)
+        form = Medico_CitasForm(initial=data)
         context['form'] = form
         return context
 
@@ -113,25 +179,27 @@ class ModificarCitasPaciente(CreateView):
         Handles POST requests, instantiating a form instance with the passed
         POST variables and then checked for validity.
         """
-        form = Paciente_CitasForm(request.POST)
+        form = Paciente_CitasForm(request.POST,paciente=request.user.pk)
         if form.is_valid():
             cita_id = kwargs['id']
-            paciente = request.POST['paciente']
+            medico = request.POST['medico']
             descripcion = request.POST['descripcion']
             fecha = request.POST['fecha']
-            value = modificar_citas(cita_id, paciente, descripcion,
-                                    fecha)
+            hora = request.POST['hora']
+            value = modificar_citas_paciente(cita_id, medico, descripcion,
+                                    fecha,hora)
             if value is True:
                 return HttpResponseRedirect(reverse_lazy(
                     'ver_citas', kwargs={'id': request.user.pk}))
             else:
-                return render_to_response('paciente/agregar_cita.html',
+                return render_to_response('medico/agregar_cita.html',
                                           {'form': form,
                                            'title': 'Modificar'},
                                           context_instance=RequestContext(
                                               request))
         else:
-            return render_to_response('paciente/agregar_cita.html',
+            return render_to_response('medico/agregar_cita.html',
                                       {'form': form,
                                        'title': 'Modificar'},
                                       context_instance=RequestContext(request))
+

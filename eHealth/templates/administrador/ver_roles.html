@@ -10,6 +10,18 @@
 {% bootstrap_messages %}
 {% load static %}
 {% block content %}
+
+  {% if messages %}
+    <ul class="messages">
+      {% for mes in messages %}
+      <li{% if mes.tags  %}
+      class="{{ mes.tag }}"
+      {% endif%}>{{ mes }}
+      </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
   <div id="cuerpoHeredado">
     <center><h2>Gestión de Roles</h2></center>
     <!--AGREGAR ROL-->
@@ -46,21 +58,21 @@
     <tr>
       <th>Rol ID</th>
       <th>Rol</th>
-      <th style="text-align: right">
-         <button id="show-add-role" onclick="show_add_role()"> <i class="fa fa-plus-circle" style="font-size:20px;color:white"></i></button>
+      <th style="text-align: center">
+        <a id="add_rols" href="{% url 'agregar_roles' %}">
+          <i class="fa fa-plus-circle" style="font-size:20px;color:white"></i>
+        </a>
       </th>
     </tr>
     {% for role in roles %}
     <tr>
       <td>{{ role.id }}</td>
       <td>{{ role.name }}</td>
-      <td style="text-align: right;">
-        <button id="modify-role" name="{{role.role_name}}" value="{{role.id}}" onclick="show_modify_role({{role.id}},'{{role.role_name}}')"  style="background: transparent; border: 0;padding: 0px 0px 0px 30px;">
-            <i class="fa fa-pencil" style="font-size:16px;color:black"></i>
-        </button>
-        <button id="delete-role" value= "{{role.id}}" onclick="delete_role({{role.id}})"  style="background: transparent; border: 0;padding: 0px 0px 0px 30px;">
-          <i class="fa fa-trash" style="font-size:16px;color:black"></i>
-        </button></td>
+      <td style="text-align: center;">
+        <a id="delete_rols" href="{% url 'eliminar_rol' role.pk %}">
+          <i class="fa fa-trash" style="font-size:20px;color:#5882FA"></i>
+        </a>
+      </td>
     </tr>
     {% endfor %}
   </table>

@@ -34,9 +34,9 @@
           <td>{{user.user.last_name}}</td>
           <td>{{user.user.email}}</td>
           <td>{{user.user.groups.all.0.name}}</td>
-          <td style="text-align: right;">
-            <a href="{% url 'modificar_usuario' user.pk %}"><i class="fa fa-pencil" style="font-size:16px;color:black"></i></a>
-            <a href="{% url 'eliminar_usuario' user.pk %}"><i class="fa fa-trash" style="font-size:16px;color:black"></i></button>
+          <td style="text-align: center;">
+            <a href="{% url 'modificar_usuario' user.pk %}"><i class="fa fa-pencil" style="font-size:20px;color:#5882FA"></i></a>
+            <a href="{% url 'eliminar_usuario' user.pk %}"><i class="fa fa-trash" style="font-size:20px;color:#5882FA"></i></button>
 
           </td>
         </tr>

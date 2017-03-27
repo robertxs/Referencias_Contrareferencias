@@ -21,9 +21,11 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Institucion',
             fields=[
-                ('rif', models.CharField(max_length=10, serialize=False, primary_key=True)),
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('rif', models.CharField(max_length=12)),
                 ('name', models.CharField(max_length=100)),
                 ('address', models.CharField(max_length=255)),
+                ('tipo', models.CharField(default=b'', max_length=30, choices=[(b'Hospital', b'Hospital'), (b'Clinica', b'Clinica'), (b'Laboratorio', b'Laboratorio')])),
             ],
         ),
         migrations.CreateModel(

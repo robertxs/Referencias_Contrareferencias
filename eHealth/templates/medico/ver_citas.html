@@ -27,13 +27,20 @@
       <th>Médico</th>
       {% endif %}
       <th>Institución</th>
-
       <th>Descripción</th>
+      {% if user.groups.all.0.name == 'medico' %}
       <th style="text-align: center">
         <a id="add_appointment" href="{% url 'agregar_cita' user.pk %}">
           <i class="fa fa-plus-circle" style="font-size:20px;color:white"></i>
         </a>
       </th>
+      {% else %}
+      <th style="text-align: center">
+        <a id="add_appointment" href="{% url 'agregar_cita_pac' user.pk %}">
+          <i class="fa fa-plus-circle" style="font-size:20px;color:white"></i>
+        </a>
+      </th>
+      {% endif %}
     </tr>
     {% for a in appointments %}
       <tr onclick="location.href='{% url 'consulta' a.id %}'">
@@ -45,7 +52,6 @@
         <td>{{a.medico.first_name}} {{a.medico.last_name}}</td>
         {% endif %}
         <td>{{a.institucion.name}}</td>
-        
         <td>{{a.descripcion}}</td>
         <td style="text-align: center;">
           <a href="{% url 'modificar_cita' a.pk %}"><i class="fa fa-pencil" style="font-size:20px;color:#5882FA"></i></a>

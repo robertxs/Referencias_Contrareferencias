@@ -66,6 +66,56 @@ urlpatterns = patterns(
         'administrador.controllers.agregar_rol',
         name='agregar_rol'
     ),
+    url(
+        r'^ver-instituciones/$',
+        VerInstituciones.as_view(),
+        name='ver_instituciones'
+    ),
+    url(
+        r'^agregar_institucion/$',
+        AgregarInstitucion.as_view(),
+        name='agregar_institucion'
+    ),
+    url(
+        r'^modificar_institucion/(?P<pk>\w+)$',
+        ModificarInstitucion.as_view(),
+        name='modificar_institucion'
+    ),
+    url(
+        r'^eliminar_institucion/(?P<pk>\w+)$',
+        'administrador.controllers.eliminar_institucion',
+        name='eliminar_institucion'
+    ),
+    url(
+        r'^ver-especialidades/$',
+        VerEspecialidades.as_view(),
+        name='ver_especialidades'
+    ),
+    url(
+        r'^agregar_especialidad/$',
+        AgregarEspecialidad.as_view(),
+        name='agregar_especialidad'
+    ),
+    url(
+        r'^modificar_especialidad/(?P<pk>\w+)$',
+        ModificarEspecialidad.as_view(),
+        name='modificar_especialidad'
+    ),
+    url(
+        r'^eliminar_especialidad/(?P<pk>\w+)$',
+        'administrador.controllers.eliminar_especialidad',
+        name='eliminar_especialidad'
+    ),
+    url(
+        r'^agregar_roles/$',
+        AgregarRoles.as_view(),
+        name='agregar_roles'
+    ),
+    url(
+        r'^eliminar_rol/(?P<pk>\w+)$',
+        'administrador.controllers.eliminar_rol',
+        name='eliminar_rol'
+    ),
 )
 
 if settings.DEBUG:

@@ -3,7 +3,10 @@ from paciente.models import *
 from medico.models import *
 from django.contrib.auth.models import User, Group
 from django.core.urlresolvers import reverse_lazy
+from django.contrib import messages
 from django.http import HttpResponseRedirect
+from django.shortcuts import render_to_response
+from django.template import RequestContext
 
 
 def register_user(form):
@@ -53,12 +56,82 @@ def eliminar_usuario(request, id):
     usuario.delete()
     user.delete()
     return HttpResponseRedirect(reverse_lazy(
-        'historias_clinicas'))
+        'ver_usuarios'))
 
 
-def agregar_rol(request, name):
-    group = Group(name=name)
-    group.save()
-    data = {'role': name}
-    return HttpResponse(json.dumps(data), status=200,
-                        content_type='application/json')
+def agregar_rol(name):
+    try:
+        group = Group(name=name)
+        group.save()
+        return True
+    except:
+        return False  
+
+
+def eliminar_rol(request,pk):
+    rol = Group.objects.get(pk=pk)
+    print(rol.name)
+    if (rol.name == 'admin') or (rol.name == 'medico') or (rol.name == 'paciente'):
+        messages.error(request,"No se puede eliminar este rol.")
+    else :
+        rol.delete()
+    return HttpResponseRedirect(reverse_lazy(
+        'ver_roles'))  
+
+
+def agregar_institucion(rif, nombre, direccion,tipo):
+    try:
+        institucion = Institucion(rif=rif,
+                            name = nombre,
+                            address =direccion,
+                            tipo = tipo)
+        institucion.save()
+        return True
+    except:
+        return False
+
+
+def modificar_institucion(inst_id, rif, nombre, direccion, tipo):
+    try:
+        institucion = Institucion.objects.get(pk=inst_id)
+        institucion.rif = rif
+        institucion.name = nombre
+        institucion.address = direccion
+        institucion.tipo = tipo
+        institucion.save()
+        return True
+    except:
+        return False
+
+
+def eliminar_institucion(request, pk):
+    institucion = Institucion.objects.get(pk=pk)
+    institucion.delete()
+    return HttpResponseRedirect(reverse_lazy(
+        'ver_instituciones'))
+
+
+def agregar_especialidad(nombre):
+    try:
+        especialidad = Especialidad(nombre_especialidad = nombre)
+        especialidad.save()
+        return True
+    except:
+        return False
+
+
+def modificar_especialidad(anterior, nombre):
+    try:
+        especialidad = Especialidad.objects.get(nombre_especialidad=anterior)
+        especialidad.delete()
+        especialidad = Especialidad(nombre_especialidad = nombre)
+        especialidad.save()
+        return True
+    except:
+        return False
+
+def eliminar_especialidad(request, pk):
+    especialidad = Especialidad.objects.get(pk=pk)
+    especialidad.delete()
+    return HttpResponseRedirect(reverse_lazy(
+        'ver_especialidades'))    

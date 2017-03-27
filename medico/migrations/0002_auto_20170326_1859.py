@@ -57,7 +57,7 @@ class Migration(migrations.Migration):
                 ('fecha', models.DateField()),
                 ('descripcion', models.CharField(max_length=500)),
                 ('hora', models.CharField(max_length=5, choices=[(b'6Am', b'6Am'), (b'7Am', b'7Am'), (b'8Am', b'8Am'), (b'9Am', b'9Am'), (b'10Am', b'10Am'), (b'11Am', b'11Am'), (b'12Pm', b'12Pm'), (b'1Pm', b'1Pm'), (b'2Pm', b'2Pm'), (b'3Pm', b'3Pm'), (b'4Pm', b'4Pm'), (b'5Pm', b'5Pm')])),
-                ('archivo', models.FileField(upload_to=b'')),
+                ('archivo', models.FileField(upload_to=b'informes/')),
             ],
         ),
         migrations.CreateModel(

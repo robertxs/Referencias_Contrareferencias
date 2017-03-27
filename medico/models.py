@@ -2,10 +2,6 @@ from django.db import models
 from administrador.models import *
 from paciente.models import *
 from django.core.validators import MaxValueValidator
-<<<<<<< HEAD
-
-=======
->>>>>>> d419a1813ded6e305eba5c1c710eb58caf734413
 
 class Medico(models.Model):
     cedula = models.IntegerField(primary_key=True,
@@ -30,9 +26,15 @@ class Especialidad(models.Model):
         return str(self.nombre_especialidad)
 
 class Institucion(models.Model):
-    rif = models.CharField(max_length=10, primary_key = True)
+    TIPO = (
+            ('Hospital', 'Hospital'),
+            ('Clinica', 'Clinica'),
+            ('Laboratorio', 'Laboratorio')
+            )
+    rif = models.CharField(max_length=12, blank=False)
     name = models.CharField(max_length=100)
     address = models.CharField(max_length=255, blank=False)
+    tipo = models.CharField(max_length=30, choices=TIPO, blank=False, default='')
 
     def __str__(self):
         return self.name
@@ -101,7 +103,6 @@ class Medico_Publicaciones(models.Model):
     numero = models.CharField(max_length=5, blank=False)
     volumen = models.CharField(max_length=5, blank=False)
     fecha = models.DateField()
-
 
 
 class Medico_Eventos(models.Model):

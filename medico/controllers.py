@@ -408,7 +408,7 @@ def agregar_citas(user_pk, paciente, institucion, descripcion, fecha, hora, espe
         usuario = Usuario.objects.get(user=user)
         medico = Medico.objects.get(usuario=usuario)
         paciente = Paciente.objects.get(cedula=paciente)
-        institucion = Institucion.objects.get(rif=institucion)
+        institucion = Institucion.objects.get(id=institucion)
         especialidad = Especialidad.objects.get(nombre_especialidad=especialidad)
         try:
             fecha = datetime.datetime.strptime(fecha,
@@ -435,7 +435,7 @@ def agregar_citas(user_pk, paciente, institucion, descripcion, fecha, hora, espe
         return False
 
 
-def modificar_citas(cita_id, paciente, descripcion, fecha):
+def modificar_citas(cita_id, paciente, descripcion, fecha, hora):
     try:
         cita = Medico_Citas.objects.get(
             pk=cita_id)
@@ -451,6 +451,7 @@ def modificar_citas(cita_id, paciente, descripcion, fecha):
                 now = datetime.datetime.now()
                 fecha = cal.parseDT(fecha, now)[0]
         paciente = Paciente.objects.get(cedula=paciente)
+        cita.hora = hora
         cita.paciente = paciente
         cita.descripcion = descripcion
         cita.fecha = fecha
@@ -472,7 +473,7 @@ def agregar_consultas(medico_id, especialidad, institucion, hora):
         user = User.objects.get(pk=medico_id)
         usuario = Usuario.objects.get(user=user)
         medico = Medico.objects.get(usuario=usuario)
-        institucion = Institucion.objects.get(rif=institucion)
+        institucion = Institucion.objects.get(id=institucion)
         especialidad = Especialidad.objects.get(nombre_especialidad=especialidad)
         consulta = Medico_Especialidad(medico=medico,
                             institucion = institucion,
@@ -484,18 +485,14 @@ def agregar_consultas(medico_id, especialidad, institucion, hora):
         return False
 
 
-def modificar_consultas(consulta_id, medico_id, especialidad, institucion, hora):
+def modificar_consultas(consulta_id, medico_id, hora):
     try:
         consulta = Medico_Especialidad.objects.get(
             pk=consulta_id)
         user = User.objects.get(pk=medico_id)
         usuario = Usuario.objects.get(user=user)
         medico = Medico.objects.get(usuario=usuario)
-        institucion = Institucion.objects.get(rif=institucion)
-        especialidad = Especialidad.objects.get(nombre_especialidad=especialidad)
         consulta.medico = medico
-        consulta.especialidad = especialidad
-        consulta.institucion = institucion
         consulta.horario = hora
         consulta.save()
         return True

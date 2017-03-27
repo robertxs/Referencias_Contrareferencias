@@ -65,8 +65,6 @@ class PerfilMedico(CreateView):
         Handles POST requests, instantiating a form instance with the passed
         POST variables and then checked for validity.
         """
-        print("aquiiiii")
-        print(request.POST)
         form = UsuarioForm(request.POST)
         form.fields['username'].required = False
         form.fields['passw'].required = False
@@ -678,7 +676,7 @@ class VerConsultas(TemplateView):
 
 class ModificarConsultas(CreateView):
     template_name = 'medico/agregar_consulta.html'
-    form_class = Medico_HorariosForm
+    form_class = Medico_HorariosFormEditar
 
     def get_context_data(self, **kwargs):
         context = super(
@@ -691,8 +689,9 @@ class ModificarConsultas(CreateView):
                 'horario' : consulta.horario,
                 'medico' : consulta.medico
                 }
-        form = Medico_HorariosForm(initial=data)
+        form = Medico_HorariosFormEditar(initial=data)
         context['form'] = form
+        context['horario'] = consulta
         return context
 
     def post(self, request, *args, **kwargs):
@@ -700,22 +699,20 @@ class ModificarConsultas(CreateView):
         Handles POST requests, instantiating a form instance with the passed
         POST variables and then checked for validity.
         """
-        form = Medico_HorariosForm(request.POST)
+        form = Medico_HorariosFormEditar(request.POST)
         if form.is_valid():
             consulta_id = kwargs['id']
             medico = kwargs['user']
-            especialidad = request.POST['especialidad']
-            institucion = request.POST['institucion']
             horarios = request.POST['result_horario']
             hora = horarios.split(",")
-            agrega_dis = ' si,'.join(hora)
-            nueva = agrega_dis.split(',')
             horario=[]
-            for x in nueva :
+            
+            for x in hora :
                 if not(x==''):
                     y= x.split(' ')
                     horario.append(y)
-            value = modificar_consultas(consulta_id, medico, especialidad, institucion,horario)
+
+            value = modificar_consultas(consulta_id, medico, horario)
             if value is True:
                 return HttpResponseRedirect(reverse_lazy(
                     'ver_consultas', kwargs={'id': request.user.pk}))
@@ -804,9 +801,9 @@ class BuscarMedico(TemplateView):
         context = super(
             BuscarMedico, self).get_context_data(**kwargs)
 
-        pacientes = Medico.objects.all()
+        medicos = Medico.objects.all()
 
-        context['result'] = pacientes
+        context['result'] = medicos
 
         return context
 
@@ -853,12 +850,8 @@ class AgregarCitas(CreateView):
             descripcion = request.POST['descripcion']
             especialidad = request.POST['especialidad']
             value = agregar_citas(user_pk, paciente, institucion, descripcion,
-<<<<<<< HEAD
-                                  fecha,hora,especialidad)
-=======
                                   fecha,hora,especialidad, es_referido= False)
 
->>>>>>> d419a1813ded6e305eba5c1c710eb58caf734413
             if value is True:
                 return HttpResponseRedirect(reverse_lazy(
                     'ver_citas', kwargs={'id': request.user.pk}))
@@ -906,8 +899,9 @@ class ModificarCitas(CreateView):
             paciente = request.POST['paciente']
             descripcion = request.POST['descripcion']
             fecha = request.POST['fecha']
+            hora = request.POST['hora']
             value = modificar_citas(cita_id, paciente, descripcion,
-                                    fecha)
+                                    fecha,hora)
             if value is True:
                 return HttpResponseRedirect(reverse_lazy(
                     'ver_citas', kwargs={'id': request.user.pk}))
@@ -1018,38 +1012,10 @@ class Consultas(TemplateView):
         #    descripcion = Referencia.objects.get(descripcion = cita.)
             context['referencia'] = referencia
         context['consulta'] = cita
+        context['cita'] = cita
 
         return context
 
-    # def post(self, request, *args, **kwargs):
-    #     """
-    #     Handles POST requests, instantiating a form instance with the passed
-    #     POST variables and then checked for validity.
-    #     """
-    #     form = Medico_CitasForm(request.POST)
-    #     if form.is_valid():
-    #         user_pk = request.user.pk
-    #         paciente = request.POST['paciente']
-    #         institucion = request.POST['institucion']
-    #         fecha = request.POST['fecha']
-    #         descripcion = request.POST['descripcion']
-    #         value = agregar_citas(user_pk, paciente, institucion, descripcion,
-    #                               fecha)
-    #         if value is True:
-    #             return HttpResponseRedirect(reverse_lazy(
-    #                 'ver_citas', kwargs={'id': request.user.pk}))
-    #         else:
-    #             return render_to_response('medico/agregar_cita.html',
-    #                                       {'form': form,
-    #                                        'title': 'Agregar'},
-    #                                       context_instance=RequestContext(
-    #                                           request))
-    #     else:
-    #         messages.error(request,"Por favor verifique que los campos estan en color rojo.")
-    #         return render_to_response('medico/agregar_cita.html',
-    #                                   {'form': form,
-    #                                    'title': 'Agregar'},
-    #                                   context_instance=RequestContext(request))
 
 class ComenzarRevision(CreateView):
     template_name = 'medico/comenzar_revision.html'
@@ -1097,6 +1063,7 @@ class ComenzarRevision(CreateView):
                                        'title': 'Agregar'},
                                       context_instance=RequestContext(request))
 
+
 class InformeMedico(CreateView):
     template_name = 'medico/informe_medico.html'
     form_class = Medico_InformeForm
@@ -1138,6 +1105,7 @@ class InformeMedico(CreateView):
                                       {'form': form,
                                        'title': 'Agregar'},
                                       context_instance=RequestContext(request))
+
 
 class MyPDFView(DetailView):
 
@@ -1187,6 +1155,7 @@ class MyPDFView(DetailView):
         p.showPage()
         p.save()
         return response
+
 
 class ReferirPaciente(CreateView):
 
@@ -1255,3 +1224,22 @@ class ReferirPaciente(CreateView):
                                       {'form': form,
                                       'title': 'Agregar'},
                                       context_instance=RequestContext(request))
+
+
+class VerHistorial(TemplateView):
+
+    template_name = 'medico/ver_historial.html'
+    form_class = Medico_HistorialForm
+
+    def get_context_data(self, **kwargs):
+        context = super(
+            VerHistorial, self).get_context_data(**kwargs)
+        consulta = Medico_Citas.objects.get(pk=self.kwargs['id'])
+        paciente = consulta.paciente
+        historial = Medico_Citas.objects.filter(
+            paciente=paciente).order_by('fecha')
+
+        context['historial'] = historial
+        context['consulta'] = consulta
+
+        return context

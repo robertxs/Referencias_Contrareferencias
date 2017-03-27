@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 from django import forms
 from administrador.models import *
+from django.contrib.auth.models import User, Group
+from medico.models import *
 
 
 class UsuarioForm(forms.ModelForm):
@@ -52,34 +54,6 @@ class UsuarioForm(forms.ModelForm):
         if User.objects.filter(username=username).count() != 0:
             raise forms.ValidationError(u'Este nombre de usuario ya está siendo utilizado.')
         return username
-
-    # def clean(self):
-    #     data = self.cleaned_data
-    #     print("aquiiiii!")
-    #     print(data)
-    #     print(self)
-    #     username = self.cleaned_data.get('username')
-    #     # institucion = self.cleaned_data.get('institucion')
-    #     # user = User.objects.get(pk=self.medico)
-    #     # usuario = Usuario.objects.get(user=user)
-    #     # med = Medico.objects.get(usuario=usuario)
-    #     # medico = med.cedula
-    #     # inst = Institucion.objects.get(name=institucion)
-    #     # institucion = inst.rif
-    #     # num_horarios = Medico_Especialidad.objects.filter(medico=medico,
-    #     #     institucion=institucion, especialidad=especialidad).count()
-    #     # print(num_horarios)
-
-    #     # if num_horarios == 1:
-    #     #     msj="Ya tiene horarios para esta especialidad en esta institución, seleccione otros por favor."
-    #     #     self.add_error('especialidad',msj)
-
-    #     if User.objects.filter(username=username).count() != 0:
-    #         msj="Este nombre de usuario ya está siendo utilizado."
-    #         self.add_error('username',msj)
-
-    #     return data
-
 
     def save(self, commit=True):
         print("ENTROOO EN SAVE DE ADMIN!")
@@ -140,7 +114,6 @@ class ModificarUsuarioForm(forms.ModelForm):
 
 
     def save(self, commit=True):
-        print("ENTROOO EN SAVE DE ADMIN DE MODIFICAR!")
         user = super(UsuarioForm, self).save(commit=False)
         user.email = self.cleaned_data['email']
         user.username = self.cleaned_data['username']
@@ -161,3 +134,44 @@ class LoginForm(forms.Form):
     password = forms.CharField(
         widget=forms.PasswordInput(
             attrs={'placeholder': 'Clave'}), required=True, label='')
+
+
+class InstitucionForm(forms.ModelForm):
+
+    class Meta:
+        model = Institucion
+        fields = '__all__'
+
+    def clean(self):
+        data = self.cleaned_data
+        rif = self.cleaned_data.get('rif')
+        nombre = self.cleaned_data.get('name')
+    
+        num_rif = Institucion.objects.filter(rif=rif).count()
+        print(num_rif)
+
+        num_nombre = Institucion.objects.filter(name=nombre).count()
+        print(num_nombre)
+
+        if num_rif == 1:
+            msj="Ya existe este rif asociado a una institución, verifíquelo por favor."
+            self.add_error('rif',msj)
+
+        if num_nombre == 1:
+            msj="Ya existe este nombre asociado a una institución, verifíquelo por favor."
+            self.add_error('name',msj)
+
+        return data
+
+
+class EspecialidadForm(forms.ModelForm):
+
+    class Meta:
+        model = Especialidad
+        fields = '__all__'
+
+class RolesForm(forms.ModelForm):
+
+    class Meta:
+        model = Group
+        fields = '__all__'
