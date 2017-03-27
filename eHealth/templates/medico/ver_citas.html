@@ -36,6 +36,7 @@
       </th>
     </tr>
     {% for a in appointments %}
+      {% if a.revision == False %}
       <tr onclick="location.href='{% url 'consulta' a.id %}'">
         <td>{{a.fecha}}</td>
         <td>{{a.hora}}</td>
@@ -45,13 +46,14 @@
         <td>{{a.medico.first_name}} {{a.medico.last_name}}</td>
         {% endif %}
         <td>{{a.institucion.name}}</td>
-        
+
         <td>{{a.descripcion}}</td>
         <td style="text-align: center;">
           <a href="{% url 'modificar_cita' a.pk %}"><i class="fa fa-pencil" style="font-size:20px;color:#5882FA"></i></a>
           <a href="{% url 'eliminar_cita' a.pk %}"><i class="fa fa-trash" style="font-size:20px;color:#5882FA"></i></a>
         </td>
       </tr>
+      {% endif %}
     {% endfor%}
   </table></div>
   </div>
