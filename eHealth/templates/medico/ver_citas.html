@@ -43,6 +43,7 @@
       {% endif %}
     </tr>
     {% for a in appointments %}
+      {% if a.revision == False %}
       <tr onclick="location.href='{% url 'consulta' a.id %}'">
         <td>{{a.fecha}}</td>
         <td>{{a.hora}}</td>
@@ -58,6 +59,7 @@
           <a href="{% url 'eliminar_cita' a.pk %}"><i class="fa fa-trash" style="font-size:20px;color:#5882FA"></i></a>
         </td>
       </tr>
+      {% endif %}
     {% endfor%}
   </table></div>
   </div>
