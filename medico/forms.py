@@ -73,9 +73,7 @@ class Medico_CitasForm(forms.ModelForm):
 
     class Meta:
         model = Medico_Citas
-    #    exclude = ("medico",)
         fields = ['paciente','institucion', 'fecha','descripcion','especialidad','hora']
-        # '__all__'
 
     def __init__(self, *args, **kwargs):
         self.medico = kwargs.pop('medico',None)
@@ -98,11 +96,11 @@ class Medico_CitasForm(forms.ModelForm):
         dia= Conocer_dia(fecha)
         dia_hora=dia+hora
         cantidad = Medico_Especialidad.objects.filter(medico=medico,
-            institucion=institucion.rif,especialidad=especialidad).count()
+            institucion=institucion.id,especialidad=especialidad).count()
         
         if cantidad > 0 :
             disponibilidad =Medico_Especialidad.objects.get(medico=medico,
-                institucion=institucion.rif,especialidad=especialidad)
+                institucion=institucion.id,especialidad=especialidad)
             horario= disponibilidad.horario
             horario2=horario.split(', ')
             i = 0
@@ -210,12 +208,13 @@ class Medico_HorariosForm(forms.ModelForm):
         data = self.cleaned_data
         especialidad = self.cleaned_data.get('especialidad')
         institucion = self.cleaned_data.get('institucion')
+        print(self.medico)
         user = User.objects.get(pk=self.medico)
         usuario = Usuario.objects.get(user=user)
         med = Medico.objects.get(usuario=usuario)
         medico = med.cedula
         inst = Institucion.objects.get(name=institucion)
-        institucion = inst.rif
+        institucion = inst.id
         num_horarios = Medico_Especialidad.objects.filter(medico=medico,
             institucion=institucion, especialidad=especialidad).count()
         print(num_horarios)
@@ -225,6 +224,20 @@ class Medico_HorariosForm(forms.ModelForm):
             self.add_error('especialidad',msj)
 
         return data
+
+
+class Medico_HorariosFormEditar(forms.ModelForm):
+
+    class Meta:
+        model = Medico_Especialidad
+        exclude = ["horario","especialidad","institucion","medico"]
+
+        labels = {
+            'especialidad' : 'Especialidad',
+            'institucion' : 'Institución',
+            'horario' : 'Horarios de Consulta'
+        }
+
 
 
 class Medico_RevisionForm(forms.ModelForm):
@@ -247,16 +260,24 @@ class Medico_InformeForm(forms.ModelForm):
         }
 
 
-class ReferirForm(forms.ModelForm):
+class ReferenciaForm(forms.ModelForm):
 
     class Meta:
-        model = Medico_Citas
-    #    exclude = ("medico",)
-        fields = ['medico','institucion', 'fecha','descripcion','especialidad','hora']
+        model = Referencia
 
-    def __init__(self, *args, **kwargs):
-        self.paciente = kwargs.pop('paciente',None)
-        super(ReferirForm,self).__init__(*args,**kwargs)
+        exclude = ('cita', 'paciente')
+
+        widgets={
+                'archivo':forms.FileInput (attrs={'class':'form-control','accept':'.pdf'})
+                }
+
+    # def validate_file_extension(value):
+    #     if not value.name.endswith('.pdf'):
+    #         raise ValidationError(u'Error message')
+
+    # def __init__(self, *args, **kwargs):
+    #     self.paciente = kwargs.pop('paciente',None)
+    #     super(ReferenciaForm,self).__init__(*args,**kwargs)
 
     # def clean(self):
     #     data = self.cleaned_data
@@ -316,3 +337,11 @@ class ReferirForm(forms.ModelForm):
     #         # raise forms.ValidationError('La fecha de la cita no puede ser menor a la de hoy')
 
     #     return data
+
+
+class Medico_HistorialForm(forms.ModelForm):
+
+    class Meta:
+        model = Medico_Citas
+        exclude = ("paciente","medico","institucion","fecha","descripcion",
+            "hora","especialidad","revision","informe","es_referido",)

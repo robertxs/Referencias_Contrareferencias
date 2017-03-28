@@ -16,25 +16,26 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.contrib import admin
 from paciente.views import *
+from medico.views import *
 
 urlpatterns = [
     url(
-        r'^ver-citas-paciente/(?P<id>\w+)$',
-        VerCitasPaciente.as_view(),
-        name='ver_citas_paciente'
+        r'^ver-citas/(?P<id>\w+)$',
+        VerCitas.as_view(),
+        name='ver_citas_pac'
     ),
     url(
-        r'^agregar-cita-paciente/(?P<id>\w+)$',
+        r'^agregar-cita/(?P<id>\w+)$',
         AgregarCitasPaciente.as_view(),
-        name='agregar_cita_paciente'
+        name='agregar_cita_pac'
     ),
     url(
-        r'^modificar-cita-paciente/(?P<id>\w+)$',
+        r'^modificar-cita/(?P<id>\w+)$',
         ModificarCitasPaciente.as_view(),
-        name='modificar_cita_paciente'
+        name='modificar_cita_pac'
     ),
     url(
-        r'^eliminar-cita-paciente/(?P<id>\w+)$',
+        r'^eliminar-cita/(?P<id>\w+)$',
         'medico.controllers.eliminar_citas',
         name='eliminar_cita_paciente'
     ),
@@ -42,5 +43,10 @@ urlpatterns = [
         r'^buscar-medico$',
         BuscarMedico.as_view(),
         name='buscar_medico_paciente'
+    ),
+    url(
+        r'^perfil-paciente/(?P<id>\w+)$',
+        Perfil.as_view(),
+        name='perfil_paciente'
     ),
 ]

@@ -2,7 +2,6 @@ from django.db import models
 from administrador.models import *
 from paciente.models import *
 from django.core.validators import MaxValueValidator
-from smart_selects.db_fields import GroupedForeignKey
 
 class Medico(models.Model):
     cedula = models.IntegerField(primary_key=True,
@@ -18,7 +17,7 @@ class Medico(models.Model):
                                 on_delete=models.CASCADE)
 
     def __str__(self):
-        return str(self.cedula) + "  " + self.first_name + " " + self.last_name
+        return str(self.cedula) + " " + self.first_name + " " + self.last_name
 
 class Especialidad(models.Model):
     nombre_especialidad = models.CharField(primary_key=True, max_length=30)
@@ -27,9 +26,15 @@ class Especialidad(models.Model):
         return str(self.nombre_especialidad)
 
 class Institucion(models.Model):
-    rif = models.CharField(max_length=10, primary_key = True)
+    TIPO = (
+            ('Hospital', 'Hospital'),
+            ('Clinica', 'Clinica'),
+            ('Laboratorio', 'Laboratorio')
+            )
+    rif = models.CharField(max_length=12, blank=False)
     name = models.CharField(max_length=100)
     address = models.CharField(max_length=255, blank=False)
+    tipo = models.CharField(max_length=30, choices=TIPO, blank=False, default='')
 
     def __str__(self):
         return self.name
@@ -185,9 +190,33 @@ class Emergencia(models.Model):
         unique_together = ('paciente','medico','institucion')
 
 class Referencia(models.Model):
-    informe = models.ForeignKey(Medico_Informe,
-                                  on_delete=models.CASCADE)
-    medico_referido = models.ForeignKey(Medico,
+
+    HORARIOS = (
+                ("6Am","6Am"),
+                ("7Am","7Am"),
+                ("8Am","8Am"),
+                ("9Am","9Am"),
+                ("10Am","10Am"),
+                ("11Am","11Am"),
+                ("12Pm","12Pm"),
+                ("1Pm","1Pm"),
+                ("2Pm","2Pm"),
+                ("3Pm","3Pm"),
+                ("4Pm","4Pm"),
+                ("5Pm","5Pm")
+                )
+    cita = models.ForeignKey(Medico_Citas,
                                         on_delete=models.CASCADE)
-    fecha_referencia = models.DateField()
-    hora_referencia = models.DateTimeField()
+
+    paciente = models.ForeignKey(Paciente,
+                                 on_delete=models.CASCADE)
+    medico = models.ForeignKey(Medico,
+                               on_delete=models.CASCADE)
+    institucion = models.ForeignKey(Institucion,
+                                    on_delete=models.CASCADE)
+    fecha = models.DateField()
+    descripcion = models.CharField(max_length=500, blank=False)
+    hora = models.CharField(max_length=5, choices=HORARIOS,blank=False)
+    especialidad = models.ForeignKey(Especialidad,
+                                    on_delete=models.CASCADE)
+    archivo = models.FileField(upload_to='informes/')

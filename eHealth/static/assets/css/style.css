@@ -631,6 +631,14 @@ label:hover:before {
 
 }
 
+#download{
+  position: relative;
+  top: 80px;
+  left: 170px;
+  right: 988px;
+
+}
+
 #atras{
   position: relative;
   top: -310px;

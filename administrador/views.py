@@ -3,11 +3,14 @@
 from django.shortcuts import render_to_response
 from django.core.urlresolvers import reverse_lazy
 from django.http import HttpResponseRedirect
+from django.http import HttpResponse
 from django.template import RequestContext
+from django.contrib import messages
 from django.contrib.auth import *
 from django.views.generic import *
 from administrador.forms import *
 from administrador.models import *
+from medico.models import *
 from administrador.controllers import *
 
 
@@ -131,8 +134,9 @@ class ModificarUsuario(CreateView):
     def get_context_data(self, **kwargs):
         context = super(
             ModificarUsuario, self).get_context_data(**kwargs)
+
         usuario = Usuario.objects.get(pk=self.kwargs['pk'])
-        form = UsuarioForm(
+        form = ModificarUsuarioForm(
                     initial={'username': usuario.user.username,
                              'first_name': usuario.user.first_name,
                              'last_name': usuario.user.last_name,
@@ -190,3 +194,240 @@ class VerRoles(TemplateView):
         roles = Group.objects.all()
         context['roles'] = roles
         return context
+
+
+class VerInstituciones(TemplateView):
+    template_name = 'administrador/ver_instituciones.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(
+            VerInstituciones, self).get_context_data(**kwargs)
+
+        instituciones = Institucion.objects.all()
+        context['instituciones'] = instituciones
+        return context
+
+
+class AgregarInstitucion(CreateView):
+    template_name = 'administrador/agregar_institucion.html'
+    form_class = InstitucionForm
+
+    def get_context_data(self, **kwargs):
+        context = super(
+            AgregarInstitucion, self).get_context_data(**kwargs)
+       
+        context['title'] = 'Agregar'
+
+        return context
+
+    def post(self, request, *args, **kwargs):
+        """
+        Handles POST requests, instantiating a form instance with the passed
+        POST variables and then checked for validity.
+        """
+        form = InstitucionForm(request.POST)
+        if form.is_valid():
+            rif = request.POST['rif']
+            nombre = request.POST['name']
+            direccion = request.POST['address']
+            tipo = request.POST['tipo']
+            value = agregar_institucion(rif, nombre, direccion, tipo)
+
+            if value is True:
+                return HttpResponseRedirect(reverse_lazy(
+                    'ver_instituciones'))
+            else:
+                return render_to_response('administrador/agregar_institucion.html',
+                                          {'form': form,
+                                           'title': 'Agregar'},
+                                          context_instance=RequestContext(
+                                              request))
+        else:
+            messages.error(request,"Por favor verifique que los campos.")
+            return render_to_response('administrador/agregar_institucion.html',
+                                      {'form': form,
+                                       'title': 'Agregar'},
+                                      context_instance=RequestContext(request))
+
+
+class ModificarInstitucion(CreateView):
+    template_name = 'administrador/modificar_institucion.html'
+    form_class = InstitucionFormEditar
+
+    def get_context_data(self, **kwargs):
+        context = super(
+            ModificarInstitucion, self).get_context_data(**kwargs)
+        institucion = Institucion.objects.get(pk=self.kwargs['pk'])
+        form = InstitucionFormEditar(
+                    initial={
+                             'address': institucion.address,
+                             'tipo': institucion.tipo,
+                            }
+                )
+
+        context['form'] = form
+        context['institucion'] = institucion
+
+        return context
+
+    def post(self, request, *args, **kwargs):
+        """
+        Handles POST requests, instantiating a form instance with the passed
+        POST variables and then checked for validity.
+        """
+        form = InstitucionFormEditar(request.POST)
+        if form.is_valid():
+            direccion = request.POST['address']
+            tipo = request.POST['tipo']
+            value = modificar_institucion(self.kwargs['pk'], direccion, tipo)
+
+            if value is True:
+                return HttpResponseRedirect(reverse_lazy(
+                    'ver_instituciones'))
+            else:
+                return render_to_response('administrador/modificar_institucion.html',
+                                          {'form': form,
+                                           'title': 'Modificar'},
+                                          context_instance=RequestContext(
+                                              request))
+        else:
+            return render_to_response('administrador/modificar_institucion.html',
+                                      {'form': form,
+                                       'title': 'Modificar'},
+                                      context_instance=RequestContext(request))
+
+
+class VerEspecialidades(TemplateView):
+    template_name = 'administrador/ver_especialidades.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(
+            VerEspecialidades, self).get_context_data(**kwargs)
+
+        especialidades = Especialidad.objects.all()
+        context['especialidades'] = especialidades
+        return context
+
+
+class AgregarEspecialidad(CreateView):
+    template_name = 'administrador/agregar_especialidad.html'
+    form_class = EspecialidadForm
+
+    def get_context_data(self, **kwargs):
+        context = super(
+            AgregarEspecialidad, self).get_context_data(**kwargs)
+       
+        context['title'] = 'Agregar'
+
+        return context
+
+    def post(self, request, *args, **kwargs):
+        """
+        Handles POST requests, instantiating a form instance with the passed
+        POST variables and then checked for validity.
+        """
+        form = EspecialidadForm(request.POST)
+        if form.is_valid():
+            nombre = request.POST['nombre_especialidad']
+            value = agregar_especialidad(nombre)
+
+            if value is True:
+                return HttpResponseRedirect(reverse_lazy(
+                    'ver_especialidades'))
+            else:
+                return render_to_response('administrador/agregar_especialidad.html',
+                                          {'form': form,
+                                           'title': 'Agregar'},
+                                          context_instance=RequestContext(
+                                              request))
+        else:
+            messages.error(request,"Por favor verifique que los campos.")
+            return render_to_response('administrador/agregar_especialidad.html',
+                                      {'form': form,
+                                       'title': 'Agregar'},
+                                      context_instance=RequestContext(request))
+
+
+class ModificarEspecialidad(CreateView):
+    template_name = 'administrador/agregar_especialidad.html'
+    form_class = EspecialidadForm
+
+    def get_context_data(self, **kwargs):
+        context = super(
+            ModificarEspecialidad, self).get_context_data(**kwargs)
+        especialidad = Especialidad.objects.get(pk=self.kwargs['pk'])
+        form = EspecialidadForm(
+                    initial={'nombre_especialidad': especialidad.nombre_especialidad,
+                            }
+                )
+
+        context['form'] = form
+        context['especialidad'] = especialidad
+
+        return context
+
+    def post(self, request, *args, **kwargs):
+        """
+        Handles POST requests, instantiating a form instance with the passed
+        POST variables and then checked for validity.
+        """
+        form = EspecialidadForm(request.POST)
+        if form.is_valid():
+            nombre = request.POST['nombre_especialidad']
+            value = modificar_especialidad(self.kwargs['pk'], nombre)
+
+            if value is True:
+                return HttpResponseRedirect(reverse_lazy(
+                    'ver_especialidades'))
+            else:
+                return render_to_response('administrador/agregar_especialidad.html',
+                                          {'form': form,
+                                           'title': 'Modificar'},
+                                          context_instance=RequestContext(
+                                              request))
+        else:
+            return render_to_response('administrador/agregar_especialidad.html',
+                                      {'form': form,
+                                       'title': 'Modificar'},
+                                      context_instance=RequestContext(request))
+
+
+class AgregarRoles(CreateView):
+    template_name = 'administrador/agregar_roles.html'
+    form_class = RolesForm
+
+    def get_context_data(self, **kwargs):
+        context = super(
+            AgregarRoles, self).get_context_data(**kwargs)
+       
+        context['title'] = 'Agregar'
+
+        return context
+
+    def post(self, request, *args, **kwargs):
+        """
+        Handles POST requests, instantiating a form instance with the passed
+        POST variables and then checked for validity.
+        """
+        form = RolesForm(request.POST)
+        print(form.is_valid())
+        if form.is_valid():
+            nombre = request.POST['name']
+            value = agregar_rol(nombre)
+            print(value)
+
+            if value is True:
+                return HttpResponseRedirect(reverse_lazy(
+                    'ver_roles'))
+            else:
+                return render_to_response('administrador/agregar_roles.html',
+                                          {'form': form,
+                                           'title': 'Agregar'},
+                                          context_instance=RequestContext(
+                                              request))
+        else:
+            messages.error(request,"Por favor verifique que los campos.")
+            return render_to_response('administrador/agregar_roles.html',
+                                      {'form': form,
+                                       'title': 'Agregar'},
+                                      context_instance=RequestContext(request))

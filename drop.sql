@@ -11,7 +11,7 @@ drop table medico_medico_especialidad;
 drop table medico_medico_estudios;
 drop table medico_medico;
 drop table medico_institucion;
-drop table medico_especialidad;
+drop table medico_especialidad cascade;
 drop table django_migrations;
 
 drop table django_content_type cascade;
@@ -25,7 +25,7 @@ drop table django_session;
 
 drop table administrador_inbox;
 drop table administrador_usuario;
-drop table auth_user;
+drop table auth_user cascade;
 drop table auth_user_groups;
 drop table auth_user_user_permissions;
 drop table django_admin_log;

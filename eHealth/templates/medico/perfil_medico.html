@@ -14,12 +14,14 @@
 
       <ul class="nav nav-tabs">
         <li class="active"><a data-toggle="tab" href="#home">Información Básica</a></li>
+        {% if user.groups.all.0.name == 'medico' %}
         <li><a data-toggle="tab" href="#menu1">Estudios</a></li>
         <li><a data-toggle="tab" href="#menu2">Reconocimientos</a></li>
         <li><a data-toggle="tab" href="#menu3">Publicaciones</a></li>
         <li><a data-toggle="tab" href="#menu4">Experiencia</a></li>
         <li><a data-toggle="tab" href="#menu5">Habilidades</a></li>
         <li><a data-toggle="tab" href="#menu6">Eventos</a></li>
+        {% endif %}
       </ul>
 
       <div class="tab-content">
@@ -28,32 +30,119 @@
             <div class="row">
               <!-- left column -->
               <div class="col-md-4 col-sm-6 col-xs-12">
-                <div class="text-center">
+              <form action="" method="POST" enctype="multipart/form-data">
+                <p class="text-center">
                   <img src="{% static 'assets/img/avatar.png' %}" class="avatar img-circle img-thumbnail" alt="avatar">
-                  <h6>Cambiar foto</h6>
-                  <input type="file" class="text-center center-block well well-sm">
-                </div>
+                  Cambiar foto
+                  <br>
+                  <br>
+                  <input type="file" name="archivosubido" accept="image/*" class="form-control"> 
+                  <br>
+                  <button type="submit" class="btn btn-lg">
+                    Guardar Imagen
+                  </button>
+             
+                </p>
+              </form>
               </div>
+
+             
               <!-- edit form column -->
               <div class="col-md-8 col-sm-6 col-xs-12 personal-info">
-                <form action="{% url 'perfil_medico' user.pk %}" method=POST>
+      
+                <form action="" method=POST>
+          
                   {% csrf_token %}
 
                   {% bootstrap_form_errors form %}
 
+                  {% if form.errors %}
+                      {% for field in form %}
+                          {% for error in field.errors %}
+                              <div class="alert alert-danger">
+                                  <strong>{{ error|escape }}</strong>
+                              </div>
+                          {% endfor %}
+                      {% endfor %}
+                      {% for error in form.non_field_errors %}
+                          <div class="alert alert-danger">
+                              <strong>{{ error|escape }}</strong>
+                          </div>
+                      {% endfor %}
+                  {% endif %}
+
                   <div id="rest_form">
+
+                  {% if user.groups.all.0.name == 'medico' %}
                     <div class="form-group">
                       <label for="id_ci">Cédula</label>
                       <span>{{medico.usuario.ci}}</span>
                     </div>
                     <label for="id_username">Nombre de usuario</label>
                     <span>{{medico.usuario.user.username}}</span>
+                  {% endif %}
+
+
+                  {% if user.groups.all.0.name == 'paciente' %}
+                    <div class="form-group">
+                      <label for="id_ci">Cédula</label>
+                      <span>{{paciente.usuario.ci}}</span>
+                    </div>
+                    <label for="id_username">Nombre de usuario</label>
+                    <span>{{paciente.usuario.user.username}}</span>
+                  {% endif %}
+
                     <label for="id_first_name">Nombre</label>
                     {% bootstrap_field form.first_name layout="inline" %}
                     <label for="id_last_name">Apellido</label>
                     {% bootstrap_field form.last_name layout="inline" %}
                     <label for="id_email">Correo</label>
                     {% bootstrap_field form.email layout="inline" %}
+                    
+
+                    {% if user.groups.all.0.name == 'paciente' %}
+                      <div class="form-group">
+                        <label for="id_sex">Sexo</label>
+                        <select name="sex">
+                          <option selected="selected">{{paciente.sexo}}</option>
+                          <option value="Femenino">Femenino</option>
+                          <option value="Masculino">Masculino</option>
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label for="id_birth_date">Fecha de nacimiento</label>
+                        <input class="form-control datepicker" id="id_birth_date" name="birth_date" placeholder="Fecha de nacimiento" title="" type="text" value="{{paciente.fecha_nacimiento}}"/>
+                      </div>
+                      <div class="form-group">
+                      <label for="id_lugar">Lugar de nacimiento</label>
+                      <input class="form-control" id="id_lugar" name="lugar" placeholder="Lugar de nacimiento" title="" type="text" value="{{paciente.lugar_nacimiento}}"/>
+                    </div>
+                    <div class="form-group">
+                      <label for="id_marital_status">Estado civil</label>
+                      <select name="marital_status">
+                        <option selected="selected">{{paciente.estado_civil}}</option>
+                        <option value="Soltero">Soltero(a)</option>
+                        <option value="Casado">Casado(a)</option>
+                        <option value="Viudo">Viudo(a)</option>
+                        <option value="Divorciado">Divorciado(a)</option>
+                        <option value="Otro">Otro</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="id_lugar">Ocupación</label>
+                      <input class="form-control" id="id_lugar" name="ocupacion" placeholder="Ocupación" title="" type="text" value="{{paciente.ocupacion}}"/>
+                      <div class="form-group">
+                      <label for="id_phone">Teléfono</label>
+                      <input class="form-control" id="id_phone" name="phone" placeholder="Teléfono" title="" type="text" value="{{paciente.telefono}}"/>
+                    </div>
+                    <div class="form-group">
+                      <label for="id_address">Dirección</label>
+                      <input class="form-control" id="id_address" name="address" placeholder="Dirección" title="" type="text" value="{{paciente.direccion}}"/>
+                    </div>
+                    {% endif %}
+
+
+                    {% if user.groups.all.0.name == 'medico' %}
                     <div class="form-group">
                       <label for="id_sex">Sexo</label>
                       <select name="sex">
@@ -70,10 +159,10 @@
                       <label for="id_marital_status">Estado civil</label>
                       <select name="marital_status">
                         <option selected="selected">{{medico.estado_civil}}</option>
-                        <option value="Soltero">Soltero</option>
-                        <option value="Casado">Casado</option>
-                        <option value="Viudo">Viudo</option>
-                        <option value="Divorciado">Divorciado</option>
+                        <option value="Soltero">Soltero(a)</option>
+                        <option value="Casado">Casado(a)</option>
+                        <option value="Viudo">Viudo(a)</option>
+                        <option value="Divorciado">Divorciado(a)</option>
                         <option value="Otro">Otro</option>
                       </select>
                     </div>
@@ -85,6 +174,8 @@
                       <label for="id_address">Dirección</label>
                       <input class="form-control" id="id_address" name="address" placeholder="Dirección" title="" type="text" value="{{medico.direccion}}"/>
                     </div>
+                    {% endif %}
+                    
                   {% buttons %}
                       <div class="col-md-3"></div>
                       <div class="col-sm-4 col-md-6 text-center">

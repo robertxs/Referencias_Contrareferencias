@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
+from django.views.static import serve
 from medico.views import *
 
 
@@ -205,11 +206,14 @@ urlpatterns = [
         MyPDFView.as_view(),
         name='generarPDF'
     ),
-
-
     url(
         r'^referir-paciente/(?P<id>\w+)$',
         ReferirPaciente.as_view(),
         name='referir_paciente'
+    ),
+    url(
+        r'^ver-historial/(?P<id>\w+)$',
+        VerHistorial.as_view(),
+        name='ver_historial'
     ),
 ]

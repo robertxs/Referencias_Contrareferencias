@@ -82,35 +82,25 @@
           <ul class="nav nav-pills nav-stacked">
               <li class="nav-header"></li>
 
-                {% if user.groups.all.0.name == 'paciente' %}
-                <li><a href=""><i class="fa fa-user"></i>  Ver Perfil</a></li>
-                <li><a href="{% url 'buscar_medico_paciente' %}"><i class="fa fa-search "></i>  Buscar médico </a></li>
-                <li><a href="{% url 'ver_citas_paciente' user.pk %}"><i class="fa fa-pencil-square-o "></i>  Ver Citas</a></li>
-                {% endif %}
-                {% if user.groups.all.0.name == 'medico' %}
+                  <li><a href="{% url 'consulta' consulta.pk %}"><i class="fa fa-edit"></i>  Iniciar Consulta</a></li>
 
-                  <li><a href="{% url 'consulta' consulta.id %}"><i class="fa fa-edit"></i>  Iniciar Consulta</a></li>
-
-                  <li><a href=""><i class="fa fa-child"></i>  Ver Perfil Paciente</a></li>
-
-                  <li><a href=""><i class="fa fa-table"></i>  Historial</a></li>
-
+                  <li><a href="{% url 'ver_historial' consulta.pk %}"><i class="fa fa-table"></i>  Historial</a></li>
 
                   {% if consulta.revision == True and consulta.informe = False %}
-                 <li><a href="{% url 'informe_medico' consulta.id %}" ><i class="fa fa-file"></i>  Hacer Informe</a></li>
+                 <li><a href="{% url 'informe_medico' consulta.pk %}" ><i class="fa fa-file"></i>  Hacer Informe</a></li>
                  {% endif %}
 
                  {% if consulta.informe = True %}
-                <li><a href="{% url 'generarPDF' consulta.id %}" ><i class="fa fa-file"></i>  Descargar Informe</a></li>
-               
-                  <li><a href="{% url 'referir_paciente' consulta.id %}"><i class="fa fa-envelope"></i>  Referir Paciente</a></li>
+                <li><a href="{% url 'generarPDF' consulta.pk %}" ><i class="fa fa-file"></i>  Descargar Informe</a></li>
+
+                  <li><a href="{% url 'referir_paciente' consulta.pk %}"><i class="fa fa-envelope"></i>  Referir Paciente</a></li>
                 {% endif %}
 
                   <li><a href=""><i class="fa fa-book"></i>  Ver Historia C.</a></li>
 
                   <li><a href=""><i class="fa fa-check-square-o"></i>  Diagnóstico</a></li>
 
-                {% endif %}
+                
           </ul>
         </div>
         <div class="col-sm-9">

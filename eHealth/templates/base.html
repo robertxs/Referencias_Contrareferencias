@@ -81,9 +81,9 @@
               {% if user.groups.all.0.name != 'admin' %}
 
                 {% if user.groups.all.0.name == 'paciente' %}
-                <li><a href=""><i class="fa fa-user"></i>  Ver Perfil</a></li>
-                <li><a href="{% url 'buscar_medico_paciente' %}"><i class="fa fa-search "></i>  Buscar médico </a></li>
-                <li><a href="{% url 'ver_citas_paciente' user.pk %}"><i class="fa fa-pencil-square-o "></i>  Ver Citas</a></li>
+                <li><a href="{% url 'perfil_paciente' user.pk %}"><i class="fa fa-user"></i>  Ver Perfil</a></li>
+                <li><a href="{% url 'buscar_medico' %}"><i class="fa fa-search "></i>  Buscar médico </a></li>
+                <li><a href="{% url 'ver_citas_pac' user.pk %}"><i class="fa fa-pencil-square-o "></i>  Ver Citas</a></li>
                 {% endif %}
                 {% if user.groups.all.0.name == 'medico' %}
                   <li><a href="{% url 'inbox' %}"><i class="fa fa-envelope"></i>  Inbox</a></li>
@@ -93,13 +93,14 @@
                   <li><a href="{% url 'buscar_paciente' %}"><i class="fa fa-search "></i>  Buscar paciente</a></li>
                   <li><a href="{% url 'buscar_medico' %}"><i class="fa fa-search "></i>  Buscar médico</a></li>
                   <li><a href="{% url 'ver_citas' user.pk %}"><i class="fa fa-pencil-square-o "></i>  Ver Citas</a></li>
+                  <li><a href="{% url 'ver_citas' user.pk %}"><i class="fa fa-pencil-square-o "></i>  Atender Emergencias</a></li>
                 {% endif %}
 
               {% else %}
                 <li><a href="{% url 'ver_usuarios' %}"><i class="fa fa-user"></i>  Gestionar Usuarios</a></li>
                 <li><a href="{% url 'ver_roles' %}"><i class="fa fa-users"></i>  Gestionar Roles</a></li>
-                <li><a href=""><i class="fa fa-stethoscope"></i>  Gestionar Instituciones</a></li>
-                <li><a href=""><i class="fa fa-h-square"></i>  Gestionar Especializaciones</a></li>
+                <li><a href="{% url 'ver_instituciones' %}"><i class="fa fa-stethoscope"></i>  Gestionar Instituciones</a></li>
+                <li><a href="{% url 'ver_especialidades' %}"><i class="fa fa-h-square"></i>  Gestionar Especializaciones</a></li>
               {% endif %}
           </ul>
         </div>

@@ -7,13 +7,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('medico', '0004_auto_20170308_1524'),
+        ('paciente', '0001_initial'),
     ]
 
     operations = [
-        migrations.AddField(
-            model_name='medico_citas',
-            name='es_referido',
-            field=models.BooleanField(default=False),
+        migrations.AlterField(
+            model_name='paciente',
+            name='telefono',
+            field=models.CharField(max_length=13, null=True, blank=True),
         ),
     ]

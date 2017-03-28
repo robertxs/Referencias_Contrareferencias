@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{# Load the tag library #}
+{% load bootstrap3 %}
+
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery=1%}
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
+{% load static %}
+{% block content %}
+  <div id="cuerpoHeredado">
+    <br>
+    <h2>{{title}} Institución</h2>
+    {% if title == "Agregar" %}
+    <form action="" method=POST>
+    {% else %}
+    <form action="" method=POST>
+    {% endif %}
+    {% csrf_token %}
+    
+    <div class="hidden">
+        {% bootstrap_form_errors form %}
+    </div>
+
+    {% if messages %}
+    <ul class="messages">
+      {% for mes in messages %}
+      <li{% if mes.tags  %}
+      class="{{ mes.tag }}"
+      {% endif%}>{{ mes }}
+      </li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if form.errors %}
+        {% for field in form %}
+            {% for error in field.errors %}
+                <div class="alert alert-danger">
+                    <strong>{{ error|escape }}</strong>
+                </div>
+            {% endfor %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}
+            <div class="alert alert-danger">
+                <strong>{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <label for="id_rif"> Rif </label>
+    {% bootstrap_field form.rif layout="inline" %}
+    <label for="id_nombre">Nombre</label>
+    {% bootstrap_field form.name layout="inline" %}
+    <label for="id_direccion">Dirección</label>
+    {% bootstrap_field form.address layout="inline" %}
+    <label for="id_tipo">Tipo</label>
+    {% bootstrap_field form.tipo layout="inline" %}
+        {% buttons %}
+        <div class="col-md-3"></div>
+        <div class="col-sm-4 col-md-6 text-center">
+            <br>
+            <button id="id_submit" type="submit" class="btn btn-lg calculate" >
+                Guardar
+            </button>
+            <br>
+            <br>
+        </div>
+        <div class="col-md-3"></div>
+    {% endbuttons %}
+    </form>
+  </div>
+{% endblock %}
