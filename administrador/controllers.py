@@ -91,11 +91,9 @@ def agregar_institucion(rif, nombre, direccion,tipo):
         return False
 
 
-def modificar_institucion(inst_id, rif, nombre, direccion, tipo):
+def modificar_institucion(inst_id, direccion, tipo):
     try:
         institucion = Institucion.objects.get(pk=inst_id)
-        institucion.rif = rif
-        institucion.name = nombre
         institucion.address = direccion
         institucion.tipo = tipo
         institucion.save()

@@ -20,12 +20,15 @@ import parsedatetime as pdt
 class Perfil(CreateView):
     template_name = 'medico/perfil_medico.html'
     form_class = UsuarioForm
-
+    print("saliooooo")
     def get_context_data(self, **kwargs):
+        print("aquiiii?????? -.-")
         context = super(
             Perfil, self).get_context_data(**kwargs)
+
         user = self.request.user
         usuario = Usuario.objects.get(user=user)
+        print("en perfil" + str(usuario))
         try:
             paciente = Paciente.objects.get(usuario=usuario)
         except:
@@ -53,6 +56,7 @@ class Perfil(CreateView):
         form.fields['passw'].required = False
         form.fields['ci'].required = False
         form.fields['rol'].required = False
+        print(form.is_valid())
         if form.is_valid():
             nombre = request.POST['first_name']
             apellido = request.POST['last_name']
@@ -65,12 +69,15 @@ class Perfil(CreateView):
             direccion = request.POST['address']
             ocupacion = request.POST['ocupacion']
             print("antes del value")
+            print(nombre)
+            print(apellido)
+            print(lugar)
             value = editar_paciente(request.user, nombre, apellido, sexo, ocupacion,
                                   fecha, lugar, estado_civil, telefono, direccion, email)
             print("despues de valueeee" + str(value))
             if value is True:
                 return HttpResponseRedirect(reverse_lazy(
-                    'perfil_medico', kwargs={'id': request.user.pk}))
+                    'perfil_paciente', kwargs={'id': request.user.pk}))
             else:
                 return render_to_response('medico/perfil_medico.html',
                                           {'form': form},
@@ -129,18 +136,19 @@ class AgregarCitasPaciente(CreateView):
         POST variables and then checked for validity.
         """
         form = Paciente_CitasForm(request.POST,paciente=request.user.pk)
-        print(form.is_valid())
         if form.is_valid():
             user_pk = request.user.pk
             medico = request.POST['medico']
             institucion = request.POST['institucion']
             fecha = request.POST['fecha']
             descripcion = request.POST['descripcion']
+            hora = request.POST['hora']
+            especialidad = request.POST['especialidad']
             value = agregar_citas_paciente(user_pk, medico, institucion, descripcion,
                                   fecha,hora,especialidad, es_referido= False)
             if value is True:
                 return HttpResponseRedirect(reverse_lazy(
-                    'ver_citas_paciente', kwargs={'id': request.user.pk}))
+                    'ver_citas_pac', kwargs={'id': request.user.pk}))
             else:
                 return render_to_response('medico/agregar_cita.html',
                                           {'form': form,
@@ -165,12 +173,14 @@ class ModificarCitasPaciente(CreateView):
 
         context['title'] = 'Modificar'
         cita = Medico_Citas.objects.get(pk=self.kwargs['id'])
-        data = {'paciente': cita.paciente,
-                'descripcion': cita.descripcion,
+        data = {'descripcion': cita.descripcion,
                 'fecha': cita.fecha,
-                'institucion': cita.institucion
+                'institucion': cita.institucion,
+                'especialidad': cita.especialidad,
+                'medico': cita.medico,
+                'hora': cita.hora,
                 }
-        form = Medico_CitasForm(initial=data)
+        form = Paciente_CitasForm(initial=data)
         context['form'] = form
         return context
 
@@ -180,17 +190,21 @@ class ModificarCitasPaciente(CreateView):
         POST variables and then checked for validity.
         """
         form = Paciente_CitasForm(request.POST,paciente=request.user.pk)
+        print(form.is_valid())
         if form.is_valid():
             cita_id = kwargs['id']
             medico = request.POST['medico']
             descripcion = request.POST['descripcion']
             fecha = request.POST['fecha']
             hora = request.POST['hora']
-            value = modificar_citas_paciente(cita_id, medico, descripcion,
-                                    fecha,hora)
+            especialidad = request.POST['especialidad']
+            institucion = request.POST['institucion']
+            value = modificar_citas_paciente(cita_id, medico, institucion, descripcion,
+                                  fecha,hora,especialidad, es_referido= False)
+            print(value)
             if value is True:
                 return HttpResponseRedirect(reverse_lazy(
-                    'ver_citas', kwargs={'id': request.user.pk}))
+                    'ver_citas_pac', kwargs={'id': request.user.pk}))
             else:
                 return render_to_response('medico/agregar_cita.html',
                                           {'form': form,

@@ -32,7 +32,7 @@ urlpatterns = [
     url(
         r'^modificar-cita/(?P<id>\w+)$',
         ModificarCitasPaciente.as_view(),
-        name='modificar_cita'
+        name='modificar_cita_pac'
     ),
     url(
         r'^eliminar-cita/(?P<id>\w+)$',

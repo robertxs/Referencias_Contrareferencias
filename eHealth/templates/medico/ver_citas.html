@@ -54,10 +54,17 @@
         {% endif %}
         <td>{{a.institucion.name}}</td>
         <td>{{a.descripcion}}</td>
+        {% if user.groups.all.0.name == 'medico' %}
         <td style="text-align: center;">
           <a href="{% url 'modificar_cita' a.pk %}"><i class="fa fa-pencil" style="font-size:20px;color:#5882FA"></i></a>
           <a href="{% url 'eliminar_cita' a.pk %}"><i class="fa fa-trash" style="font-size:20px;color:#5882FA"></i></a>
         </td>
+        {% else %}
+        <td style="text-align: center;">
+          <a href="{% url 'modificar_cita_pac' a.pk %}"><i class="fa fa-pencil" style="font-size:20px;color:#5882FA"></i></a>
+          <a href="{% url 'eliminar_cita' a.pk %}"><i class="fa fa-trash" style="font-size:20px;color:#5882FA"></i></a>
+        </td>
+        {% endif %}
       </tr>
       {% endif %}
     {% endfor%}

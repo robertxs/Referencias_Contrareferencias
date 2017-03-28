@@ -49,7 +49,9 @@
              
               <!-- edit form column -->
               <div class="col-md-8 col-sm-6 col-xs-12 personal-info">
-                <form action="{% url 'perfil_medico' user.pk %}" method=POST>
+      
+                <form action="" method=POST>
+          
                   {% csrf_token %}
 
                   {% bootstrap_form_errors form %}

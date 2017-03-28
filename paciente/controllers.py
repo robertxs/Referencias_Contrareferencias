@@ -18,7 +18,9 @@ def editar_paciente(user, nombre, apellido, sexo, ocupacion, fecha,
 		user.last_name = apellido
 		user.email = email
 		user.save()
+		print("save")
 		paciente.sexo = sexo
+		print("sexo")
 		try:
 			fecha = datetime.datetime.strptime(fecha,
 											   '%d-%m-%Y'
@@ -32,17 +34,23 @@ def editar_paciente(user, nombre, apellido, sexo, ocupacion, fecha,
 				fecha = cal.parseDT(fecha, now)[0]
 
 		paciente.fecha_nacimiento = fecha
+		print("fecha")
 		paciente.lugar_nacimiento = lugar
+		print("lug")
 		paciente.ocupacion = ocupacion
+		print("ocu")
 		paciente.estado_civil = estado_civil
+		print("estado")
 		
 		if (telefono == '') :
 			pass			
 		else :
 			paciente.telefono = telefono
-
+		print("telf")
 		paciente.direccion = direccion
+		print("direccion")
 		paciente.save()
+		print("saveeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")
 		
 		return True
 
@@ -57,6 +65,7 @@ def agregar_citas_paciente(user_pk, medico, institucion, descripcion, fecha, hor
 		paciente = Paciente.objects.get(usuario=usuario)
 		medico = Medico.objects.get(cedula=medico)
 		institucion = Institucion.objects.get(id=institucion)
+		especialidad = Especialidad.objects.get(nombre_especialidad=especialidad)
 		try:
 			fecha = datetime.datetime.strptime(fecha,
 											   '%d-%m-%Y'
@@ -83,10 +92,12 @@ def agregar_citas_paciente(user_pk, medico, institucion, descripcion, fecha, hor
 		return False
 
 
-def modificar_citas_paciente(cita_id, medico, descripcion, fecha, hora):
+def modificar_citas_paciente(cita_id, medico, institucion, descripcion,
+                                  fecha,hora,especialidad, es_referido):
     try:
         cita = Medico_Citas.objects.get(
             pk=cita_id)
+
         try:
             fecha = datetime.datetime.strptime(fecha,
                                                '%d-%m-%Y'
@@ -101,6 +112,10 @@ def modificar_citas_paciente(cita_id, medico, descripcion, fecha, hora):
         medico = Medico.objects.get(cedula=medico)
         cita.medico = medico
         cita.hora = hora
+        institucion = Institucion.objects.get(id=institucion)
+        cita.institucion = institucion
+        especialidad = Especialidad.objects.get(nombre_especialidad=especialidad)
+        cita.especialidad = especialidad
         cita.descripcion = descripcion
         cita.fecha = fecha
         cita.save()

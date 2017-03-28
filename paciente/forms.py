@@ -23,16 +23,17 @@ def volverElemlista(lista,ultimo):
     x = "'"
     indice= lista.index(x)
     if ultimo :
-        return lista[indice+1:len(lista)-2]
+        return lista[indice+1:len(lista)-3]
     else :
-        return lista[indice+1:len(lista)-1]
+        return lista[indice+1:len(lista)-2]
 
 
 class Paciente_CitasForm(forms.ModelForm):
 
     class Meta:
         model = Medico_Citas
-        fields = ['medico','institucion', 'fecha','descripcion','especialidad','hora']
+        exclude = ['paciente']
+        # fields = ['medico','institucion', 'fecha','descripcion','especialidad','hora','paciente']
 
 
     def __init__(self, *args, **kwargs):
@@ -52,8 +53,15 @@ class Paciente_CitasForm(forms.ModelForm):
         usuario = Usuario.objects.get(user=user)
         pac = Paciente.objects.get(usuario=usuario)
         paciente = pac.cedula
+        cita1 = Medico_Citas.objects.get(paciente=paciente,fecha=fecha,
+            hora=hora,medico=medico)
+        ident = cita1.id
+        print(ident)
         num_paciente = Medico_Citas.objects.filter(paciente=paciente,fecha=fecha,
             hora=hora).count()
+        cita2 = Medico_Citas.objects.get(paciente=paciente,fecha=fecha,
+            hora=hora)
+        ident2 = cita2.id
         dia= Conocer_dia(fecha)
         dia_hora=dia+hora
         cantidad = Medico_Especialidad.objects.filter(medico=medico,
@@ -66,11 +74,9 @@ class Paciente_CitasForm(forms.ModelForm):
             horario2=horario.split(', ')
             i = 0
             a = ''
-            print(horario2)
+            print(dia_hora)
             for x in horario2 :
                 ulti = i == (len(horario2)-1)
-                print(x)
-                print(ulti)
                 elem=volverElemlista(x,ulti)
                 print(elem)
                 boo = (dia_hora == elem)
@@ -83,14 +89,17 @@ class Paciente_CitasForm(forms.ModelForm):
                 msj = "La fecha de la cita no puede ser menor a la de hoy. "
                 self.add_error('fecha',msj)
 
-            if num_paciente == 1:
+            if (num_paciente == 1) and (ident != ident2):
                 msj="Cambie la hora y fecha de su consulta porque ya tiene otra cita a esa hora. "
-                self.add_error('paciente',msj)
+                self.add_error('hora',msj)
 
             if boo :
                 num_citas = Medico_Citas.objects.filter(fecha=fecha, hora=hora,
                     especialidad=especialidad,medico=medico,institucion=institucion).count()
-                if num_citas == 1 :
+                cita3 = Medico_Citas.objects.get(fecha=fecha, hora=hora,
+                    especialidad=especialidad,medico=medico,institucion=institucion)
+                ident3 = cita3.id
+                if (num_citas == 1) and (ident != ident3) :
                     msj = "La fecha y hora solicitadas no se encuentran disponibles. Por favor elija algunas de estos horarios: "
                     # for x in horario :
                     #     msj = msj + str(x) + ', '

@@ -134,10 +134,9 @@ class ModificarUsuario(CreateView):
     def get_context_data(self, **kwargs):
         context = super(
             ModificarUsuario, self).get_context_data(**kwargs)
-        print(self.kwargs)
-        print(self.args)
+
         usuario = Usuario.objects.get(pk=self.kwargs['pk'])
-        form = UsuarioForm(
+        form = ModificarUsuarioForm(
                     initial={'username': usuario.user.username,
                              'first_name': usuario.user.first_name,
                              'last_name': usuario.user.last_name,
@@ -253,15 +252,14 @@ class AgregarInstitucion(CreateView):
 
 class ModificarInstitucion(CreateView):
     template_name = 'administrador/modificar_institucion.html'
-    form_class = InstitucionForm
+    form_class = InstitucionFormEditar
 
     def get_context_data(self, **kwargs):
         context = super(
             ModificarInstitucion, self).get_context_data(**kwargs)
         institucion = Institucion.objects.get(pk=self.kwargs['pk'])
-        form = InstitucionForm(
-                    initial={'rif': institucion.rif,
-                             'name': institucion.name,
+        form = InstitucionFormEditar(
+                    initial={
                              'address': institucion.address,
                              'tipo': institucion.tipo,
                             }
@@ -277,13 +275,11 @@ class ModificarInstitucion(CreateView):
         Handles POST requests, instantiating a form instance with the passed
         POST variables and then checked for validity.
         """
-        form = InstitucionForm(request.POST)
+        form = InstitucionFormEditar(request.POST)
         if form.is_valid():
-            rif = request.POST['rif']
-            nombre = request.POST['name']
             direccion = request.POST['address']
             tipo = request.POST['tipo']
-            value = modificar_institucion(self.kwargs['pk'], rif, nombre, direccion, tipo)
+            value = modificar_institucion(self.kwargs['pk'], direccion, tipo)
 
             if value is True:
                 return HttpResponseRedirect(reverse_lazy(

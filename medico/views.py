@@ -820,8 +820,14 @@ class VerCitas(TemplateView):
         context = super(
             VerCitas, self).get_context_data(**kwargs)
         user = User.objects.get(pk=self.kwargs['id'])
-        citas = Medico_Citas.objects.filter(
-            medico__usuario__user=user).order_by('fecha')
+        print(user.id)
+        grupo = Group.objects.get(user=user.id)
+        if (grupo.name == 'paciente') :
+            citas = Medico_Citas.objects.filter(
+                paciente__usuario__user=user).order_by('fecha')
+        else :
+            citas = Medico_Citas.objects.filter(
+                medico__usuario__user=user).order_by('fecha')
 
         context['appointments'] = citas
 
