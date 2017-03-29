@@ -39,6 +39,7 @@ class Migration(migrations.Migration):
                 ('estado_civil', models.CharField(max_length=15, null=True, blank=True)),
                 ('telefono', models.CharField(max_length=15, null=True, blank=True)),
                 ('direccion', models.CharField(max_length=100, null=True, blank=True)),
+                ('foto_perfil', models.ImageField(upload_to=b'images/')),
                 ('usuario', models.ForeignKey(to='administrador.Usuario')),
             ],
         ),

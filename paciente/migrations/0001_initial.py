@@ -58,7 +58,7 @@ class Migration(migrations.Migration):
                 ('estado_civil', models.CharField(blank=True, max_length=7, null=True, choices=[(b'Soltero', b'Soltero'), (b'Casado', b'Casado')])),
                 ('ocupacion', models.CharField(max_length=30, null=True, blank=True)),
                 ('direccion', models.CharField(max_length=70, null=True, blank=True)),
-                ('telefono', models.IntegerField(null=True, blank=True)),
+                ('telefono', models.CharField(max_length=13, null=True, blank=True)),
                 ('usuario', models.ForeignKey(to='administrador.Usuario')),
             ],
         ),
