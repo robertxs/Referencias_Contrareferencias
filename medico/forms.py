@@ -97,7 +97,7 @@ class Medico_CitasForm(forms.ModelForm):
         dia_hora=dia+hora
         cantidad = Medico_Especialidad.objects.filter(medico=medico,
             institucion=institucion.id,especialidad=especialidad).count()
-        
+
         if cantidad > 0 :
             disponibilidad =Medico_Especialidad.objects.get(medico=medico,
                 institucion=institucion.id,especialidad=especialidad)
@@ -256,7 +256,10 @@ class Medico_InformeForm(forms.ModelForm):
         widgets = {
             'desc_prediagnostico': forms.Textarea(attrs={'rows':5,
                                                         'cols':10,
-                                                        'style': 'height: 9em;width:50em'})
+                                                        'style': 'height: 9em;width:50em'}),
+            'recipe_medico' :  forms.Textarea(attrs={'rows':5,
+                                                     'cols':10,
+                                                     'style': 'height: 9em;width:50em'})
         }
 
 

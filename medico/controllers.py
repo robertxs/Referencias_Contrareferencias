@@ -13,7 +13,7 @@ dicDias = {'Monday':'Lunes','Tuesday':'Martes','Wednesday':'Miercoles',
 
 
 def editar_medico(user, nombre, apellido, email, sexo, fecha, estado_civil,
-                  telefono, direccion):
+                  telefono, direccion, foto):
     try:
         usuario = Usuario.objects.get(user=user)
         user = User.objects.get(pk=usuario.user.pk)
@@ -41,6 +41,7 @@ def editar_medico(user, nombre, apellido, email, sexo, fecha, estado_civil,
         medico.estado_civil = estado_civil
         medico.telefono = telefono
         medico.direccion = direccion
+        medico.foto_perfil = foto
         medico.save()
         user.save()
         return True
@@ -531,12 +532,13 @@ def comenzar_revision(cita_id, motivos, sintomas, presion_sanguinea, temperatura
     except:
         return False
 
-def informe_medico(revision_id, prediagnostico):
+def informe_medico(revision_id, prediagnostico, recipe):
     try:
         revision = Medico_Revision.objects.get(pk=revision_id)
         cita = Medico_Citas.objects.get(pk = revision_id)
         cita.informe = True
-        informe = Medico_Informe(medico_Revision=revision,desc_prediagnostico=prediagnostico)
+        informe = Medico_Informe(medico_Revision=revision,desc_prediagnostico=prediagnostico,
+                                recipe_medico=recipe)
         cita.save()
         informe.save()
         return True

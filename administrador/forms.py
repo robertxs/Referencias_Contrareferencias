@@ -230,7 +230,7 @@ class InstitucionForm(forms.ModelForm):
         data = self.cleaned_data
         rif = self.cleaned_data.get('rif')
         nombre = self.cleaned_data.get('name')
-    
+
         num_rif = Institucion.objects.filter(rif=rif).count()
         print(num_rif)
 
@@ -256,7 +256,6 @@ class InstitucionFormEditar(forms.ModelForm):
 
 
 class EspecialidadForm(forms.ModelForm):
-
     class Meta:
         model = Especialidad
         fields = '__all__'

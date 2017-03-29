@@ -166,11 +166,6 @@ class Medico_Informe(models.Model):
     medico_Revision = models.ForeignKey(Medico_Revision,
                                         on_delete=models.CASCADE)
     desc_prediagnostico = models.TextField(max_length=100)
-
-class Medico_Diagnostico(models.Model):
-    cita = models.ForeignKey(Medico_Citas,
-                              on_delete=models.CASCADE)
-    conclusiones = models.TextField()
     recipe_medico = models.TextField()
 
 class Emergencia(models.Model):
