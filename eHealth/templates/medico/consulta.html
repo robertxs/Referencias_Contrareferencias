@@ -76,8 +76,9 @@
 
          <!-- Trigger the modal with a button -->
           <button type="button"  id = "finalizar" class="btn btn-danger" data-toggle="modal" data-target="#myModal">Finalizar Consulta</button>
+          {% if consulta.revision == False %}
           <a id = "atras" href="{% url 'ver_citas' user.pk %}" role = "button">&laquo; Regresar</a>
-
+        {% endif %}
           <div class="col-md-3"></div>
       {% endbuttons %}
     </div>
