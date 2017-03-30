@@ -84,6 +84,7 @@
                 <li><a href="{% url 'perfil_paciente' user.pk %}"><i class="fa fa-user"></i>  Ver Perfil</a></li>
                 <li><a href="{% url 'buscar_medico' %}"><i class="fa fa-search "></i>  Buscar médico </a></li>
                 <li><a href="{% url 'ver_citas_pac' user.pk %}"><i class="fa fa-pencil-square-o "></i>  Ver Citas</a></li>
+                <li><a href="{% url 'informe_med' user.pk %}"><i class="fa fa-folder-open "></i> Mis Informes Médicos</a></li>
                 {% endif %}
                 {% if user.groups.all.0.name == 'medico' %}
                   <li><a href="{% url 'inbox' %}"><i class="fa fa-envelope"></i>  Inbox</a></li>

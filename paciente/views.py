@@ -217,3 +217,17 @@ class ModificarCitasPaciente(CreateView):
                                        'title': 'Modificar'},
                                       context_instance=RequestContext(request))
 
+
+class Informe(TemplateView):
+    template_name = 'paciente/informe_med.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(
+            Informe, self).get_context_data(**kwargs)
+        user = user = User.objects.get(pk=self.kwargs['id'])
+        citas = Medico_Citas.objects.filter(
+            paciente__usuario__user=user)
+
+        context['appointments'] = citas
+
+        return context
