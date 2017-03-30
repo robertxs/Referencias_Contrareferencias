@@ -1321,7 +1321,6 @@ class VerHistorial(TemplateView):
         context['consulta'] = consulta
 
         return context
-<<<<<<< HEAD
 
 
 class VerEmergencias(TemplateView):
@@ -1338,5 +1337,3 @@ class VerEmergencias(TemplateView):
         context['medico'] = user
 
         return context
-=======
->>>>>>> origin/perfilMedico
