@@ -183,6 +183,8 @@ class Emergencia(models.Model):
 
     hora_entrada = models.DateTimeField()
 
+    finalizada = models.BooleanField(default=False)
+
     def __unicode__(self):
         return self.name
 

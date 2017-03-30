@@ -430,6 +430,7 @@ def agregar_citas(user_pk, paciente, institucion, descripcion, fecha, hora, espe
                             especialidad=especialidad,
                             es_referido = es_referido)
         cita.save()
+        print("savee citaaa cont")
         return True
     except:
         return False

@@ -15,13 +15,13 @@
   <center><h2>Historial de Citas</h2></center>
     <div id="show-consultations"><table>
       <tr>
-        <th>Médico</th>
-        <th>Fecha</th>
-        <th>Institución</th>
-        <th>Especialidad</th>
+        <th style="text-align: center;">Médico</th>
+        <th style="text-align: center;">Fecha</th>
+        <th style="text-align: center;">Institución</th>
+        <th style="text-align: center;">Especialidad</th>
       </tr>
       {% for h in historial %}
-        <tr>
+        <tr style="text-align: center;">
           <td>{{h.medico.first_name}} {{h.medico.last_name}}</td>
           <td>{{h.fecha}}</td>
           <td>{{h.institucion.name}}</td>

@@ -44,7 +44,11 @@
     </tr>
     {% for a in appointments %}
       {% if a.revision == False %}
+      {% if user.groups.all.0.name == 'medico' %}
       <tr onclick="location.href='{% url 'consulta' a.id %}'">
+      {% else %}
+      <tr>
+      {% endif %}
         <td>{{a.fecha}}</td>
         <td>{{a.hora}}</td>
         {% if user.groups.all.0.name == 'medico' %}

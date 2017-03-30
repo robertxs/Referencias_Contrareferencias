@@ -56,7 +56,6 @@ class Paciente_CitasForm(forms.ModelForm):
         cita1 = Medico_Citas.objects.get(paciente=paciente,fecha=fecha,
             hora=hora,medico=medico)
         ident = cita1.id
-        print(ident)
         num_paciente = Medico_Citas.objects.filter(paciente=paciente,fecha=fecha,
             hora=hora).count()
         cita2 = Medico_Citas.objects.get(paciente=paciente,fecha=fecha,
@@ -74,11 +73,9 @@ class Paciente_CitasForm(forms.ModelForm):
             horario2=horario.split(', ')
             i = 0
             a = ''
-            print(dia_hora)
             for x in horario2 :
                 ulti = i == (len(horario2)-1)
                 elem=volverElemlista(x,ulti)
-                print(elem)
                 boo = (dia_hora == elem)
                 a = a + elem + ', '
                 if boo :

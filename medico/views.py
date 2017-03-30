@@ -893,7 +893,9 @@ class ModificarCitas(CreateView):
         data = {'paciente': cita.paciente,
                 'descripcion': cita.descripcion,
                 'fecha': cita.fecha,
-                'institucion': cita.institucion
+                'institucion': cita.institucion,
+                'especialidad':cita.especialidad,
+                'hora':cita.hora,
                 }
         form = Medico_CitasForm(initial=data)
         context['form'] = form
@@ -904,7 +906,7 @@ class ModificarCitas(CreateView):
         Handles POST requests, instantiating a form instance with the passed
         POST variables and then checked for validity.
         """
-        form = Medico_CitasForm(request.POST)
+        form = Medico_CitasForm(request.POST,medico=request.user.pk)
         if form.is_valid():
             cita_id = kwargs['id']
             paciente = request.POST['paciente']
@@ -1012,13 +1014,15 @@ class Consultas(TemplateView):
         print(cita.id)
         print(cita.es_referido)
         print("pk del medico")
-        print(cita.medico.usuario.user.pk)
+        print(cita.medico)
         if cita.es_referido == True:
             print(cita.id)
             print(cita.fecha)
             referencia = Referencia.objects.get(fecha = cita.fecha,
                                                 paciente=cita.paciente_id,
-                                                medico = cita.medico)
+                                                medico = cita.medico,
+                                                hora = cita.hora,
+                                                descripcion = cita.descripcion)
             print(referencia.id)
         #    descripcion = Referencia.objects.get(descripcion = cita.)
             context['referencia'] = referencia
@@ -1222,9 +1226,10 @@ class ReferirPaciente(CreateView):
         Handles POST requests, instantiating a form instance with the passed
         POST variables and then checked for validity.
         """
-        form = ReferenciaForm(request.POST,request.FILES)
-
+        form = ReferenciaForm(request.POST,request.FILES,cita=kwargs['id'])
+        print(form.is_valid())
         if form.is_valid() :
+            print("aqui?????")
             id_cita = kwargs['id']
             cita = Medico_Citas.objects.get(id=id_cita)
 
@@ -1232,13 +1237,13 @@ class ReferirPaciente(CreateView):
 
             paciente = Paciente.objects.get(cedula = cita.paciente.cedula)
 
-            rif_institucion = request.POST['institucion']
-            institucion = Institucion.objects.get(rif=rif_institucion)
+            id_institucion = request.POST['institucion']
+            institucion = Institucion.objects.get(id=id_institucion)
             medico = request.POST['medico']
             medico1=Medico.objects.get(cedula = medico)
             usuarioMedico = Usuario.objects.get(id = medico1.usuario_id )
             user_pk = User.objects.get(pk = usuarioMedico.user_id)
-            print("supuetso medico")
+            print("supuesto medico")
             print(usuarioMedico.user_id)
             fecha = request.POST['fecha']
             hora = request.POST['hora']
@@ -1251,9 +1256,10 @@ class ReferirPaciente(CreateView):
                                 descripcion= descripcion, fecha= fecha,
                                 hora= hora, especialidad= especialidad)
             subirInforme.save()
-            new_cita = agregar_citas(user_pk.id, paciente.cedula, rif_institucion, descripcion,
+            print("savee archivo")
+            new_cita = agregar_citas(user_pk.id, paciente.cedula, id_institucion, descripcion,
                                    fecha, hora, name_especialidad, es_referido=True)
-
+            print("savee cita")
 
             if new_cita is True:
                 return HttpResponseRedirect(reverse_lazy(
@@ -1265,10 +1271,14 @@ class ReferirPaciente(CreateView):
                                           context_instance=RequestContext(request))
 
         else:
+            print("aca?????")
             messages.error(request,"Por favor verifique que los campos estan en color rojo.")
+            cita = Medico_Citas.objects.get(id=self.kwargs['id'])
+            print(cita.id)
             return render_to_response('medico/referir_paciente.html',
                                       {'form': form,
-                                      'title': 'Agregar'},
+                                      'title': 'Agregar',
+                                      'consulta':cita},
                                       context_instance=RequestContext(request))
 
 
@@ -1287,5 +1297,21 @@ class VerHistorial(TemplateView):
 
         context['historial'] = historial
         context['consulta'] = consulta
+
+        return context
+
+
+class VerEmergencias(TemplateView):
+    template_name = 'medico/ver_emergencias.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(
+            VerEmergencias, self).get_context_data(**kwargs)
+        user = User.objects.get(pk=self.kwargs['id'])
+        
+        emergencias = Emergencia.objects.filter(
+                medico__usuario__user=user).order_by('fecha_entrada')
+        context['consulta'] = emergencias
+        context['medico'] = user
 
         return context

@@ -2,13 +2,12 @@
 {% block content %}
 
 <div id="">
-  <h1> Buscar</h1>
+  <h1> Paciente a ingresar a Emergencias </h1>
 </div>
 
 <br>
-<br>
 
-<h3> Resultados de búsqueda </h3>
+<h3> Seleccione el paciente a ingresar: </h3>
 <div>
     <table id="search_result" class="display" cellspacing="0" width="100%">
             <thead>
@@ -21,7 +20,7 @@
             </thead>
             <tbody>
             {% for user in result %}
-                <tr>
+                <tr onclick="location.href='{% url 'consulta' user.id %}'">
                     <td>{{user.cedula}}</td>
                     <td>{{user.first_name}}</td>
                     <td>{{user.last_name}}</td>

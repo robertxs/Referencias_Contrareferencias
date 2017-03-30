@@ -21,7 +21,7 @@
     <div class="tab-content">
     <div id="referir" class="tab-pane fade in active">
 
-    <div class="col-md-8 col-sm-6 col-xs-12 personal-info">
+    <div class="col-md-10 col-sm-10 col-xs-12 personal-info">
       {% if form.is_multipart %}
       <form enctype="multipart/form-data" method="POST" action="{% url 'referir_paciente' consulta.id %}">
       {% else %}
@@ -45,12 +45,30 @@
   	    </ul>
   	    {% endif %}
 
+        {% if form.errors %}
+          {% for field in form %}
+              {% for error in field.errors %}
+                  <div class="alert alert-danger">
+                      <strong>{{ error|escape }}</strong>
+                  </div>
+              {% endfor %}
+          {% endfor %}
+          {% for error in form.non_field_errors %}
+              <div class="alert alert-danger">
+                  <strong>{{ error|escape }}</strong>
+              </div>
+          {% endfor %}
+        {% endif %}
+
+        <div class="col-md-16 col-sm-16 col-xs-20">
         <label for="">Nombre del Paciente</label>
-      
-          <span>{{consulta.paciente}}</span>
+        <span>{{consulta.paciente.first_name}} {{consulta.paciente.last_name}}</span>
+        <label for="">CI del Paciente</label>
+        <span>{{consulta.paciente.cedula}}</span>
+
           <label for="id_medico">Médico</label>
  	       {% bootstrap_field form.medico layout="inline" %}
- 	      <label for="id_fecha">Institución Médica</label>
+ 	      <label for="id_inst">Institución Médica</label>
  	      {% bootstrap_field form.institucion layout="inline" %}
  	      <label for="id_especialidad">Especialidad</label>
  	      {% bootstrap_field form.especialidad layout="inline" %}
@@ -74,11 +92,15 @@
 	            <br>
 	        </div>
 	        <div class="col-md-3"></div>
+          </div>
 	    {% endbuttons %}
     </form>
     </form>
   </div>
 {% endblock %}
+{% block custom_script %}
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
+<script src="{% static 'plugins/datepicker/locales/bootstrap-datepicker.es.js' %}"></script>
 
 <script type="text/javascript">
 $(document).ready(function(){
@@ -112,3 +134,5 @@ $(document).ready(function(){
     alert(document.getElementById("id_medico2").value());
   }
 </script>
+
+{% endblock %}

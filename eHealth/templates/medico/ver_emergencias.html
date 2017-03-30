@@ -1,0 +1,37 @@
+{% extends "base_em.html" %}
+{% block content %}
+<div id="cuerpoHeredado">
+  <center><h2> Mis Emergencias </h2></center>
+  
+  <div id="show-appointments"><table>
+    <tr>
+      <th>Fecha</th>
+      <th>Hora</th>
+      <th>Paciente</th>
+      <th>Institución</th>
+
+      <th style="text-align: center">
+        <a id="add_emerg" href="{% url 'seleccion_paciente' user.pk %}">
+          <i class="fa fa-plus-circle" style="font-size:20px;color:white"></i>
+        </a>
+      </th>
+    </tr>
+
+    {% for a in consulta %}
+
+      {% if a.finalizada == False %}
+
+      <tr onclick="">
+        <td>{{a.fecha_entrada}}</td>
+        <td>{{a.hora_entrada}}</td>
+        <td>{{a.paciente.first_name}} {{a.paciente.last_name}}</td>
+        <td>{{a.institucion.name}}</td>
+      </tr>
+
+    {% endif %}
+    
+    {% endfor%}
+  </table></div>
+  </div>
+</div>
+{% endblock %}

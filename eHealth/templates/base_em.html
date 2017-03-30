@@ -78,31 +78,14 @@
           <hr>
           <ul class="nav nav-pills nav-stacked">
               <li class="nav-header"></li>
-              {% if user.groups.all.0.name != 'admin' %}
-
-                {% if user.groups.all.0.name == 'paciente' %}
-                <li><a href="{% url 'perfil_paciente' user.pk %}"><i class="fa fa-user"></i>  Ver Perfil</a></li>
-                <li><a href="{% url 'buscar_medico' %}"><i class="fa fa-search "></i>  Buscar médico </a></li>
-                <li><a href="{% url 'ver_citas_pac' user.pk %}"><i class="fa fa-pencil-square-o "></i>  Ver Citas</a></li>
-                {% endif %}
-                {% if user.groups.all.0.name == 'medico' %}
-                  <li><a href="{% url 'inbox' %}"><i class="fa fa-envelope"></i>  Inbox</a></li>
-                  <li><a href="{% url 'perfil_medico' user.pk %}"><i class="fa fa-user"></i>  Ver Perfil</a></li>
-                  <li><a href="{% url 'ver_consultas' user.pk %}"><i class="fa fa-calendar"></i>  Ver Horario De Consultas</a></li>
-                  <li><a href="{% url 'historias_clinicas' %}"><i class="fa fa-folder-open"></i>  Historias Clínicas</a></li>
-                  <li><a href="{% url 'buscar_paciente' %}"><i class="fa fa-search "></i>  Buscar paciente</a></li>
-                  <li><a href="{% url 'buscar_medico' %}"><i class="fa fa-search "></i>  Buscar médico</a></li>
-                  <li><a href="{% url 'ver_citas' user.pk %}"><i class="fa fa-pencil-square-o "></i>  Ver Citas</a></li>
-                  <li><a href="{% url 'ver_emergencias' user.pk %}"><i class="fa fa-pencil-square-o "></i>  Atender Emergencias</a></li>
-                {% endif %}
-
-              {% else %}
-                <li><a href="{% url 'ver_usuarios' %}"><i class="fa fa-user"></i>  Gestionar Usuarios</a></li>
-                <li><a href="{% url 'ver_roles' %}"><i class="fa fa-users"></i>  Gestionar Roles</a></li>
-                <li><a href="{% url 'ver_instituciones' %}"><i class="fa fa-stethoscope"></i>  Gestionar Instituciones</a></li>
-                <li><a href="{% url 'ver_especialidades' %}"><i class="fa fa-h-square"></i>  Gestionar Especializaciones</a></li>
-              {% endif %}
+  
+                <li><a href="{% url 'ver_emergencias' medico.pk %}"><i class="fa fa-pencil-square-o"></i> Emergencias </a></li>
+                <li><a href="{% url 'ver_historial_emergencias' medico.pk %}"><i class="fa fa-book"></i> Ver Historial de Atendidos </a></li>
+                <li><a href="{% url 'perfil_medico' medico.pk %}"><i class="fa fa-mail-reply"></i> Salir de Emergencias </a></li>
           </ul>
+        </div>
+        <div class="col-md-8" style="text-align: right;">
+        <a id = "" href="{% url 'ver_citas' user.pk %}" role = "button">&laquo; Regresar</a>
         </div>
         <div class="col-sm-9">
         {% block content %}
