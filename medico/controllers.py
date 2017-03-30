@@ -469,6 +469,7 @@ def modificar_citas(cita_id, paciente, descripcion, fecha, hora):
 
 
 def eliminar_citas(request, id):
+    print(id)
     cita = Medico_Citas.objects.get(pk=id)
     cita.delete()
     return HttpResponseRedirect(reverse_lazy(
@@ -542,6 +543,7 @@ def informe_medico(revision_id, prediagnostico, recipe):
     try:
         revision = Medico_Revision.objects.get(pk=revision_id)
         cita = Medico_Citas.objects.get(pk = revision_id)
+
         cita.informe = True
         informe = Medico_Informe(medico_Revision=revision,desc_prediagnostico=prediagnostico,
                                 recipe_medico=recipe)

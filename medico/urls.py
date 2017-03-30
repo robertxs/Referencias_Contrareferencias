@@ -223,7 +223,7 @@ urlpatterns = [
     ),
     url(
         r'^ver-historial-emergencias/(?P<id>\w+)$',
-        VerEmergencias.as_view(),
+        VerHistEmergencias.as_view(),
         name='ver_historial_emergencias'
     ),
     url(

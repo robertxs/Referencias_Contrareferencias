@@ -3,39 +3,40 @@
 <html>
   <head>
     {% block head %}
-      <!-- Bootstrap -->
+    <!-- Bootstrap -->
+    <link href="{% static 'assets/css/bootstrap.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/css/bootstrap-theme.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/css/style.css' %}" rel="stylesheet">
+    <!-- <link href="{% static 'assets/css/modal.css' %}" rel="stylesheet"> -->
+    <link href="{% static 'assets/css/search.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/css/jquery.dataTables.min.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
 
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <!--script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script-->
+    <script type="text/javascript" src="{% static 'assets/js/jquery-1.12.2.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'assets/js/bootstrap.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'assets/js/user.js' %}"></script>
+    <script type="text/javascript" src="{% static 'assets/js/roles.js' %}"></script>
 
-      <link href="{% static 'assets/css/bootstrap.css' %}" rel="stylesheet">
-      <link href="{% static 'assets/css/bootstrap-theme.css' %}" rel="stylesheet">
-      <link href="{% static 'assets/css/style.css' %}" rel="stylesheet">
-      <link href="{% static 'assets/css/modal.css' %}" rel="stylesheet">
-      <link href="{% static 'assets/css/search.css' %}" rel="stylesheet">
-      <link href="{% static 'assets/css/jquery.dataTables.min.css' %}" rel="stylesheet">
-      <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
+    <script type="text/javascript" src="{% static 'assets/js/appointments.js' %}"></script>
 
-      <!--script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script-->
-      <script type="text/javascript" src="{% static 'assets/js/jquery-1.12.2.min.js' %}"></script>
-      <script type="text/javascript" src="{% static 'assets/js/bootstrap.min.js' %}"></script>
-      <script type="text/javascript" src="{% static 'assets/js/user.js' %}"></script>
-      <script type="text/javascript" src="{% static 'assets/js/roles.js' %}"></script>
+    <script type="text/javascript" src="{% static 'assets/js/institution.js' %}"></script>
 
-      <script type="text/javascript" src="{% static 'assets/js/appointments.js' %}"></script>
+    <script type="text/javascript" src="{% static 'assets/js/institutionElement.js' %}"></script>
 
-      <script type="text/javascript" src="{% static 'assets/js/institution.js' %}"></script>
+    <script type="text/javascript" src="{% static 'assets/js/specialization.js' %}"></script>
 
-      <script type="text/javascript" src="{% static 'assets/js/institutionElement.js' %}"></script>
+    <script type="text/javascript" src="{% static 'assets/js/search.js' %}"></script>
 
-      <script type="text/javascript" src="{% static 'assets/js/specialization.js' %}"></script>
+    <script type="text/javascript" src="{% static 'assets/js/jquery-1.12.3.min.js' %}"></script>
 
-      <script type="text/javascript" src="{% static 'assets/js/search.js' %}"></script>
+    <script type="text/javascript" src="{% static 'assets/js/jquery.dataTables.min.js' %}"></script>
 
-      <script type="text/javascript" src="{% static 'assets/js/jquery-1.12.3.min.js' %}"></script>
+    <script src="{% static 'assets/js/angular/ng-table.min.js' %}"></script>
 
-      <script type="text/javascript" src="{% static 'assets/js/jquery.dataTables.min.js' %}"></script>
-
-      <script src="{% static 'assets/js/angular/ng-table.min.js' %}"></script>
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
       <title>{% block title %} STPeHM {% endblock %} </title>
     {% endblock %}
   </head>
