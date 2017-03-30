@@ -43,7 +43,7 @@ class PerfilMedico(CreateView):
             medico = Medico(cedula=usuario.ci, first_name=user.first_name,
                             last_name=user.last_name, fecha_nacimiento=None,
                             sexo='', estado_civil='', telefono='',
-                            direccion='', usuario=usuario)
+                            direccion='', usuario=usuario, foto = None)
             medico.save()
         data = {'first_name': medico.usuario.user.first_name,
                 'last_name': medico.usuario.user.last_name,
@@ -55,6 +55,7 @@ class PerfilMedico(CreateView):
         experiencias = Medico_Experiencias.objects.filter(medico=medico)
         habilidades = Medico_Habilidades.objects.filter(medico=medico)
         eventos = Medico_Eventos.objects.filter(medico=medico)
+        context['usuario'] = usuario
         context['medico'] = medico
         context['studies'] = estudios
         context['awards'] = logros
@@ -75,6 +76,8 @@ class PerfilMedico(CreateView):
         form.fields['passw'].required = False
         form.fields['ci'].required = False
         form.fields['rol'].required = False
+        print("for valido")
+        print(form.is_valid())
         if form.is_valid():
             nombre = request.POST['first_name']
             apellido = request.POST['last_name']
@@ -84,10 +87,13 @@ class PerfilMedico(CreateView):
             estado_civil = request.POST['marital_status']
             telefono = request.POST['phone']
             direccion = request.POST['address']
-            foto = request.FILES['foto_perfil']
+            foto = request.FILES['image']
+            print("ESTA ES LA FOTO")
+            print(foto)
             value = editar_medico(request.user, nombre, apellido, email, sexo,
                                   fecha, estado_civil, telefono, direccion, foto)
 
+            print(value)
             if value is True:
                 return HttpResponseRedirect(reverse_lazy(
                     'perfil_medico', kwargs={'id': request.user.pk}))
@@ -1129,7 +1135,7 @@ class MyPDFView(DetailView):
         fechaNacimiento = cita.paciente.fecha_nacimiento
         sexo = cita.paciente.sexo
         estadoCivil = cita.paciente.estado_civil
-    
+
         if fechaNacimiento == None:
             fechaNacimiento = '*Información no disponible*'
         if sexo == None:

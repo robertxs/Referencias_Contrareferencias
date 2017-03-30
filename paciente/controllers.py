@@ -6,8 +6,8 @@ import parsedatetime as pdt
 from django.core.urlresolvers import reverse_lazy
 from django.http import HttpResponseRedirect
 
-def editar_paciente(user, nombre, apellido, sexo, ocupacion, fecha, 
-					lugar, estado_civil, telefono, direccion, email):
+def editar_paciente(user, nombre, apellido, sexo, ocupacion, fecha,
+					lugar, estado_civil, telefono, direccion, email, foto):
 	try:
 		usuario = Usuario.objects.get(user=user)
 		user = User.objects.get(pk=usuario.user.pk)
@@ -41,17 +41,19 @@ def editar_paciente(user, nombre, apellido, sexo, ocupacion, fecha,
 		print("ocu")
 		paciente.estado_civil = estado_civil
 		print("estado")
-		
+
 		if (telefono == '') :
-			pass			
+			pass
 		else :
 			paciente.telefono = telefono
 		print("telf")
 		paciente.direccion = direccion
-		print("direccion")
+		usuario.foto = foto
+		usuario.fotosubida = True
+		usuario.save()
 		paciente.save()
 		print("saveeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")
-		
+
 		return True
 
 	except:

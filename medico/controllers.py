@@ -42,6 +42,9 @@ def editar_medico(user, nombre, apellido, email, sexo, fecha, estado_civil,
         medico.telefono = telefono
         medico.direccion = direccion
         medico.foto_perfil = foto
+        usuario.foto=foto
+        usuario.fotosubida = True
+        usuario.save()
         medico.save()
         user.save()
         return True

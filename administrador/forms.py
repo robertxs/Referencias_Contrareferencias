@@ -82,11 +82,13 @@ class UsuarioForm(forms.ModelForm):
               , 'pattern' : ci_validator.regex.pattern
               , 'message' : ci_validator.message}))
 
+    foto = forms.ImageField(required = False)
     username = forms.CharField(required=True, label="Nombre de usuario")
     passw = forms.CharField(label="Contraseña", required=True,
                             widget=forms.PasswordInput())
     print(ci)
     print(username)
+    print(foto)
 
     class Meta:
         model = User

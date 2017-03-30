@@ -13,7 +13,6 @@ class Medico(models.Model):
     estado_civil = models.CharField(max_length=15, blank=True, null=True)
     telefono = models.CharField(max_length=15, blank=True, null=True)
     direccion = models.CharField(max_length=100, blank=True, null=True)
-    foto_perfil = models.ImageField(upload_to='images/')
     usuario = models.ForeignKey(Usuario,
                                 on_delete=models.CASCADE)
 

@@ -56,7 +56,6 @@ MIDDLEWARE_CLASSES = (
 )
 
 ROOT_URLCONF = 'eHealth.urls'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 TEMPLATES = [
