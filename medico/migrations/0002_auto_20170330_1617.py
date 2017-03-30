@@ -18,6 +18,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('fecha_entrada', models.DateField()),
                 ('hora_entrada', models.DateTimeField()),
+                ('finalizada', models.BooleanField(default=False)),
                 ('institucion', models.ForeignKey(to='medico.Institucion')),
                 ('medico', models.ForeignKey(to='medico.Medico')),
                 ('paciente', models.ForeignKey(to='paciente.Paciente')),
