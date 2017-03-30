@@ -28,34 +28,10 @@
         <div id="home" class="tab-pane fade in active">
           <center><h2>Información Básica</h2></center>
             <div class="row">
-              <!-- left column -->
-              <div class="col-md-4 col-sm-6 col-xs-12">
-              <form action="" method="POST" enctype="multipart/form-data">
-                <p class="text-center">
-                  <img src="{% static 'assets/img/avatar.png' %}" class="avatar img-circle img-thumbnail" alt="avatar">
-                  Cambiar foto
-                  <br>
-                  <br>
-                  <input type="file" name="archivosubido" accept="image/*" class="form-control"> 
-                  <br>
-                  <button type="submit" class="btn btn-lg">
-                    Guardar Imagen
-                  </button>
-             
-                </p>
-              </form>
-              </div>
 
-             
-              <!-- edit form column -->
-              <div class="col-md-8 col-sm-6 col-xs-12 personal-info">
-      
-                <form action="" method=POST>
-          
+                <form action="" method=POST enctype="multipart/form-data">
                   {% csrf_token %}
-
                   {% bootstrap_form_errors form %}
-
                   {% if form.errors %}
                       {% for field in form %}
                           {% for error in field.errors %}
@@ -73,6 +49,30 @@
 
                   <div id="rest_form">
 
+                    <!-- left column -->
+                    <div class="col-md-4 col-sm-6 col-xs-12">
+
+                      <p class="text-center">
+
+                        <br>
+                        <br>
+
+                        {% if usuario.fotosubida == False %}
+                        <img src="{% static 'assets/img/avatar.png' %}" class="avatar img-circle img-thumbnail" alt="avatar">
+                        {% else %}
+                        <img class='circular' src="{{usuario.foto.url}}"  >
+                        {% endif %}
+                        <p></p>
+                        <input class="form-control" id="id_foto" name="image" placeholder="Cambiar Foto" title="" type="file" value="" accept='.jpg, .png, .jpeg'>
+                        <br>
+
+
+                      </p>
+                    </form>
+                    </div>
+                    <!-- edit form column -->
+                    <div class="col-md-8 col-sm-6 col-xs-12 personal-info">
+
                   {% if user.groups.all.0.name == 'medico' %}
                     <div class="form-group">
                       <label for="id_ci">Cédula</label>
@@ -85,12 +85,13 @@
 
                   {% if user.groups.all.0.name == 'paciente' %}
                     <div class="form-group">
-                      <label for="id_ci">Cédula</label>
-                      <span>{{paciente.usuario.ci}}</span>
+                      <label for="id_ci">Cédula </label>
+                    <span>{{paciente.usuario.ci}}</span>
                     </div>
                     <label for="id_username">Nombre de usuario</label>
                     <span>{{paciente.usuario.user.username}}</span>
                   {% endif %}
+
 
                     <label for="id_first_name">Nombre</label>
                     {% bootstrap_field form.first_name layout="inline" %}
@@ -98,7 +99,7 @@
                     {% bootstrap_field form.last_name layout="inline" %}
                     <label for="id_email">Correo</label>
                     {% bootstrap_field form.email layout="inline" %}
-                    
+
 
                     {% if user.groups.all.0.name == 'paciente' %}
                       <div class="form-group">
@@ -175,7 +176,7 @@
                       <input class="form-control" id="id_address" name="address" placeholder="Dirección" title="" type="text" value="{{medico.direccion}}"/>
                     </div>
                     {% endif %}
-                    
+
                   {% buttons %}
                       <div class="col-md-3"></div>
                       <div class="col-sm-4 col-md-6 text-center">

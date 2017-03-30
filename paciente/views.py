@@ -22,7 +22,7 @@ class Perfil(CreateView):
     form_class = UsuarioForm
     print("saliooooo")
     def get_context_data(self, **kwargs):
-        print("aquiiii?????? -.-")
+
         context = super(
             Perfil, self).get_context_data(**kwargs)
 
@@ -44,6 +44,7 @@ class Perfil(CreateView):
         form = UsuarioForm(initial=data)
         context['paciente'] = paciente
         context['form'] = form
+        context['usuario'] = usuario
         return context
 
     def post(self, request, *args, **kwargs):
@@ -51,7 +52,7 @@ class Perfil(CreateView):
         Handles POST requests, instantiating a form instance with the passed
         POST variables and then checked for validity.
         """
-        form = UsuarioForm(request.POST)
+        form = UsuarioForm(request.POST, request.FILES)
         form.fields['username'].required = False
         form.fields['passw'].required = False
         form.fields['ci'].required = False
@@ -68,12 +69,19 @@ class Perfil(CreateView):
             email = request.POST['email']
             direccion = request.POST['address']
             ocupacion = request.POST['ocupacion']
+            if (request.FILES!={}):
+                foto = request.FILES['image']
+                print("en tryyyy")
+            else:
+                foto = False
+                print("exceptttttt")
+            
             print("antes del value")
             print(nombre)
             print(apellido)
             print(lugar)
             value = editar_paciente(request.user, nombre, apellido, sexo, ocupacion,
-                                  fecha, lugar, estado_civil, telefono, direccion, email)
+                                  fecha, lugar, estado_civil, telefono, direccion, email, foto)
             print("despues de valueeee" + str(value))
             if value is True:
                 return HttpResponseRedirect(reverse_lazy(
@@ -217,3 +225,17 @@ class ModificarCitasPaciente(CreateView):
                                        'title': 'Modificar'},
                                       context_instance=RequestContext(request))
 
+
+class Informe(TemplateView):
+    template_name = 'paciente/informe_med.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(
+            Informe, self).get_context_data(**kwargs)
+        user = user = User.objects.get(pk=self.kwargs['id'])
+        citas = Medico_Citas.objects.filter(
+            paciente__usuario__user=user)
+
+        context['appointments'] = citas
+
+        return context

@@ -36,18 +36,11 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
-            name='Medico_Diagnostico',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('conclusiones', models.TextField()),
-                ('recipe_medico', models.TextField()),
-            ],
-        ),
-        migrations.CreateModel(
             name='Medico_Informe',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('desc_prediagnostico', models.TextField(max_length=100)),
+                ('recipe_medico', models.TextField()),
             ],
         ),
         migrations.CreateModel(
@@ -97,11 +90,6 @@ class Migration(migrations.Migration):
             model_name='referencia',
             name='paciente',
             field=models.ForeignKey(to='paciente.Paciente'),
-        ),
-        migrations.AddField(
-            model_name='medico_diagnostico',
-            name='cita',
-            field=models.ForeignKey(to='medico.Medico_Citas'),
         ),
         migrations.AddField(
             model_name='medico_citas',

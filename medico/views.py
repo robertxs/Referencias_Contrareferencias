@@ -30,7 +30,7 @@ from io import BytesIO
 
 class PerfilMedico(CreateView):
     template_name = 'medico/perfil_medico.html'
-    form_class = UsuarioForm
+    form_class = PerfilForm
 
     def get_context_data(self, **kwargs):
         context = super(
@@ -43,7 +43,7 @@ class PerfilMedico(CreateView):
             medico = Medico(cedula=usuario.ci, first_name=user.first_name,
                             last_name=user.last_name, fecha_nacimiento=None,
                             sexo='', estado_civil='', telefono='',
-                            direccion='', usuario=usuario)
+                            direccion='', usuario=usuario, foto = None)
             medico.save()
         data = {'first_name': medico.usuario.user.first_name,
                 'last_name': medico.usuario.user.last_name,
@@ -55,6 +55,7 @@ class PerfilMedico(CreateView):
         experiencias = Medico_Experiencias.objects.filter(medico=medico)
         habilidades = Medico_Habilidades.objects.filter(medico=medico)
         eventos = Medico_Eventos.objects.filter(medico=medico)
+        context['usuario'] = usuario
         context['medico'] = medico
         context['studies'] = estudios
         context['awards'] = logros
@@ -70,11 +71,14 @@ class PerfilMedico(CreateView):
         Handles POST requests, instantiating a form instance with the passed
         POST variables and then checked for validity.
         """
-        form = UsuarioForm(request.POST)
+        form = UsuarioForm(request.POST, request.FILES)
         form.fields['username'].required = False
         form.fields['passw'].required = False
         form.fields['ci'].required = False
         form.fields['rol'].required = False
+        #form.fields['foto'].required = False
+        print("for valido")
+        print(form.is_valid())
         if form.is_valid():
             nombre = request.POST['first_name']
             apellido = request.POST['last_name']
@@ -84,9 +88,19 @@ class PerfilMedico(CreateView):
             estado_civil = request.POST['marital_status']
             telefono = request.POST['phone']
             direccion = request.POST['address']
+            print(request.FILES=={})
+            if (request.FILES!={}):
+                foto = request.FILES['image']
+                print("en tryyyy")
+            else:
+                foto = False
+                print("exceptttttt")
+            print("ESTA ES LA FOTO")
+            #print(foto)
             value = editar_medico(request.user, nombre, apellido, email, sexo,
-                                  fecha, estado_civil, telefono, direccion)
+                                  fecha, estado_civil, telefono, direccion, foto)
 
+            print(value)
             if value is True:
                 return HttpResponseRedirect(reverse_lazy(
                     'perfil_medico', kwargs={'id': request.user.pk}))
@@ -711,7 +725,7 @@ class ModificarConsultas(CreateView):
             horarios = request.POST['result_horario']
             hora = horarios.split(",")
             horario=[]
-            
+
             for x in hora :
                 if not(x==''):
                     y= x.split(' ')
@@ -752,7 +766,7 @@ class AgregarConsulta(CreateView):
         POST variables and then checked for validity.
         """
         form = Medico_HorariosForm(request.POST,medico=request.user.pk)
-        
+
         if form.is_valid():
             user_pk = request.user.pk
             especialidad = request.POST['especialidad']
@@ -760,14 +774,14 @@ class AgregarConsulta(CreateView):
             horarios = request.POST['result_horario']
             hora = horarios.split(",")
             horario=[]
-            
+
             for x in hora :
                 if not(x==''):
                     y= x.split(' ')
                     horario.append(y)
 
             value = agregar_consultas(user_pk, especialidad, institucion,horario)
-            
+
             if value is True:
                 return HttpResponseRedirect(reverse_lazy(
                     'ver_consultas', kwargs={'id': request.user.pk}))
@@ -1011,23 +1025,21 @@ class Consultas(TemplateView):
             Consultas, self).get_context_data(**kwargs)
 
         cita = Medico_Citas.objects.get(id=self.kwargs['id'])
-        print(cita.id)
-        print(cita.es_referido)
-        print("pk del medico")
-        print(cita.medico)
+        id_paciente = cita.paciente
+
+        paciente = Paciente.objects.get(cedula = id_paciente.cedula)
+        usuario= Usuario.objects.get(ci=paciente.cedula)
         if cita.es_referido == True:
-            print(cita.id)
-            print(cita.fecha)
             referencia = Referencia.objects.get(fecha = cita.fecha,
                                                 paciente=cita.paciente_id,
                                                 medico = cita.medico,
                                                 hora = cita.hora,
-                                                descripcion = cita.descripcion)
-            print(referencia.id)
-        #    descripcion = Referencia.objects.get(descripcion = cita.)
+                                                descripcion = cita.descripcion,
+                                                medico = cita.medico)
             context['referencia'] = referencia
         context['consulta'] = cita
         context['cita'] = cita
+        context['paciente'] = usuario
 
         return context
 
@@ -1105,7 +1117,8 @@ class InformeMedico(CreateView):
             cita = kwargs['id']
             revision = Medico_Revision.objects.get(pk=cita)
             desc_prediagnostico = request.POST['desc_prediagnostico']
-            value = informe_medico(revision.pk, desc_prediagnostico)
+            recipe = request.POST['recipe_medico']
+            value = informe_medico(revision.pk, desc_prediagnostico, recipe)
             if value is True:
                 return HttpResponseRedirect(reverse_lazy(
                     'consulta', kwargs={'id': kwargs['id']}))
@@ -1124,15 +1137,20 @@ class InformeMedico(CreateView):
 
 class MyPDFView(DetailView):
 
-    def cabecera(self,pdf):
-        #Utilizamos el Banner de STPeHM
-        archivo_imagen = 'eHealth/static/assets/img/Banner-STPeHM.png'
-        #Definimos el tamaño de la imagen a cargar y las coordenadas correspondientes
-        pdf.drawImage(archivo_imagen, 100, 750, 450, 60,preserveAspectRatio=True)
 
     def get(self, request, *args, **kwargs):
 
         cita = Medico_Citas.objects.get(id=self.kwargs['id'])
+        fechaNacimiento = cita.paciente.fecha_nacimiento
+        sexo = cita.paciente.sexo
+        estadoCivil = cita.paciente.estado_civil
+
+        if fechaNacimiento == None:
+            fechaNacimiento = '*Información no disponible*'
+        if sexo == None:
+            sexo = '*Información no disponible*'
+        if estadoCivil == None:
+            estadoCivil = '*Información no disponible*'
         revision = Medico_Revision.objects.get(pk=cita)
         informe = Medico_Informe.objects.get(medico_Revision=revision.pk)
         # Create the HttpResponse object with the appropriate PDF headers.
@@ -1141,12 +1159,11 @@ class MyPDFView(DetailView):
             #response['Content-Disposition'] = 'attachment; filename=InformeMedico.pdf'
         buff = BytesIO()
         # Create the PDF object, using the response object as its "file."
-        p = canvas.Canvas(response)
-                #Llamamos la funcion cabecera
-        self.cabecera(p)
+        #p = canvas.Canvas(response)
+
         doc = SimpleDocTemplate(buff,
                             pagesize=letter,
-                            rightMargin=40,
+                            rightMargin=20,
                             leftMargin=40,
                             topMargin=60,
                             bottomMargin=18,
@@ -1165,7 +1182,7 @@ class MyPDFView(DetailView):
         estilo_titulo.alignment = TA_CENTER
         estilo_titulo.fontName = "Helvetica"
         estilo_titulo.fontSize = 15
-        estilo_titulo.leading = 18
+        estilo_titulo.leading = 25
 
         estilo_fecha = estilo["BodyText"]
         estilo_fecha.alignment = TA_RIGHT
@@ -1179,22 +1196,27 @@ class MyPDFView(DetailView):
 
         data = [
         [''],
+        [''],
+        [''],
         ['', Paragraph('<b>Institución Médica: </b> ', estilo_tabla),Paragraph(str(cita.institucion.name),
         estilo_tabla), ''],
-        ['', Paragraph('<b> Médico Tratante: </b> ', estilo_tabla), Paragraph(str(cita.medico), estilo_tabla),''],
-        ['', Paragraph('<b> Paciente: </b> ', estilo_tabla), Paragraph(str(cita.paciente),estilo_tabla),''],
-        ['', Paragraph('<b> Fecha de Nacimiento: </b> ', estilo_tabla), Paragraph(str(cita.paciente.fecha_nacimiento),estilo_tabla),''],
-        ['', Paragraph('<b> Sexo: </b> ', estilo_tabla), Paragraph(str(cita.paciente.sexo), estilo_tabla),''],
-        ['', Paragraph('<b> Estado Civil: </b> ', estilo_tabla), Paragraph(str(cita.paciente.estado_civil),estilo_tabla),''],
+        ['', Paragraph('<b> CI del Médico Tratante: </b> ', estilo_tabla), Paragraph(str(cita.medico.cedula), estilo_tabla),''],
+        ['', Paragraph('<b> Médico Tratante: </b> ', estilo_tabla), Paragraph(str(cita.medico.first_name)+" " + str(cita.medico.last_name), estilo_tabla),''],
+        ['', Paragraph('<b> CI del Paciente: </b> ', estilo_tabla), Paragraph(str(cita.paciente.cedula), estilo_tabla),''],
+        ['', Paragraph('<b> Nombre del Paciente: </b> ', estilo_tabla), Paragraph(str(cita.paciente.first_name) +" "+str(cita.paciente.last_name ), estilo_tabla),''],
+        ['', Paragraph('<b> Fecha de Nacimiento: </b> ', estilo_tabla), Paragraph(str(fechaNacimiento),estilo_tabla),''],
+        ['', Paragraph('<b> Sexo: </b> ', estilo_tabla), Paragraph(str(sexo), estilo_tabla),''],
+        ['', Paragraph('<b> Estado Civil: </b> ', estilo_tabla), Paragraph(str(estadoCivil),estilo_tabla),''],
         ['', Paragraph('<b> Motivo de la Consulta: </b> ', estilo_tabla), Paragraph(str(revision.motivos), estilo_tabla),''],
-        ['', Paragraph('<b> Diagnóstico: </b> ', estilo_tabla), Paragraph(str(informe.desc_prediagnostico),estilo_tabla),'']
+        ['', Paragraph('<b> Diagnóstico: </b> ', estilo_tabla), Paragraph(str(informe.desc_prediagnostico),estilo_tabla),''],
+        ['', Paragraph('<b> Récipe Médico: </b> ', estilo_tabla), Paragraph(str(informe.recipe_medico),estilo_tabla),'']
         ]
 
         t = Table(data )
         # t.setStyle(TableStyle([('VALIGN',(1,0),(1,8),'MIDDLE')]))
         t.setStyle(TableStyle(
             [
-        ('GRID', (0, 10), (8, -9), 1, colors.dodgerblue),
+        ('GRID', (5, 11), (8, -9), 1, colors.dodgerblue),
         ('LINEBELOW', (0, 0), (-1, 0), 2, colors.darkblue)
             ]
         ))
@@ -1299,6 +1321,7 @@ class VerHistorial(TemplateView):
         context['consulta'] = consulta
 
         return context
+<<<<<<< HEAD
 
 
 class VerEmergencias(TemplateView):
@@ -1315,3 +1338,5 @@ class VerEmergencias(TemplateView):
         context['medico'] = user
 
         return context
+=======
+>>>>>>> origin/perfilMedico

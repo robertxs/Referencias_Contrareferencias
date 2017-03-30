@@ -49,4 +49,9 @@ urlpatterns = [
         Perfil.as_view(),
         name='perfil_paciente'
     ),
+    url(
+        r'^informe-paciente/(?P<id>\w+)$',
+        Informe.as_view(),
+        name='informe_med'
+    ),
 ]
