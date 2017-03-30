@@ -30,7 +30,7 @@ from io import BytesIO
 
 class PerfilMedico(CreateView):
     template_name = 'medico/perfil_medico.html'
-    form_class = UsuarioForm
+    form_class = PerfilForm
 
     def get_context_data(self, **kwargs):
         context = super(
@@ -76,6 +76,7 @@ class PerfilMedico(CreateView):
         form.fields['passw'].required = False
         form.fields['ci'].required = False
         form.fields['rol'].required = False
+        #form.fields['foto'].required = False
         print("for valido")
         print(form.is_valid())
         if form.is_valid():
@@ -87,9 +88,15 @@ class PerfilMedico(CreateView):
             estado_civil = request.POST['marital_status']
             telefono = request.POST['phone']
             direccion = request.POST['address']
-            foto = request.FILES['image']
+            print(request.FILES=={})
+            if (request.FILES!={}):
+                foto = request.FILES['image']
+                print("en tryyyy")
+            else:
+                foto = False
+                print("exceptttttt")
             print("ESTA ES LA FOTO")
-            print(foto)
+            #print(foto)
             value = editar_medico(request.user, nombre, apellido, email, sexo,
                                   fecha, estado_civil, telefono, direccion, foto)
 
@@ -1016,21 +1023,28 @@ class Consultas(TemplateView):
             Consultas, self).get_context_data(**kwargs)
 
         cita = Medico_Citas.objects.get(id=self.kwargs['id'])
+        id_paciente = cita.paciente
+
+        paciente = Paciente.objects.get(cedula = id_paciente.cedula)
+        print(paciente.cedula)
+        usuario= Usuario.objects.get(ci=paciente.cedula)
+        print("ussuarioooo")
+        print(usuario.user)
+    #    print("paciente es")
+    #    print(paciente)
         print(cita.id)
         print(cita.es_referido)
         print("pk del medico")
         print(cita.medico.usuario.user.pk)
         if cita.es_referido == True:
-            print(cita.id)
-            print(cita.fecha)
             referencia = Referencia.objects.get(fecha = cita.fecha,
                                                 paciente=cita.paciente_id,
                                                 medico = cita.medico)
-            print(referencia.id)
         #    descripcion = Referencia.objects.get(descripcion = cita.)
             context['referencia'] = referencia
         context['consulta'] = cita
         context['cita'] = cita
+        context['paciente'] = usuario
 
         return context
 

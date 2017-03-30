@@ -69,7 +69,13 @@ class Perfil(CreateView):
             email = request.POST['email']
             direccion = request.POST['address']
             ocupacion = request.POST['ocupacion']
-            foto = request.FILES['image']
+            if (request.FILES!={}):
+                foto = request.FILES['image']
+                print("en tryyyy")
+            else:
+                foto = False
+                print("exceptttttt")
+            
             print("antes del value")
             print(nombre)
             print(apellido)

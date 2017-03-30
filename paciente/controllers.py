@@ -48,8 +48,9 @@ def editar_paciente(user, nombre, apellido, sexo, ocupacion, fecha,
 			paciente.telefono = telefono
 		print("telf")
 		paciente.direccion = direccion
-		usuario.foto = foto
-		usuario.fotosubida = True
+		if foto != False :
+			usuario.foto=foto
+			usuario.fotosubida = True
 		usuario.save()
 		paciente.save()
 		print("saveeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")

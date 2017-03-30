@@ -666,3 +666,14 @@ label:hover:before {
   -moz-border.radius:150px;
 
 }
+
+.fotoPaciente{
+  width: 250px;
+  height: 250px;
+  border-radius: 150px;
+  -webkit-border-radius:150px;
+  -moz-border.radius:150px;
+  position: relative;
+  top : 50px;
+
+}
