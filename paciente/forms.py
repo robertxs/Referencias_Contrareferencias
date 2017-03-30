@@ -53,19 +53,24 @@ class Paciente_CitasForm(forms.ModelForm):
         usuario = Usuario.objects.get(user=user)
         pac = Paciente.objects.get(usuario=usuario)
         paciente = pac.cedula
-        cita1 = Medico_Citas.objects.get(paciente=paciente,fecha=fecha,
-            hora=hora,medico=medico)
-        ident = cita1.id
+        try:
+            cita1 = Medico_Citas.objects.get(paciente=paciente,fecha=fecha,
+                hora=hora,medico=medico)
+            ident = cita1.id
+        except Medico_Citas.DoesNotExist:
+            ident = -1
         num_paciente = Medico_Citas.objects.filter(paciente=paciente,fecha=fecha,
             hora=hora).count()
-        cita2 = Medico_Citas.objects.get(paciente=paciente,fecha=fecha,
-            hora=hora)
-        ident2 = cita2.id
+        try:
+            cita2 = Medico_Citas.objects.get(paciente=paciente,fecha=fecha,hora=hora)
+            ident2 = cita2.id
+        except Medico_Citas.DoesNotExist:
+            ident2 = -2
         dia= Conocer_dia(fecha)
         dia_hora=dia+hora
         cantidad = Medico_Especialidad.objects.filter(medico=medico,
             institucion=institucion.id,especialidad=especialidad).count()
-        
+
         if cantidad > 0 :
             disponibilidad =Medico_Especialidad.objects.get(medico=medico,
                 institucion=institucion.id,especialidad=especialidad)
@@ -93,9 +98,12 @@ class Paciente_CitasForm(forms.ModelForm):
             if boo :
                 num_citas = Medico_Citas.objects.filter(fecha=fecha, hora=hora,
                     especialidad=especialidad,medico=medico,institucion=institucion).count()
-                cita3 = Medico_Citas.objects.get(fecha=fecha, hora=hora,
+                try:
+                    cita3 = Medico_Citas.objects.get(fecha=fecha, hora=hora,
                     especialidad=especialidad,medico=medico,institucion=institucion)
-                ident3 = cita3.id
+                    ident3 = cita3.id
+                except Medico_Citas.DoesNotExist:
+                    ident3 = -3
                 if (num_citas == 1) and (ident != ident3) :
                     msj = "La fecha y hora solicitadas no se encuentran disponibles. Por favor elija algunas de estos horarios: "
                     # for x in horario :
@@ -124,4 +132,3 @@ class Paciente_CitasForm(forms.ModelForm):
             self.add_error('institucion',msj)
 
         return data
-

@@ -2,21 +2,8 @@
 {% block content %}
 <div id="cuerpoHeredado">
   <center><h2>Mis Citas</h2></center>
-  <!-- Modal content -->
-  <div id="myModal_appointment" class="modal-content">
-    <div class="modal-header">
-      <span class="close">×</span>
-      <h2></h2>
-    </div>
-    <div class="modal-body">
-      <p>¿Está seguro de que desea eliminar la cita?</p>
-      <button id="deleteButton_appointment">Eliminar</button>
-      <button id="cancel_delete_appointment">Cancelar</button>
-    </div>
-    <div class="modal-footer">
-      <h3></h3>
-    </div>
-  </div>
+
+
   <div id="show-appointments"><table>
     <tr>
       <th>Fecha</th>
@@ -43,30 +30,53 @@
       {% endif %}
     </tr>
     {% for a in appointments %}
+    <!-- Modal content -->
+    <div class="modal fade" id="myModal" role="dialog">
+      <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Finalizar Consulta</h4>
+          </div>
+          <div class="modal-body">
+            <p>¿Está seguro que desea eliminar esta consulta?</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+            <a type="button" class="btn btn-primary" href="{% url 'eliminar_cita' a.pk%}" > Aceptar</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+
       {% if a.revision == False %}
       {% if user.groups.all.0.name == 'medico' %}
-      <tr onclick="location.href='{% url 'consulta' a.id %}'">
+      <tr>
       {% else %}
       <tr>
       {% endif %}
         <td>{{a.fecha}}</td>
         <td>{{a.hora}}</td>
         {% if user.groups.all.0.name == 'medico' %}
-        <td>{{a.paciente.first_name}} {{a.paciente.last_name}}</td>
+        <td onclick="location.href='{% url 'consulta' a.id %}'">{{a.paciente.first_name}} {{a.paciente.last_name}}</td>
         {% else %}
-        <td>{{a.medico.first_name}} {{a.medico.last_name}}</td>
+        <td onclick="location.href='{% url 'consulta' a.id %}'">{{a.medico.first_name}} {{a.medico.last_name}}</td>
         {% endif %}
-        <td>{{a.institucion.name}}</td>
-        <td>{{a.descripcion}}</td>
+        <td onclick="location.href='{% url 'consulta' a.id %}'">{{a.institucion.name}}</td>
+        <td onclick="location.href='{% url 'consulta' a.id %}'">{{a.descripcion}}</td>
         {% if user.groups.all.0.name == 'medico' %}
         <td style="text-align: center;">
           <a href="{% url 'modificar_cita' a.pk %}"><i class="fa fa-pencil" style="font-size:20px;color:#5882FA"></i></a>
-          <a href="{% url 'eliminar_cita' a.pk %}"><i class="fa fa-trash" style="font-size:20px;color:#5882FA"></i></a>
+          <a data-toggle="modal" data-target="#myModal" ><i class="fa fa-trash" style="font-size:20px;color:#5882FA"></i></a>
         </td>
         {% else %}
         <td style="text-align: center;">
           <a href="{% url 'modificar_cita_pac' a.pk %}"><i class="fa fa-pencil" style="font-size:20px;color:#5882FA"></i></a>
-          <a href="{% url 'eliminar_cita' a.pk %}"><i class="fa fa-trash" style="font-size:20px;color:#5882FA"></i></a>
+          <a data-toggle="modal" data-target="#myModal" ><i class="fa fa-trash" style="font-size:20px;color:#5882FA"></i></a>
         </td>
         {% endif %}
       </tr>

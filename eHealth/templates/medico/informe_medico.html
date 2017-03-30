@@ -27,15 +27,28 @@
       <label for="id_titulo">Paciente: </label>
       <span>{{consulta.paciente.first_name}} {{consulta.paciente.last_name}}</span>
       <label for="id_titulo">Fecha de Nacimiento: </label>
+      {% if fecha == False %}
       <span>{{consulta.paciente.fecha_nacimiento}}</span>
-  
+      {%else%}
+      <span>{{fecha}}</span>
+      {%endif%}
+
       <div class="form-group">
         <label for="id_sex">Sexo</label>
+        {% if sexo == False %}
         <span>{{consulta.paciente.sexo}}</span>
+        {%else%}
+        <span>{{sexo}}</span>
+        {%endif%}
       </div>
       <div class="form-group">
         <label for="id_marital_status">Estado Civil</label>
+        {% if estado == False %}
         <span>{{consulta.paciente.estado_civil}}</span>
+        {%else%}
+        <span>{{estado}}</span>
+        {%endif%}
+
       </div>
       <div class = "form-group">
         <label for="id_motivo">Motivo de la Consulta</label>

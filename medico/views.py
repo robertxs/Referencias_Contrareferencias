@@ -1034,8 +1034,7 @@ class Consultas(TemplateView):
                                                 paciente=cita.paciente_id,
                                                 medico = cita.medico,
                                                 hora = cita.hora,
-                                                descripcion = cita.descripcion,
-                                                medico = cita.medico)
+                                                descripcion = cita.descripcion)
             context['referencia'] = referencia
         context['consulta'] = cita
         context['cita'] = cita
@@ -1100,8 +1099,30 @@ class InformeMedico(CreateView):
             InformeMedico, self).get_context_data(**kwargs)
 
         cita = Medico_Citas.objects.get(id=self.kwargs['id'])
-
+        fechaNacimiento = cita.paciente.fecha_nacimiento
+        sexo = cita.paciente.sexo
+        estadoCivil = cita.paciente.estado_civil
         revision = Medico_Revision.objects.get(cita_id=cita.id)
+
+        if fechaNacimiento == None or fechaNacimiento == "None"  :
+            fechaNacimiento = '*Información no disponible*'
+        else:
+            fechaNacimiento = False
+
+        if sexo == None or sexo == "None":
+            sexo = '*Información no disponible*'
+        else:
+            sexo = False
+        print(sexo)
+
+        if estadoCivil == None or estadoCivil == "None":
+            estadoCivil = '*Información no disponible*'
+        else:
+            estadoCivil = False
+
+        context['fecha'] = fechaNacimiento
+        context['sexo'] = sexo
+        context['estado'] = estadoCivil
 
         context['consulta'] = cita
         context['revision'] = revision
@@ -1145,11 +1166,11 @@ class MyPDFView(DetailView):
         sexo = cita.paciente.sexo
         estadoCivil = cita.paciente.estado_civil
 
-        if fechaNacimiento == None:
+        if fechaNacimiento == None or fechaNacimiento == "None"  :
             fechaNacimiento = '*Información no disponible*'
-        if sexo == None:
+        if sexo == None or sexo == "None":
             sexo = '*Información no disponible*'
-        if estadoCivil == None:
+        if estadoCivil == None or estadoCivil == "None":
             estadoCivil = '*Información no disponible*'
         revision = Medico_Revision.objects.get(pk=cita)
         informe = Medico_Informe.objects.get(medico_Revision=revision.pk)
@@ -1330,7 +1351,22 @@ class VerEmergencias(TemplateView):
         context = super(
             VerEmergencias, self).get_context_data(**kwargs)
         user = User.objects.get(pk=self.kwargs['id'])
-        
+
+        emergencias = Emergencia.objects.filter(
+                medico__usuario__user=user).order_by('fecha_entrada')
+        context['consulta'] = emergencias
+        context['medico'] = user
+
+        return context
+
+class VerHistEmergencias(TemplateView):
+    template_name = 'medico/ver_historial_emergencia.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(
+            VerHistEmergencias, self).get_context_data(**kwargs)
+        user = User.objects.get(pk=self.kwargs['id'])
+
         emergencias = Emergencia.objects.filter(
                 medico__usuario__user=user).order_by('fecha_entrada')
         context['consulta'] = emergencias

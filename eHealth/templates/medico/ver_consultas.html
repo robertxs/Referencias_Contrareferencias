@@ -16,13 +16,35 @@
         </th>
       </tr>
       {% for consultation in consultations %}
+      <!-- Modal content -->
+      <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog">
+
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">Finalizar Consulta</h4>
+            </div>
+            <div class="modal-body">
+              <p>¿Está seguro que desea eliminar esta consulta?</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+              <a type="button" class="btn btn-primary" href="{% url 'eliminar_consulta' consultation.pk%}" > Aceptar</a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
         <tr>
           <td>{{consultation.institucion.name}}</td>
           <td>{{consultation.especialidad}}</td>
           <td>{{consultation.horario}}</td>
           <td style="text-align: center;">
            <a href="{% url 'modificar_consulta' user.pk consultation.pk %}"><i class="fa fa-pencil" style="font-size:20px;color:#5882FA"></i></a>
-           <a href="{% url 'eliminar_consulta' consultation.pk %}"><i class="fa fa-trash" style="font-size:20px;color:#5882FA"></i></a>
+           <a data-toggle="modal" data-target="#myModal" ><i class="fa fa-trash" style="font-size:20px;color:#5882FA"></i></a>
           </td>
         </tr>
       {% endfor%}
@@ -36,7 +58,7 @@
     <h2> Modificar Consulta </h2>
     <form> </form>
     <a class="popup-cerrar" href="{% url 'modificar_consulta' consultation.pk %}"> Aceptar </a>
-    <a class="popup-cerrar" href="#"> Cancelar </a>    
+    <a class="popup-cerrar" href="#"> Cancelar </a>
   </div>
 </div> -->
 
@@ -45,6 +67,6 @@
     <h2> Eliminar Consulta </h2>
     <p> Esta seguro de que quiere eliminar sus horarios de consulta? </p>
     <a class="popup-aceptar" href="{% url 'eliminar_consulta' consultation.pk %}"> Aceptar </a>
-    <a class="popup-cerrar" href="#"> Cancelar </a>    
+    <a class="popup-cerrar" href="#"> Cancelar </a>
   </div>
 </div> -->
