@@ -5,10 +5,10 @@
     <center><h1>Gestión de Instituciones</h1></center>
     <div id="show-instituciones"><table>
       <tr>
-        <th>Rif</th>
-        <th>Nombre</th>
-        <th>Dirección</th>
-        <th>Tipo</th>
+        <th style="text-align: center;">Rif</th>
+        <th style="text-align: center;">Nombre</th>
+        <th style="text-align: center;">Dirección</th>
+        <th style="text-align: center;">Tipo</th>
         <th style="text-align: center">
         <a id="add_institucion" href="{% url 'agregar_institucion' %}">
           <i class="fa fa-plus-circle" style="font-size:20px;color:white"></i>
@@ -25,7 +25,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal">&times;</button>
-            <h4 class="modal-title">ELiminar Institución</h4>
+            <h4 class="modal-title">Eliminar Institución</h4>
           </div>
           <div class="modal-body">
             <p>¿Está seguro que desea eliminar esta institución?</p>
@@ -38,13 +38,12 @@
 
       </div>
     </div>
-
-
+    
           <tr>
-          <td>{{ins.rif}}</td>
-          <td>{{ins.name}}</td>
-          <td>{{ins.address}}</td>
-          <td>{{ins.tipo}}</td>
+          <td style="text-align: center;">{{ins.rif}}</td>
+          <td style="text-align: center;">{{ins.name}}</td>
+          <td style="text-align: center;">{{ins.address}}</td>
+          <td style="text-align: center;">{{ins.tipo}}</td>
 
           <td style="text-align: center;">
             <a href="{% url 'modificar_institucion' ins.pk %}"><i class="fa fa-pencil" style="font-size:20px;color:#5882FA"></i></a>

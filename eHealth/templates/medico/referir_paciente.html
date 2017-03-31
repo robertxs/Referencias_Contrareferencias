@@ -19,6 +19,16 @@
       </ul>
 
     <div class="tab-content">
+    <div id="menu1" class="tab-pane fade">
+          <center><h2>Referenciar a Laboratorio</h2></center>
+          <br>
+        <div class="col-md-6 col-sm-16 col-xs-20">
+        <h3 for="">Nombre del Paciente</h3>
+        <span>{{consulta.paciente.first_name}} {{consulta.paciente.last_name}}</span>
+        <h3 for="">CI del Paciente</h3>
+        <span>{{consulta.paciente.cedula}}</span>
+        </div>
+    </div>
     <div id="referir" class="tab-pane fade in active">
 
     <div class="col-md-10 col-sm-10 col-xs-12 personal-info">
@@ -60,6 +70,9 @@
           {% endfor %}
         {% endif %}
 
+        <center><h2>Referenciar a Médico</h2></center>
+          <br>
+
         <div class="col-md-16 col-sm-16 col-xs-20">
         <label for="">Nombre del Paciente</label>
         <span>{{consulta.paciente.first_name}} {{consulta.paciente.last_name}}</span>
@@ -92,10 +105,12 @@
 	            <br>
 	        </div>
 	        <div class="col-md-3"></div>
+          <div class="col-md-3"></div>
           </div>
 	    {% endbuttons %}
     </form>
     </form>
+    <div class="col-md-3"></div>
   </div>
 {% endblock %}
 {% block custom_script %}

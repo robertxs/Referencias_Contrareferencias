@@ -723,6 +723,16 @@ class ModificarConsultas(CreateView):
             consulta_id = kwargs['id']
             medico = kwargs['user']
             horarios = request.POST['result_horario']
+            print(horarios=='')
+            if( horarios == ''):
+                consulta = Medico_Especialidad.objects.get(pk=consulta_id)
+                messages.error(request,"Por favor seleccione horarios de consulta.")
+                return render_to_response('medico/agregar_consulta.html',
+                                          {'form': form,
+                                           'title': 'Modificar',
+                                           'horario': consulta},
+                                          context_instance=RequestContext(request))
+
             hora = horarios.split(",")
             horario=[]
 
@@ -772,6 +782,14 @@ class AgregarConsulta(CreateView):
             especialidad = request.POST['especialidad']
             institucion = request.POST['institucion']
             horarios = request.POST['result_horario']
+            print(horarios=='')
+            if( horarios == ''):
+                messages.error(request,"Por favor seleccione horarios de consulta.")
+                return render_to_response('medico/agregar_consulta.html',
+                                          {'form': form,
+                                           'title': 'Agregar'},
+                                          context_instance=RequestContext(request))
+
             hora = horarios.split(",")
             horario=[]
 
@@ -807,8 +825,10 @@ class BuscarPaciente(TemplateView):
             BuscarPaciente, self).get_context_data(**kwargs)
 
         pacientes = Paciente.objects.all()
+        variable = True
 
         context['result'] = pacientes
+        context['paciente'] = variable
 
         return context
 
@@ -821,7 +841,9 @@ class BuscarMedico(TemplateView):
             BuscarMedico, self).get_context_data(**kwargs)
 
         medicos = Medico.objects.all()
+        variable = False
 
+        context['paciente'] = variable
         context['result'] = medicos
 
         return context
@@ -1183,7 +1205,7 @@ class MyPDFView(DetailView):
         # Create the HttpResponse object with the appropriate PDF headers.
         response = HttpResponse(content_type='application/pdf')
         pdf_name = "InformeMedico.pdf"
-            #response['Content-Disposition'] = 'attachment; filename=InformeMedico.pdf'
+        response['Content-Disposition'] = 'attachment; filename=InformeMedico.pdf'
         buff = BytesIO()
         # Create the PDF object, using the response object as its "file."
         #p = canvas.Canvas(response)

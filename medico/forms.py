@@ -233,15 +233,22 @@ class Medico_HorariosForm(forms.ModelForm):
         usuario = Usuario.objects.get(user=user)
         med = Medico.objects.get(usuario=usuario)
         medico = med.cedula
-        inst = Institucion.objects.get(name=institucion)
-        institucion = inst.id
-        num_horarios = Medico_Especialidad.objects.filter(medico=medico,
-            institucion=institucion, especialidad=especialidad).count()
-        print(num_horarios)
-
-        if num_horarios == 1:
-            msj="Ya tiene horarios para esta especialidad en esta institución, seleccione otros por favor."
+        if (institucion==None):
+            msj="Debe seleccionar una institucion de la lista."
+            self.add_error('institucion',msj)
+        if (especialidad==None):
+            msj="Debe seleccionar una especialidad de la lista."
             self.add_error('especialidad',msj)
+        if (especialidad!=None) and (institucion!=None):
+            inst = Institucion.objects.get(name=institucion)
+            institucion = inst.id
+            num_horarios = Medico_Especialidad.objects.filter(medico=medico,
+                institucion=institucion, especialidad=especialidad).count()
+            print(num_horarios)
+
+            if num_horarios == 1:
+                msj="Ya tiene horarios para esta especialidad en esta institución, seleccione otros por favor."
+                self.add_error('especialidad',msj)
 
         return data
 

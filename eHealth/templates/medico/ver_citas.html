@@ -6,15 +6,15 @@
 
   <div id="show-appointments"><table>
     <tr>
-      <th>Fecha</th>
-      <th>Hora</th>
+      <th style="text-align: center">Fecha</th>
+      <th style="text-align: center">Hora</th>
       {% if user.groups.all.0.name == 'medico' %}
-      <th>Paciente</th>
+      <th style="text-align: center">Paciente</th>
       {% elif user.groups.all.0.name == 'paciente' %}
-      <th>Médico</th>
+      <th style="text-align: center">Médico</th>
       {% endif %}
-      <th>Institución</th>
-      <th>Descripción</th>
+      <th style="text-align: center">Institución</th>
+      <th style="text-align: center">Descripción</th>
       {% if user.groups.all.0.name == 'medico' %}
       <th style="text-align: center">
         <a id="add_appointment" href="{% url 'agregar_cita' user.pk %}">
@@ -59,15 +59,21 @@
       {% else %}
       <tr>
       {% endif %}
-        <td>{{a.fecha}}</td>
-        <td>{{a.hora}}</td>
+        <td style="text-align: center">{{a.fecha}}</td>
+        <td style="text-align: center">{{a.hora}}</td>
+
         {% if user.groups.all.0.name == 'medico' %}
-        <td onclick="location.href='{% url 'consulta' a.id %}'">{{a.paciente.first_name}} {{a.paciente.last_name}}</td>
+        <td  style="text-align: center" onclick="location.href='{% url 'consulta' a.id %}'">{{a.paciente.first_name}} {{a.paciente.last_name}}</td>
+        <td  style="text-align: center" onclick="location.href='{% url 'consulta' a.id %}'">{{a.institucion.name}}</td>
+        <td  style="text-align: center" onclick="location.href='{% url 'consulta' a.id %}'">{{a.descripcion}}</td>
         {% else %}
-        <td onclick="location.href='{% url 'consulta' a.id %}'">{{a.medico.first_name}} {{a.medico.last_name}}</td>
+        <td  style="text-align: center">{{a.medico.first_name}} {{a.medico.last_name}}</td>
+        <td  style="text-align: center">{{a.institucion.name}}</td>
+        <td  style="text-align: center">{{a.descripcion}}</td>
         {% endif %}
-        <td onclick="location.href='{% url 'consulta' a.id %}'">{{a.institucion.name}}</td>
-        <td onclick="location.href='{% url 'consulta' a.id %}'">{{a.descripcion}}</td>
+
+        
+
         {% if user.groups.all.0.name == 'medico' %}
         <td style="text-align: center;">
           <a href="{% url 'modificar_cita' a.pk %}"><i class="fa fa-pencil" style="font-size:20px;color:#5882FA"></i></a>

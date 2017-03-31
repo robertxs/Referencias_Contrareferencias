@@ -262,6 +262,16 @@ class EspecialidadForm(forms.ModelForm):
         model = Especialidad
         fields = '__all__'
 
+    def clean(self):
+        data = self.cleaned_data
+        nombre = self.cleaned_data.get('nombre_especialidad')
+
+        cantidad = Especialidad.objects.filter(nombre_especialidad=nombre).count()
+
+        if cantidad == 1:
+            msj="Ya existe este nombre de especialidad, verifíquelo por favor."
+            self.add_error('nombre_especialidad',msj)
+
 class RolesForm(forms.ModelForm):
 
     class Meta:
