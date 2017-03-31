@@ -519,14 +519,16 @@ def eliminar_historia_clinica(request, id):
     return HttpResponseRedirect(reverse_lazy(
         'historias_clinicas'))
 
-def comenzar_revision(cita_id, motivos, sintomas, presion_sanguinea, temperatura,
+def comenzar_revision(cita_id, motivos, sintomas, presion_sanguinea_diastolica,
+                    presion_sanguinea_sistolica, temperatura,
                     frec_respiratoria, frec_cardiaca, otros):
     try:
         cita = Medico_Citas.objects.get(pk =cita_id)
         cita.revision = True
 
         revision = Medico_Revision(cita = cita, motivos = motivos,
-                                    sintomas = sintomas, presion_sanguinea = presion_sanguinea,
+                                    sintomas = sintomas, presion_sanguinea_diastolica = presion_sanguinea_diastolica,
+                                    presion_sanguinea_sistolica= presion_sanguinea_sistolica, 
                                     temperatura=temperatura, frec_respiratoria=frec_respiratoria,
                                     frec_cardiaca=frec_cardiaca, otros=otros)
 

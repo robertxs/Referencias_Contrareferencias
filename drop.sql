@@ -22,7 +22,6 @@ drop table auth_user_groups;
 drop table auth_user_user_permissions;
 drop table django_admin_log ;
 drop table django_session;
-
 drop table administrador_inbox;
 drop table administrador_usuario;
 drop table auth_user cascade;
@@ -34,10 +33,8 @@ drop table medico_medico_diagnostico cascade;
 drop table medico_medico_informe cascade;
 drop table medico_medico_revision cascade;
 drop table medico_referencia cascade;
-drop table medico_emergencia cascade;
 drop table medico_institucion cascade;
 drop table medico_medico cascade;
-
 drop table paciente_historiadetriaje;
 drop table paciente_paciente;
 drop table administrador_usuario;

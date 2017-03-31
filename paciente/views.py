@@ -164,7 +164,7 @@ class AgregarCitasPaciente(CreateView):
                                           context_instance=RequestContext(
                                               request))
         else:
-            messages.error(request,"Por favor verifique que los campos estan en color rojo.")
+            messages.error(request,"Por favor verifique los campos siguientes:")
             return render_to_response('medico/agregar_cita.html',
                                       {'form': form,
                                        'title': 'Agregar'},

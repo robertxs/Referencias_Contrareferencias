@@ -216,19 +216,4 @@ urlpatterns = [
         VerHistorial.as_view(),
         name='ver_historial'
     ),
-    url(
-        r'^ver-emergencias/(?P<id>\w+)$',
-        VerEmergencias.as_view(),
-        name='ver_emergencias'
-    ),
-    url(
-        r'^ver-historial-emergencias/(?P<id>\w+)$',
-        VerEmergencias.as_view(),
-        name='ver_historial_emergencias'
-    ),
-    url(
-        r'^seleccion-paciente/(?P<id>\w+)$',
-        BuscarPaciente.as_view(),
-        name='seleccion_paciente'
-    ),
 ]

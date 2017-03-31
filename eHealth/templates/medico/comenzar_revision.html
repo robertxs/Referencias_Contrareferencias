@@ -12,6 +12,37 @@
 {% load static %}
 {% block content %}
 <div id="cuerpoHeredado">
+    {% csrf_token %}
+    
+    <div class="hidden">
+        {% bootstrap_form_errors form %}
+    </div>
+
+    {% if messages %}
+    <ul class="messages">
+      {% for mes in messages %}
+      <li{% if mes.tags  %}
+      class="{{ mes.tag }}"
+      {% endif%}>{{ mes }}
+      </li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if form.errors %}
+        {% for field in form %}
+            {% for error in field.errors %}
+                <div class="alert alert-danger">
+                    <strong>{{ error|escape }}</strong>
+                </div>
+            {% endfor %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}
+            <div class="alert alert-danger">
+                <strong>{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+    {% endif %}
 
     <h2> Revisión Médica</h2>
     <form action="" method=POST>
@@ -55,15 +86,17 @@
       {% bootstrap_field form.motivos layout="inline" %}
       <label for="id_motivos">Síntomas</label>
       {% bootstrap_field form.sintomas layout="inline" %}
-     <label for="id_motivos">Presión Sanguínea</label>
-      {% bootstrap_field form.presion_sanguinea layout="inline" %}
-      <label for="id_motivos">Temperatura</label>
+      <label for="id_motivos">Presión Sanguínea Diastólica (mmHg)</label>
+      {% bootstrap_field form.presion_sanguinea_diastolica layout="inline" %}
+      <label for="id_motivos">Presión Sanguínea Sistólica (mmHg)</label>
+      {% bootstrap_field form.presion_sanguinea_sistolica layout="inline" %}
+      <label for="id_motivos">Temperatura (en grados centrigados)</label>
       {% bootstrap_field form.temperatura layout="inline" %}
-      <label for="id_motivos">Frecuencia Respiratoria</label>
+      <label for="id_motivos">Frecuencia Respiratoria (respiraciones por minuto)</label>
       {% bootstrap_field form.frec_respiratoria layout="inline" %}
-      <label for="id_motivos">Frecuencia Cardíaca</label>
+      <label for="id_motivos">Frecuencia Cardíaca (latidos por minuto)</label>
       {% bootstrap_field form.frec_cardiaca layout="inline" %}
-      <label for="id_motivos">Otros</label>
+      <label for="id_otros">Otros</label>
       {% bootstrap_field form.otros layout="inline" %}
       {% buttons %}
       <div class="col-md-3"></div>
