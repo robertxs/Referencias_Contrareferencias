@@ -792,7 +792,7 @@ class AgregarConsulta(CreateView):
                                           context_instance=RequestContext(
                                               request))
         else:
-            messages.error(request,"Por favor verifique que los campos estan en color rojo.")
+            messages.error(request,"Por favor verifique los campos siguientes:")
             return render_to_response('medico/agregar_consulta.html',
                                       {'form': form,
                                        'title': 'Agregar'},
@@ -887,7 +887,7 @@ class AgregarCitas(CreateView):
                                           context_instance=RequestContext(
                                               request))
         else:
-            messages.error(request,"Por favor verifique que los campos estan en color rojo.")
+            messages.error(request,"Por favor verifique los campos siguientes:")
             return render_to_response('medico/agregar_cita.html',
                                       {'form': form,
                                        'title': 'Agregar'},
@@ -1061,19 +1061,22 @@ class ComenzarRevision(CreateView):
         Handles POST requests, instantiating a form instance with the passed
         POST variables and then checked for validity.
         """
+        print("antes de form")
         form = Medico_RevisionForm(request.POST)
-
+        form.fields['otros'].required = False
+        print("despues de form")
         if form.is_valid():
             cita = kwargs['id']
             motivos = request.POST['motivos']
             sintomas = request.POST['sintomas']
-            presion_sanguinea = request.POST['presion_sanguinea']
+            presion_sanguinea_diastolica = request.POST['presion_sanguinea_diastolica']
+            presion_sanguinea_sistolica = request.POST['presion_sanguinea_sistolica']
             temperatura = request.POST['temperatura']
             frec_respiratoria = request.POST['frec_respiratoria']
             frec_cardiaca = request.POST['frec_cardiaca']
             otros = request.POST['otros']
-            value = comenzar_revision(cita, motivos, sintomas, presion_sanguinea,
-                                     temperatura, frec_respiratoria, frec_cardiaca,
+            value = comenzar_revision(cita, motivos, sintomas, presion_sanguinea_diastolica,
+                                    presion_sanguinea_sistolica,temperatura, frec_respiratoria, frec_cardiaca,
                                      otros)
             if value is True:
                 return HttpResponseRedirect(reverse_lazy(
@@ -1084,9 +1087,12 @@ class ComenzarRevision(CreateView):
                                            'title': 'Agregar'},
                                           context_instance=RequestContext(request))
         else:
+            cita = Medico_Citas.objects.get(id=self.kwargs['id'])
+            messages.error(request,"Por favor verifique los campos siguientes:")
             return render_to_response('medico/comenzar_revision.html',
                                       {'form': form,
-                                       'title': 'Agregar'},
+                                       'title': 'Agregar',
+                                       'consulta':cita},
                                       context_instance=RequestContext(request))
 
 
@@ -1292,17 +1298,15 @@ class ReferirPaciente(CreateView):
             hora = request.POST['hora']
             descripcion = request.POST['descripcion']
             name_especialidad = request.POST['especialidad']
-            print(name_especialidad)
             especialidad = Especialidad.objects.get(nombre_especialidad=name_especialidad)
             subirInforme = Referencia(cita=cita, archivo=archivo,paciente=paciente,
                                 medico=medico1, institucion=institucion,
                                 descripcion= descripcion, fecha= fecha,
                                 hora= hora, especialidad= especialidad)
             subirInforme.save()
-            print("savee archivo")
+
             new_cita = agregar_citas(user_pk.id, paciente.cedula, id_institucion, descripcion,
                                    fecha, hora, name_especialidad, es_referido=True)
-            print("savee cita")
 
             if new_cita is True:
                 return HttpResponseRedirect(reverse_lazy(
@@ -1314,10 +1318,8 @@ class ReferirPaciente(CreateView):
                                           context_instance=RequestContext(request))
 
         else:
-            print("aca?????")
-            messages.error(request,"Por favor verifique que los campos estan en color rojo.")
+            messages.error(request,"Por favor verifique los campos siguientes:")
             cita = Medico_Citas.objects.get(id=self.kwargs['id'])
-            print(cita.id)
             return render_to_response('medico/referir_paciente.html',
                                       {'form': form,
                                       'title': 'Agregar',
@@ -1340,36 +1342,5 @@ class VerHistorial(TemplateView):
 
         context['historial'] = historial
         context['consulta'] = consulta
-
-        return context
-
-
-class VerEmergencias(TemplateView):
-    template_name = 'medico/ver_emergencias.html'
-
-    def get_context_data(self, **kwargs):
-        context = super(
-            VerEmergencias, self).get_context_data(**kwargs)
-        user = User.objects.get(pk=self.kwargs['id'])
-
-        emergencias = Emergencia.objects.filter(
-                medico__usuario__user=user).order_by('fecha_entrada')
-        context['consulta'] = emergencias
-        context['medico'] = user
-
-        return context
-
-class VerHistEmergencias(TemplateView):
-    template_name = 'medico/ver_historial_emergencia.html'
-
-    def get_context_data(self, **kwargs):
-        context = super(
-            VerHistEmergencias, self).get_context_data(**kwargs)
-        user = User.objects.get(pk=self.kwargs['id'])
-
-        emergencias = Emergencia.objects.filter(
-                medico__usuario__user=user).order_by('fecha_entrada')
-        context['consulta'] = emergencias
-        context['medico'] = user
 
         return context

@@ -42,10 +42,6 @@ class Institucion(models.Model):
 
 # Se contempla tener aqui donde trabaja el medico y la especialidad
 class Medico_Especialidad(models.Model):
-    # DISPONIBILIDAD = (
-    #                 ('Si', 'Si'),
-    #                 ('No', 'No')
-    #                 )
     especialidad = models.ForeignKey(Especialidad,
                                      on_delete=models.CASCADE)
     medico = models.ForeignKey(Medico,
@@ -53,7 +49,6 @@ class Medico_Especialidad(models.Model):
     institucion = models.ForeignKey(Institucion,
                                     on_delete= models.CASCADE)
     horario = models.CharField(max_length=1000, blank=False)
-    # disponibilidad = models.CharField(max_length=2, choices=DISPONIBILIDAD, blank=False, null=False, default='Si' )
 
     def __str__(self):
         return str(self.horario)
@@ -154,11 +149,12 @@ class Medico_Revision(models.Model):
     cita = models.OneToOneField(Medico_Citas, on_delete=models.CASCADE, primary_key= True,)
     motivos = models.CharField(max_length=500, blank=False)
     sintomas = models.CharField(max_length=500, blank=False)
-    presion_sanguinea = models.CharField(max_length=30,blank=False)
-    temperatura = models.CharField(max_length=500, blank = False)
-    frec_respiratoria = models.CharField(max_length=500, blank = False)
-    frec_cardiaca = models.CharField(max_length=50, blank = False)
-    otros = models.CharField(max_length=50, blank=True)
+    presion_sanguinea_diastolica = models.IntegerField(blank=False, default=0)
+    presion_sanguinea_sistolica =models.IntegerField(blank=False, default=0)
+    temperatura =models.IntegerField(blank=False, default=0)
+    frec_respiratoria =models.IntegerField(blank=False, default=0)
+    frec_cardiaca =models.IntegerField(blank=False, default=0)
+    otros = models.CharField(max_length=100, blank=True)
 
 
 class Medico_Informe(models.Model):
@@ -167,24 +163,6 @@ class Medico_Informe(models.Model):
     desc_prediagnostico = models.TextField(max_length=100)
     recipe_medico = models.TextField()
 
-class Emergencia(models.Model):
-    paciente = models.ForeignKey(Paciente,
-                                        on_delete=models.CASCADE)
-    medico = models.ForeignKey(Medico,
-                                        on_delete=models.CASCADE)
-    institucion = models.ForeignKey(Institucion,
-                                        on_delete=models.CASCADE)
-    fecha_entrada = models.DateField()
-
-    hora_entrada = models.DateTimeField()
-
-    finalizada = models.BooleanField(default=False)
-
-    def __unicode__(self):
-        return self.name
-
-    class Meta:
-        unique_together = ('paciente','medico','institucion')
 
 class Referencia(models.Model):
 

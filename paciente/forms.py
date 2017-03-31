@@ -59,13 +59,16 @@ class Paciente_CitasForm(forms.ModelForm):
             ident = cita1.id
         except Medico_Citas.DoesNotExist:
             ident = -1
+
         num_paciente = Medico_Citas.objects.filter(paciente=paciente,fecha=fecha,
             hora=hora).count()
         try:
-            cita2 = Medico_Citas.objects.get(paciente=paciente,fecha=fecha,hora=hora)
+            cita2 = Medico_Citas.objects.get(paciente=paciente,fecha=fecha,
+            hora=hora)
             ident2 = cita2.id
         except Medico_Citas.DoesNotExist:
             ident2 = -2
+
         dia= Conocer_dia(fecha)
         dia_hora=dia+hora
         cantidad = Medico_Especialidad.objects.filter(medico=medico,
@@ -104,23 +107,15 @@ class Paciente_CitasForm(forms.ModelForm):
                     ident3 = cita3.id
                 except Medico_Citas.DoesNotExist:
                     ident3 = -3
+
                 if (num_citas == 1) and (ident != ident3) :
                     msj = "La fecha y hora solicitadas no se encuentran disponibles. Por favor elija algunas de estos horarios: "
-                    # for x in horario :
-                    #     msj = msj + str(x) + ', '
                     msj = msj + a
                     self.add_error('hora',msj)
-                    # raise forms.ValidationError('La fecha y hora solicitadas no se encuentran disponibles. Por favor'+
-                    #     ' elija algunas de estos horarios')
             else :
                 msj = "El Medico no atiende ese dia a esa hora. Por favor elija algunos de estos horarios: "
-                # for x in horario :
-                #     msj = msj + str(x) + ', '
                 msj = msj + a
                 self.add_error('hora',msj)
-                # raise forms.ValidationError('El Medico no atiende ese dia a esa hora.Por favor'+
-                #         ' elija algunas de estos horarios')
-                # raise forms.ValidationError('La fecha de la cita no puede ser menor a la de hoy')
         else :
             cantidad = Medico_Especialidad.objects.filter(medico=medico)
             especialidad = ''

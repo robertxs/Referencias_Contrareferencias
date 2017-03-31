@@ -97,11 +97,12 @@ class Medico_CitasForm(forms.ModelForm):
             ident = cita1.id
         except Medico_Citas.DoesNotExist:
             ident = -1
-        print(ident)
+
         num_paciente = Medico_Citas.objects.filter(paciente=paciente,fecha=fecha,
             hora=hora).count()
         try:
-            cita2 = Medico_Citas.objects.get(paciente=paciente,fecha=fecha,hora=hora)
+            cita2 = Medico_Citas.objects.get(paciente=paciente,fecha=fecha,
+            hora=hora)
             ident2 = cita2.id
         except Medico_Citas.DoesNotExist:
             ident2 = -2
@@ -143,6 +144,7 @@ class Medico_CitasForm(forms.ModelForm):
                     ident3 = cita3.id
                 except Medico_Citas.DoesNotExist:
                     ident3 = -3
+                    
                 if (num_citas == 1) and (ident != ident3) :
                     msj = "La fecha y hora solicitadas no se encuentran disponibles. Por favor elija algunas de estos horarios: "
                     # for x in horario :
@@ -262,6 +264,33 @@ class Medico_RevisionForm(forms.ModelForm):
     class Meta:
         model = Medico_Revision
         exclude=("cita",)
+
+    def clean(self):
+        data = self.cleaned_data
+        presion_diastolica = self.cleaned_data.get('presion_sanguinea_diastolica')
+        presion_siastolica = self.cleaned_data.get('presion_sanguinea_sistolica')
+        temperatura = self.cleaned_data.get('temperatura')
+        frec_respiratoria = self.cleaned_data.get('frec_respiratoria')
+        frec_cardiaca = self.cleaned_data.get('frec_cardiaca')
+
+        if (presion_diastolica < 40) or (presion_diastolica > 100) :
+            msj = "La presion diastolica debe estar entre 40 y 100"
+            self.add_error('presion_sanguinea_diastolica',msj)
+        if (presion_siastolica < 90) or (presion_siastolica > 150) :
+            msj = "La presion sistolica debe estar entre 90 y 150"
+            self.add_error('presion_sanguinea_sistolica',msj)
+        if (temperatura < 35) or (temperatura > 41) :
+            msj = "La temperatura debe estar entre 35 y 41"
+            self.add_error('temperatura',msj)
+        if (frec_respiratoria < 10) or (frec_respiratoria > 70) :
+            msj = "La frecuencia respiratoria debe estar entre 10 y 70"
+            self.add_error('frec_respiratoria',msj)
+        if (frec_cardiaca < 50) or (frec_cardiaca > 190) :
+            msj = "La frecuencia cardiaca debe estar entre 50 y 190"
+            self.add_error('frec_cardiaca',msj)
+
+        return data
+
 
 
 class Medico_InformeForm(forms.ModelForm):

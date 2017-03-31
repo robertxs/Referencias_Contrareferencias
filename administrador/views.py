@@ -192,6 +192,8 @@ class VerRoles(TemplateView):
             VerRoles, self).get_context_data(**kwargs)
 
         roles = Group.objects.all()
+        for rol in roles:
+            print(rol.id)
         context['roles'] = roles
         return context
 
@@ -243,7 +245,7 @@ class AgregarInstitucion(CreateView):
                                           context_instance=RequestContext(
                                               request))
         else:
-            messages.error(request,"Por favor verifique que los campos.")
+            messages.error(request,"Por favor verifique los campos suguientes:")
             return render_to_response('administrador/agregar_institucion.html',
                                       {'form': form,
                                        'title': 'Agregar'},
@@ -341,7 +343,7 @@ class AgregarEspecialidad(CreateView):
                                           context_instance=RequestContext(
                                               request))
         else:
-            messages.error(request,"Por favor verifique que los campos.")
+            messages.error(request,"Por favor verifique los campos siguientes:")
             return render_to_response('administrador/agregar_especialidad.html',
                                       {'form': form,
                                        'title': 'Agregar'},
@@ -426,7 +428,7 @@ class AgregarRoles(CreateView):
                                           context_instance=RequestContext(
                                               request))
         else:
-            messages.error(request,"Por favor verifique que los campos.")
+            messages.error(request,"Por favor verifique los campos siguientes:")
             return render_to_response('administrador/agregar_roles.html',
                                       {'form': form,
                                        'title': 'Agregar'},
