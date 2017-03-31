@@ -1,20 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
   <div id="cuerpoHeredado">
-    <div id="myModal_user" class="modal-content">
-      <div class="modal-header">
-        <span class="close">×</span>
-        <h2></h2>
-      </div>
-      <div class="modal-body">
-        <p>¿Está seguro de que desea eliminar la institución?</p>
-        <button id="deleteButton_user">Eliminar</button>
-        <button id="cancel_user">Cancelar</button>
-      </div>
-      <div class="modal-footer">
-        <h3></h3>
-      </div>
-    </div>
+
     <center><h1>Gestión de Instituciones</h1></center>
     <div id="show-instituciones"><table>
       <tr>
@@ -29,15 +16,40 @@
         </th>
       </tr>
       {% for ins in instituciones %}
-        <tr>
+      <!-- Modal content -->
+      <div class="modal fade" id="myModal" role="dialog">
+
+      <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">ELiminar Institución</h4>
+          </div>
+          <div class="modal-body">
+            <p>¿Está seguro que desea eliminar esta institución?</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+            <a type="button" class="btn btn-primary" href="{% url 'eliminar_institucion' ins.pk %}" > Aceptar</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+
+          <tr>
           <td>{{ins.rif}}</td>
           <td>{{ins.name}}</td>
           <td>{{ins.address}}</td>
           <td>{{ins.tipo}}</td>
+
           <td style="text-align: center;">
             <a href="{% url 'modificar_institucion' ins.pk %}"><i class="fa fa-pencil" style="font-size:20px;color:#5882FA"></i></a>
-            <a href="{% url 'eliminar_institucion' ins.pk %}"><i class="fa fa-trash" style="font-size:20px;color:#5882FA"></i></a>
-          </td>
+            <a data-toggle="modal" data-target="#myModal" ><i class="fa fa-trash" style="font-size:20px;color:#5882FA"></i></a>
+
         </tr>
       {% endfor%}
     </table></div>

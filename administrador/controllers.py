@@ -65,18 +65,17 @@ def agregar_rol(name):
         group.save()
         return True
     except:
-        return False  
+        return False
 
 
 def eliminar_rol(request,pk):
     rol = Group.objects.get(pk=pk)
-    print(rol.name)
     if (rol.name == 'admin') or (rol.name == 'medico') or (rol.name == 'paciente'):
         messages.error(request,"No se puede eliminar este rol.")
     else :
         rol.delete()
     return HttpResponseRedirect(reverse_lazy(
-        'ver_roles'))  
+        'ver_roles'))
 
 
 def agregar_institucion(rif, nombre, direccion,tipo):
@@ -132,4 +131,4 @@ def eliminar_especialidad(request, pk):
     especialidad = Especialidad.objects.get(pk=pk)
     especialidad.delete()
     return HttpResponseRedirect(reverse_lazy(
-        'ver_especialidades'))    
+        'ver_especialidades'))

@@ -64,16 +64,19 @@
         </a>
       </th>
     </tr>
+
     {% for role in roles %}
+
     <tr>
       <td>{{ role.id }}</td>
       <td>{{ role.name }}</td>
       <td style="text-align: center;">
         <a id="delete_rols" href="{% url 'eliminar_rol' role.pk %}">
-          <i class="fa fa-trash" style="font-size:20px;color:#5882FA"></i>
-        </a>
+         <i class="fa fa-trash" style="font-size:20px;color:#5882FA"></i>
+       </a>
       </td>
     </tr>
+
     {% endfor %}
   </table>
   </div>
