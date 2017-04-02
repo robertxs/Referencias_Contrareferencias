@@ -49,9 +49,9 @@ class MedicoTestCase(TestCase):
 
         Especialidad.objects.create(nombre_especialidad = 'Dermatologia')
 
-	# #####################################################################
-	# #                 			AGREGAR CITAS
-	# #####################################################################
+	#####################################################################
+	#                 			AGREGAR CITAS
+	#####################################################################
 
 	# Casos Malicia
     def test_agregar_citas_campos_vacios(self):
@@ -214,9 +214,9 @@ class MedicoTestCase(TestCase):
                             fecha= fecha,hora = hora, es_referido = es_referido)
         self.assertIs(value, True)
 
-	# # #####################################################################
-	# # #                 			MODIFICAR CITAS
-	# # #####################################################################
+	#####################################################################
+	#                 			MODIFICAR CITAS
+	#####################################################################
 
 	# Casos Malicia
     def test_modificar_citas_campos_vacios(self):
@@ -376,39 +376,9 @@ class MedicoTestCase(TestCase):
 
     	self.assertIs(value,True)
 
-	# #####################################################################
-	# #                 			ELIMINAR CITAS
-	# #####################################################################
-
-	# Revisar.....
-    # def test_eliminar_citas_campos_llenos(self):
-    # 	# Agregar Cita
-    # 	medico = Medico.objects.get(cedula=202020)
-    # 	user = User.objects.get(username=medico.usuario.user)
-    # 	paciente = Paciente.objects.get(cedula = 12345678)
-    # 	institucion = Institucion.objects.get(rif = 666555446)
-    # 	descripcion = 'Nueva Cita'
-    # 	especialidad = Especialidad.objects.get(nombre_especialidad='Cardiologia')
-    # 	fecha = '28-03-2017'
-    # 	hora = '7AM'
-    # 	es_referido = False
-
-    # 	value = agregar_citas(user_pk=user.pk,paciente=paciente.cedula,institucion=institucion.rif,
-    # 						descripcion=descripcion,especialidad = especialidad.nombre_especialidad,
-    # 						fecha= fecha,hora = hora, es_referido = es_referido)
-
-    # 	# Eliminar Cita
-    #     request = self.factory.get('/medico/ver-citas')
-    #     cita = Medico_Citas.objects.get(paciente = 12345678)
-    #     print(request)
-
-    #     eliminar_citas(request,cita.pk)
-    #     cita = Medico_Citas.objects.get(pk = 1)
-    #     print(cita.descripcion)
-
-	# #####################################################################
-	# #                 			AGREGAR CONSULTAS
-	# #####################################################################
+	#####################################################################
+	#                 			AGREGAR CONSULTAS
+	#####################################################################
 
 	# Casos Malicia
     def test_agregar_consulta_campos_vacios(self):
@@ -470,9 +440,9 @@ class MedicoTestCase(TestCase):
 
     	self.assertIs(value, True)
 
-	# #####################################################################
-	# #                 			MODIFICAR CONSULTAS
-	# #####################################################################
+	#####################################################################
+	#                 			MODIFICAR CONSULTAS
+	#####################################################################
 
 	# Casos Malicia
     def test_modificar_consulta_campos_vacios(self):
@@ -559,9 +529,9 @@ class MedicoTestCase(TestCase):
 
     	self.assertIs(value, True)
 
-	# #####################################################################
-	# #                 			COMENZAR REVISIÓN
-	# #####################################################################
+	####################################################################
+	#                			COMENZAR REVISIÓN
+	####################################################################
 
 	# Casos Malicia
     def test_comenzar_revision_campos_vacios(self):
@@ -584,16 +554,18 @@ class MedicoTestCase(TestCase):
         cita = Medico_Citas.objects.get(descripcion = "Nueva Cita")
     	motivos = None
     	sintomas = None
-    	presion_sanguinea = None
+        presion_sanguinea_diastolica = None
+        presion_sanguinea_sistolica = None
     	temperatura = None
     	frec_respiratoria = None
     	frec_cardiaca = None
     	otros = None
 
-    	value = comenzar_revision(cita_id = cita.id, motivos = motivos, sintomas = sintomas,
-    							presion_sanguinea = presion_sanguinea, temperatura = temperatura,
-    							frec_respiratoria = frec_respiratoria, frec_cardiaca = frec_cardiaca,
-    							otros = otros)
+        value = comenzar_revision(cita_id = cita.id, motivos = motivos, sintomas = sintomas,
+                                presion_sanguinea_diastolica = presion_sanguinea_diastolica,
+                                presion_sanguinea_sistolica = presion_sanguinea_sistolica,
+                                temperatura = temperatura, frec_respiratoria = frec_respiratoria,
+                                frec_cardiaca = frec_cardiaca, otros = otros)
 
     	self.assertIs(value, False)
 
@@ -618,16 +590,18 @@ class MedicoTestCase(TestCase):
         cita = Medico_Citas.objects.get(descripcion = "Nueva Cita")
     	motivos = None
     	sintomas = 1234
-    	presion_sanguinea = None
-    	temperatura = 'Holitas'
+        presion_sanguinea_diastolica = None
+        presion_sanguinea_sistolica = None
+    	temperatura = 65
     	frec_respiratoria = None
     	frec_cardiaca = None
     	otros = None
 
-    	value = comenzar_revision(cita_id = cita.id, motivos = motivos, sintomas = sintomas,
-    							presion_sanguinea = presion_sanguinea, temperatura = temperatura,
-    							frec_respiratoria = frec_respiratoria, frec_cardiaca = frec_cardiaca,
-    							otros = otros)
+        value = comenzar_revision(cita_id = cita.id, motivos = motivos, sintomas = sintomas,
+                                presion_sanguinea_diastolica = presion_sanguinea_diastolica,
+                                presion_sanguinea_sistolica = presion_sanguinea_sistolica,
+                                temperatura = temperatura, frec_respiratoria = frec_respiratoria,
+                                frec_cardiaca = frec_cardiaca, otros = otros)
 
     	self.assertIs(value, False)
 
@@ -651,16 +625,18 @@ class MedicoTestCase(TestCase):
         cita = Medico_Citas.objects.get(descripcion = "Nueva Cita")
     	motivos = 'Dolor de Cabeza'
     	sintomas = 'Vomito'
-    	presion_sanguinea = '49'
-    	temperatura = '32'
-    	frec_respiratoria = 'Constante'
+        presion_sanguinea_diastolica = 60
+        presion_sanguinea_sistolica = 49
+    	temperatura = 32
+    	frec_respiratoria = 100
     	frec_cardiaca = None
     	otros = 'Sin cita'
 
-    	value = comenzar_revision(cita_id = cita.id, motivos = motivos, sintomas = sintomas,
-    							presion_sanguinea = presion_sanguinea, temperatura = temperatura,
-    							frec_respiratoria = frec_respiratoria, frec_cardiaca = frec_cardiaca,
-    							otros = otros)
+        value = comenzar_revision(cita_id = cita.id, motivos = motivos, sintomas = sintomas,
+                                presion_sanguinea_diastolica = presion_sanguinea_diastolica,
+                                presion_sanguinea_sistolica = presion_sanguinea_sistolica,
+                                temperatura = temperatura, frec_respiratoria = frec_respiratoria,
+                                frec_cardiaca = frec_cardiaca, otros = otros)
 
     	self.assertIs(value, False)
 
@@ -686,16 +662,19 @@ class MedicoTestCase(TestCase):
         cita = Medico_Citas.objects.get(descripcion = "Nueva Cita")
     	motivos = 'Dolor de Cabeza'
     	sintomas = 'Vomito'
-    	presion_sanguinea = '49'
-    	temperatura = '32'
-    	frec_respiratoria = 'Constante'
-    	frec_cardiaca = '20'
+        presion_sanguinea_diastolica = 60
+        presion_sanguinea_sistolica = 49
+    	temperatura = 32
+    	frec_respiratoria = 40
+    	frec_cardiaca = 20
     	otros = ''
 
-    	value = comenzar_revision(cita_id = cita.id, motivos = motivos, sintomas = sintomas,
-    							presion_sanguinea = presion_sanguinea, temperatura = temperatura,
-    							frec_respiratoria = frec_respiratoria, frec_cardiaca = frec_cardiaca,
-    							otros = otros)
+        value = comenzar_revision(cita_id = cita.id, motivos = motivos, sintomas = sintomas,
+                                presion_sanguinea_diastolica = presion_sanguinea_diastolica,
+                                presion_sanguinea_sistolica = presion_sanguinea_sistolica,
+                                temperatura = temperatura, frec_respiratoria = frec_respiratoria,
+                                frec_cardiaca = frec_cardiaca, otros = otros)
+
 
     	self.assertIs(value, True)
 
@@ -719,22 +698,24 @@ class MedicoTestCase(TestCase):
         cita = Medico_Citas.objects.get(descripcion = "Nueva Cita")
     	motivos = 'Dolor de Cabeza'
     	sintomas = 'Vomito'
-    	presion_sanguinea = '49'
-    	temperatura = '32'
-    	frec_respiratoria = 'Constante'
-    	frec_cardiaca = '20'
+        presion_sanguinea_diastolica = 60
+        presion_sanguinea_sistolica = 49
+    	temperatura = 32
+    	frec_respiratoria = 15
+    	frec_cardiaca = 20
     	otros = 'Sintomas'
 
-    	value = comenzar_revision(cita_id = cita.id, motivos = motivos, sintomas = sintomas,
-    							presion_sanguinea = presion_sanguinea, temperatura = temperatura,
-    							frec_respiratoria = frec_respiratoria, frec_cardiaca = frec_cardiaca,
-    							otros = otros)
+        value = comenzar_revision(cita_id = cita.id, motivos = motivos, sintomas = sintomas,
+                                presion_sanguinea_diastolica = presion_sanguinea_diastolica,
+                                presion_sanguinea_sistolica = presion_sanguinea_sistolica,
+                                temperatura = temperatura, frec_respiratoria = frec_respiratoria,
+                                frec_cardiaca = frec_cardiaca, otros = otros)
 
     	self.assertIs(value, True)
 
-	# #####################################################################
-	# #                 			INFORME MÉDICO
-	# #####################################################################
+	#####################################################################
+	#                 			INFORME MÉDICO
+	#####################################################################
 
 	# Casos Malicia
     def test_informe_medico_campo_vacio(self):
@@ -753,26 +734,31 @@ class MedicoTestCase(TestCase):
                             descripcion=descripcion,especialidad = especialidad.nombre_especialidad,
                             fecha= fecha,hora = hora, es_referido = es_referido)
 
-    	# Comenzar Revisión
+        # Comenzar Revisión
         cita = Medico_Citas.objects.get(descripcion = "Nueva Cita")
-    	motivos = 'Dolor de Cabeza'
-    	sintomas = 'Vomito'
-    	presion_sanguinea = '49'
-    	temperatura = '32'
-    	frec_respiratoria = 'Constante'
-    	frec_cardiaca = '20'
-    	otros = 'Sintomas'
+        motivos = 'Dolor de Cabeza'
+        sintomas = 'Vomito'
+        presion_sanguinea_diastolica = 60
+        presion_sanguinea_sistolica = 49
+        temperatura = 32
+        frec_respiratoria = 15
+        frec_cardiaca = 20
+        otros = 'Sintomas'
 
-    	value = comenzar_revision(cita_id = cita.id, motivos = motivos, sintomas = sintomas,
-    							presion_sanguinea = presion_sanguinea, temperatura = temperatura,
-    							frec_respiratoria = frec_respiratoria, frec_cardiaca = frec_cardiaca,
-    							otros = otros)
+        value = comenzar_revision(cita_id = cita.id, motivos = motivos, sintomas = sintomas,
+                                presion_sanguinea_diastolica = presion_sanguinea_diastolica,
+                                presion_sanguinea_sistolica = presion_sanguinea_sistolica,
+                                temperatura = temperatura, frec_respiratoria = frec_respiratoria,
+                                frec_cardiaca = frec_cardiaca, otros = otros)
 
     	# Informe Médico
     	revision = None
     	prediagnostico = None
+        recipe_medico = None
 
-    	value = informe_medico(revision_id = revision, prediagnostico = prediagnostico)
+    	value = informe_medico(revision_id = revision, prediagnostico = prediagnostico,
+                                recipe = recipe_medico)
+
     	self.assertIs(value, False)
 
     # Casos Bordes
@@ -792,26 +778,31 @@ class MedicoTestCase(TestCase):
                             descripcion=descripcion,especialidad = especialidad.nombre_especialidad,
                             fecha= fecha,hora = hora, es_referido = es_referido)
 
-    	# Comenzar Revisión
+        # Comenzar Revisión
         cita = Medico_Citas.objects.get(descripcion = "Nueva Cita")
-    	motivos = 'Dolor de Cabeza'
-    	sintomas = 'Vomito'
-    	presion_sanguinea = '49'
-    	temperatura = '32'
-    	frec_respiratoria = 'Constante'
-    	frec_cardiaca = '20'
-    	otros = 'Sintomas'
+        motivos = 'Dolor de Cabeza'
+        sintomas = 'Vomito'
+        presion_sanguinea_diastolica = 60
+        presion_sanguinea_sistolica = 49
+        temperatura = 32
+        frec_respiratoria = 15
+        frec_cardiaca = 20
+        otros = 'Sintomas'
 
-    	value = comenzar_revision(cita_id = cita.id, motivos = motivos, sintomas = sintomas,
-    							presion_sanguinea = presion_sanguinea, temperatura = temperatura,
-    							frec_respiratoria = frec_respiratoria, frec_cardiaca = frec_cardiaca,
-    							otros = otros)
+        value = comenzar_revision(cita_id = cita.id, motivos = motivos, sintomas = sintomas,
+                                presion_sanguinea_diastolica = presion_sanguinea_diastolica,
+                                presion_sanguinea_sistolica = presion_sanguinea_sistolica,
+                                temperatura = temperatura, frec_respiratoria = frec_respiratoria,
+                                frec_cardiaca = frec_cardiaca, otros = otros)
 
     	# Informe Médico
     	revision = Medico_Revision.objects.get(motivos = 'Dolor de Cabeza')
     	prediagnostico = None
+        recipe_medico = 'Tomar Pildoras de Tranquilidad'
 
-    	value = informe_medico(revision_id = revision.pk, prediagnostico = prediagnostico)
+        value = informe_medico(revision_id = revision.pk, prediagnostico = prediagnostico,
+                                recipe = recipe_medico)
+ 
     	self.assertIs(value, False)
 
     def test_informe_medico_campos_llenos(self):
@@ -830,24 +821,29 @@ class MedicoTestCase(TestCase):
                             descripcion=descripcion,especialidad = especialidad.nombre_especialidad,
                             fecha= fecha,hora = hora, es_referido = es_referido)
 
-    	# Comenzar Revisión
+        # Comenzar Revisión
         cita = Medico_Citas.objects.get(descripcion = "Nueva Cita")
-    	motivos = 'Dolor de Cabeza'
-    	sintomas = 'Vomito'
-    	presion_sanguinea = '49'
-    	temperatura = '32'
-    	frec_respiratoria = 'Constante'
-    	frec_cardiaca = '20'
-    	otros = 'Sintomas'
+        motivos = 'Dolor de Cabeza'
+        sintomas = 'Vomito'
+        presion_sanguinea_diastolica = 60
+        presion_sanguinea_sistolica = 49
+        temperatura = 32
+        frec_respiratoria = 15
+        frec_cardiaca = 20
+        otros = 'Sintomas'
 
-    	value = comenzar_revision(cita_id = cita.id, motivos = motivos, sintomas = sintomas,
-    							presion_sanguinea = presion_sanguinea, temperatura = temperatura,
-    							frec_respiratoria = frec_respiratoria, frec_cardiaca = frec_cardiaca,
-    							otros = otros)
+        value = comenzar_revision(cita_id = cita.id, motivos = motivos, sintomas = sintomas,
+                                presion_sanguinea_diastolica = presion_sanguinea_diastolica,
+                                presion_sanguinea_sistolica = presion_sanguinea_sistolica,
+                                temperatura = temperatura, frec_respiratoria = frec_respiratoria,
+                                frec_cardiaca = frec_cardiaca, otros = otros)
 
     	# Informe Médico
     	revision = Medico_Revision.objects.get(motivos = 'Dolor de Cabeza')
-    	prediagnostico = 'Todo bien'
+    	prediagnostico = 'Necesita Operacion'
+        recipe_medico = 'Tomar Pildoras de Tranquilidad'
 
-    	value = informe_medico(revision_id = revision.pk, prediagnostico = prediagnostico)
+        value = informe_medico(revision_id = revision.pk, prediagnostico = prediagnostico,
+                                recipe = recipe_medico)
+
     	self.assertIs(value, True)
