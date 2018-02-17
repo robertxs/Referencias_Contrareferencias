@@ -115,7 +115,7 @@ class UsuarioForm(forms.ModelForm):
 
 class ModificarUsuarioForm(forms.ModelForm):
 
-    print("raro raro")
+  
 
     name_validator = RegexValidator(
     regex   = '^[A-Za-záéíóúñÑÁÉÍÓÚäëïöüÄËÏÖÜ\'\- ]+$',
@@ -213,7 +213,6 @@ class ModificarUsuarioForm(forms.ModelForm):
 
 
 class LoginForm(forms.Form):
-    print("oooohhhhh")
     username = forms.CharField(
         max_length=60, required=True,
         label='', widget=forms.TextInput(attrs={'placeholder': 'Email'}))
@@ -256,7 +255,44 @@ class InstitucionFormEditar(forms.ModelForm):
         model = Institucion
         exclude = ["rif","name"]
 
+class LaboratorioForm(forms.ModelForm):
 
+    class Meta:
+        model = Laboratorio
+        fields = ['institucion','rif','name','address','regent']
+
+    def clean(self):
+        data = self.cleaned_data
+        rif = self.cleaned_data.get('rif')
+        nombre = self.cleaned_data.get('name')
+
+        num_rif = Laboratorio.objects.filter(rif=rif).count()
+        print(num_rif)
+
+        num_nombre = Laboratorio.objects.filter(name=nombre).count()
+        print(num_nombre)
+
+        if num_rif == 1:
+            msj="Ya existe este rif asociado a un laboratorio, verifíquelo por favor."
+            self.add_error('rif',msj)
+
+        if num_nombre == 1:
+            msj="Ya existe este nombre asociado a un laboratorio, verifíquelo por favor."
+            self.add_error('name',msj)
+
+        return data
+    
+    
+    def __init__(self, *args, **kwargs):
+        super(LaboratorioForm, self).__init__(*args, **kwargs)
+        self.fields['institucion'].queryset = Institucion.objects.all()
+    
+class LaboratorioFormEditar(forms.ModelForm):
+
+    class Meta:
+        model = Laboratorio
+        exclude = ["institucion"]
+           
 class EspecialidadForm(forms.ModelForm):
     class Meta:
         model = Especialidad

@@ -87,6 +87,26 @@ urlpatterns = patterns(
         name='eliminar_institucion'
     ),
     url(
+        r'^ver-laboratorios/$',
+        VerLaboratorios.as_view(),
+        name='ver_laboratorios'
+    ),
+    url(
+        r'^agregar_laboratorio/$',
+        AgregarLaboratorio.as_view(),
+        name='agregar_laboratorio'
+    ),
+    url(
+        r'^modificar_laboratorio/(?P<pk>\w+)$',
+        ModificarLaboratorio.as_view(),
+        name='modificar_laboratorio'
+    ),
+    url(
+        r'^eliminar_laboratorio/(?P<pk>\w+)$',
+        'administrador.controllers.eliminar_laboratorio',
+        name='eliminar_laboratorio'
+    ),
+    url(
         r'^ver-especialidades/$',
         VerEspecialidades.as_view(),
         name='ver_especialidades'

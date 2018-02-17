@@ -107,6 +107,39 @@ def eliminar_institucion(request, pk):
     return HttpResponseRedirect(reverse_lazy(
         'ver_instituciones'))
 
+def agregar_laboratorio(rif, nombre, direccion, regente, institucion):
+    try:
+        laboratorio = Laboratorio(rif=rif,
+                            name = nombre,
+                            address = direccion,
+                            regent = regente,
+                            institucion = institucion
+                            )
+        laboratorio.save()
+        return True
+    except:
+        return False
+
+
+def modificar_laboratorio(lab_id, rif, nombre, direccion, regente):
+    try:
+        laboratorio = Laboratorio.objects.get(pk=lab_id)
+        #laboratorio.institucion = institucion
+        laboratorio.rif = rif
+        laboratorio.name = nombre
+        laboratorio.address = direccion
+        laboratorio.regent = regente
+        laboratorio.save()
+        return True
+    except:
+        return False
+
+
+def eliminar_laboratorio(request, pk):
+    laboratorio = Laboratorio.objects.get(pk=pk)
+    laboratorio.delete()
+    return HttpResponseRedirect(reverse_lazy(
+        'ver_laboratorios'))
 
 def agregar_especialidad(nombre):
     try:

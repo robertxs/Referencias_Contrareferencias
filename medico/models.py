@@ -39,6 +39,16 @@ class Institucion(models.Model):
     def __str__(self):
         return self.name
 
+class Laboratorio(models.Model):
+    institucion = models.ForeignKey(Institucion,
+                                    on_delete= models.CASCADE)
+    rif = models.CharField(max_length=12, blank=False)
+    name = models.CharField(max_length=100)
+    address = models.CharField(max_length=255, blank=False)
+    regent = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
 
 # Se contempla tener aqui donde trabaja el medico y la especialidad
 class Medico_Especialidad(models.Model):

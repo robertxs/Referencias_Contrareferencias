@@ -1300,7 +1300,7 @@ class ReferirPaciente(CreateView):
         form = ReferenciaForm(request.POST,request.FILES,cita=kwargs['id'])
         print(form.is_valid())
         if form.is_valid() :
-            print("aqui?????")
+           
             id_cita = kwargs['id']
             cita = Medico_Citas.objects.get(id=id_cita)
 

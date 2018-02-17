@@ -10,8 +10,9 @@ from django.contrib.auth import *
 from django.views.generic import *
 from administrador.forms import *
 from administrador.models import *
-from medico.models import *
 from administrador.controllers import *
+from medico.models import *
+
 
 
 class Index(TemplateView):
@@ -297,6 +298,121 @@ class ModificarInstitucion(CreateView):
                                       {'form': form,
                                        'title': 'Modificar'},
                                       context_instance=RequestContext(request))
+
+
+class VerLaboratorios(TemplateView):
+    template_name = 'administrador/ver_laboratorios.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(
+            VerLaboratorios, self).get_context_data(**kwargs)
+
+        laboratorios = Laboratorio.objects.all()
+        for i in laboratorios:
+            print i.name
+        context['laboratorios'] = laboratorios
+        
+        
+        return context
+
+
+class AgregarLaboratorio(CreateView):
+    template_name = 'administrador/agregar_laboratorio.html'
+    form_class = LaboratorioForm
+
+    def get_context_data(self, **kwargs):
+        context = super(
+            AgregarLaboratorio, self).get_context_data(**kwargs)
+       
+        context['title'] = 'Agregar'
+
+        return context
+
+    def post(self, request, *args, **kwargs):
+        """
+        Handles POST requests, instantiating a form instance with the passed
+        POST variables and then checked for validity.
+        """
+        form = LaboratorioForm(request.POST)
+        if form.is_valid():
+            rif = request.POST['rif']
+            nombre = request.POST['name']
+            direccion = request.POST['address']
+            regente = request.POST['regent']
+            institucionid = request.POST['institucion']
+            institucion = Institucion.objects.get(id=institucionid)
+            value = agregar_laboratorio(rif, nombre, direccion, regente, institucion)
+            
+            if value is True:
+                return HttpResponseRedirect(reverse_lazy(
+                    'ver_laboratorios'))
+            else:
+                return render_to_response('administrador/agregar_laboratorio.html',
+                                          {'form': form,
+                                           'title': 'Agregar'},
+                                          context_instance=RequestContext(
+                                              request))
+        else:
+            messages.error(request,"Por favor verifique los campos suguientes:")
+            return render_to_response('administrador/agregar_laboratorio.html',
+                                      {'form': form,
+                                       'title': 'Agregar'},
+                                      context_instance=RequestContext(request))
+
+
+class ModificarLaboratorio(CreateView):
+    template_name = 'administrador/modificar_laboratorio.html'
+    form_class = LaboratorioFormEditar
+
+    def get_context_data(self, **kwargs):
+        context = super(
+            ModificarLaboratorio, self).get_context_data(**kwargs)
+        laboratorio = Laboratorio.objects.get(pk=self.kwargs['pk'])
+        form = LaboratorioFormEditar(
+                    initial={
+                             'institucion' : laboratorio.institucion,
+                             'rif' : laboratorio.rif,
+                             'name' : laboratorio.name,
+                             'address': laboratorio.address,
+                             'regent': laboratorio.regent,
+                            }
+                )
+
+        context['form'] = form
+        context['laboratorio'] = laboratorio
+
+        return context
+
+    def post(self, request, *args, **kwargs):
+        """
+        Handles POST requests, instantiating a form instance with the passed
+        POST variables and then checked for validity.
+        """
+        form = LaboratorioFormEditar(request.POST)
+        if form.is_valid():
+            #institucion = request.POST['institucion']
+            rif = request.POST['rif']
+            nombre = request.POST['name']
+            direccion = request.POST['address']
+            regente = request.POST['regent']
+            value = modificar_laboratorio(self.kwargs['pk'], rif, nombre, direccion, regente)
+
+            if value is True:
+                return HttpResponseRedirect(reverse_lazy(
+                    'ver_laboratorios'))
+            else:
+                return render_to_response('administrador/modificar_laboratorio.html',
+                                          {'form': form,
+                                           'title': 'Modificar'},
+                                          context_instance=RequestContext(
+                                              request))
+        else:
+            return render_to_response('administrador/modificar_laboratorio.html',
+                                      {'form': form,
+                                       'title': 'Modificar'},
+                                      context_instance=RequestContext(request))
+
+
 
 
 class VerEspecialidades(TemplateView):
