@@ -31,17 +31,18 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = (
+    'administrador',
+    'medico',
+    'paciente',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'bootstrap3',
-    'administrador',
     'bootstrap3_datetime',
-    'medico',
-    'paciente',
 )
 
 MIDDLEWARE_CLASSES = (

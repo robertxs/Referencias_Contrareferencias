@@ -31,7 +31,7 @@ class Historiadetriaje(models.Model):
     paciente = models.ForeignKey(Paciente,
                                  on_delete=models.CASCADE)
     medico_triaje = models.ForeignKey('medico.Medico',
-                                      on_delete=models.CASCADE)
+                                      on_delete=models.CASCADE, null=True)
     antecedentes_personales = models.CharField(max_length=500)
     antecedentes_familiares = models.CharField(max_length=500)
     motivo_consulta = models.CharField(max_length=200)
@@ -55,6 +55,6 @@ class Historia(models.Model):
     paciente = models.ForeignKey(Paciente,
                                  on_delete=models.CASCADE)
     medico = models.ForeignKey('medico.Medico',
-                               on_delete=models.CASCADE)
+                               on_delete=models.CASCADE, null=True)
     especialidad = models.ForeignKey('medico.Especialidad',
-                                     on_delete=models.CASCADE)
+                                     on_delete=models.CASCADE, null=True)
