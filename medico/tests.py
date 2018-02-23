@@ -1,59 +1,87 @@
 # -*- coding: utf-8 -*-
 from django.test import TestCase
 from datetime import datetime
-from  medico.forms import*
-from  medico.controllers import *
-from  medico.models import *
-from  paciente.models import *
+from medico.forms import*
+from medico.controllers import *
+from medico.models import *
+from paciente.models import *
 from django.test.client import RequestFactory
 
 #####################################################################
 #                 			CONTROLADORES
 #####################################################################
 
+
 class MedicoTestCase(TestCase):
 
     def setUp(self):
+        self.factory = RequestFactory()
 
-    	self.factory = RequestFactory()
+        User.objects.create(username="medicos", password="g4g4")
+        medicos = User.objects.get(username="medicos")
 
-        User.objects.create(username = "medicos",password = "g4g4")
-        medicos = User.objects.get(username = "medicos") 
+        Usuario.objects.create(user=medicos, ci="1111")
+        medicos1 = Usuario.objects.get(ci="1111")
 
-        Usuario.objects.create(user = medicos,ci = "1111")
-        medicos1 = Usuario.objects.get(ci = "1111")
+        Medico.objects.create(
+            cedula=202020,
+            first_name="roberto",
+            last_name="rinaldi",
+            fecha_nacimiento="2015-02-15", 
+            sexo="m", 
+            estado_civil="s", 
+            telefono="02125555",
+            direccion="dir", 
+            usuario=medicos1
+        )
+        medico = Medico.objects.get(cedula=202020)
 
+        User.objects.create(username="paciente", password="123")
+        paciente = User.objects.get(username="paciente")
 
-        Medico.objects.create(cedula = 202020,first_name = "roberto",last_name = "rinaldi",
-            fecha_nacimiento = "2015-02-15",sexo = "m",estado_civil = "s",telefono = "02125555",
-            direccion = "dir", usuario = medicos1)
-        medico = Medico.objects.get(cedula = 202020)
+        Usuario.objects.create(user=paciente, ci="12345678")
+        paciente1 = Usuario.objects.get(ci="12345678")
 
-        User.objects.create(username = "paciente",password = "123")
-        paciente = User.objects.get(username = "paciente")
+        Paciente.objects.create(
+            cedula=12345678, 
+            first_name="Cinthya", 
+            last_name="Ramos",
+            usuario=paciente1
+        )
 
-        Usuario.objects.create(user = paciente,ci = "12345678")
-        paciente1 = Usuario.objects.get(ci = "12345678")
+        Institucion.objects.create(
+            rif=666555446,
+            name="Centro Medico La Trinidad",
+            address="La Trinidad",
+            tipo="Clinica"
+        )
+        institucion1 = Institucion.objects.get(rif=666555446)
 
-        Paciente.objects.create(cedula = 12345678, first_name = "Cinthya", last_name = "Ramos",
-                                usuario = paciente1)
+        Institucion.objects.create(
+            rif=666555447, 
+            name="La Arboleda",
+            address="Baruta",
+            tipo="Clinica"
+        )
+        institucion2 = Institucion.objects.get(rif=666555447)
 
-        Institucion.objects.create(rif = 666555446, name = "Centro Medico La Trinidad",
-                                    address = "La Trinidad")
-        institucion = Institucion.objects.get(rif = 666555446)
+        Laboratorio.objects.create(
+            institucion=institucion1,
+            rif=666555446,
+            name="Laboratorio de prueba",
+            address="La Trinidad",
+            regent="No se que es esto"
+        )
 
-        Institucion.objects.create(rif = 666555447, name = "La Arboleda",
-                                    address = "Baruta")
+        Especialidad.objects.create(nombre_especialidad='Cardiologia')
 
-        Especialidad.objects.create(nombre_especialidad = 'Cardiologia')
+        Especialidad.objects.create(nombre_especialidad='Dermatologia')
 
-        Especialidad.objects.create(nombre_especialidad = 'Dermatologia')
+    #####################################################################
+    #                           AGREGAR CITAS
+    #####################################################################
 
-	#####################################################################
-	#                 			AGREGAR CITAS
-	#####################################################################
-
-	# Casos Malicia
+    # Casos Malicia
     def test_agregar_citas_campos_vacios(self):
         medico = None
         paciente = None
@@ -64,25 +92,33 @@ class MedicoTestCase(TestCase):
         hora = ''
         es_referido = None
 
-        value = agregar_citas(user_pk=medico,paciente=paciente,institucion=institucion,
-                              descripcion=descripcion,especialidad = especialidad,
-                             fecha= fecha,hora = hora, es_referido = es_referido)
+        value = agregar_citas(
+            user_pk=medico, 
+            paciente=paciente, 
+            institucion=institucion,
+            descripcion=descripcion, 
+            especialidad=especialidad,
+            fecha=fecha, 
+            hora=hora, 
+            es_referido=es_referido
+        )
         self.assertIs(value, False)
 
     def test_agregar_citas_campos_erroneos(self):
         medico = Medico.objects.get(cedula=202020)
         user = User.objects.get(username=medico.usuario.user)
-        paciente = Paciente.objects.get(cedula = 12345678)
-        institucion = Institucion.objects.get(rif = 666555446)
+        paciente = Paciente.objects.get(cedula=12345678)
+        institucion = Institucion.objects.get(rif=666555446)
         descripcion = 12345
-        especialidad = Especialidad.objects.get(nombre_especialidad='Cardiologia')
+        especialidad = Especialidad.objects.get(
+            nombre_especialidad='Cardiologia')
         fecha = 1234
         hora = 'Hola'
         es_referido = False
 
-        value = agregar_citas(user_pk=user.pk,paciente=paciente.cedula,institucion=institucion.rif,
-                            descripcion=descripcion,especialidad = especialidad.nombre_especialidad,
-                            fecha=fecha,hora = hora, es_referido = es_referido)
+        value = agregar_citas(user_pk=user.pk, paciente=paciente.cedula, institucion=institucion.rif,
+                              descripcion=descripcion, especialidad=especialidad.nombre_especialidad,
+                              fecha=fecha, hora=hora, es_referido=es_referido)
         self.assertIs(value, False)
 
 	# Casos Borde
@@ -97,15 +133,15 @@ class MedicoTestCase(TestCase):
         hora = ''
         es_referido = ''
 
-        value = agregar_citas(user_pk=user.pk,paciente=paciente,institucion=institucion,
-                              descripcion=descripcion,especialidad = especialidad,
-                             fecha= fecha,hora = hora, es_referido = es_referido)
+        value = agregar_citas(user_pk=user.pk, paciente=paciente, institucion=institucion,
+                              descripcion=descripcion, especialidad=especialidad,
+                              fecha=fecha, hora=hora, es_referido=es_referido)
         self.assertIs(value, False)
 
     def test_agregar_citas_dos_campos_llenos(self):
         medico = Medico.objects.get(cedula=202020)
         user = User.objects.get(username=medico.usuario.user)
-        paciente = Paciente.objects.get(cedula = 12345678)
+        paciente = Paciente.objects.get(cedula=12345678)
         institucion = ''
         descripcion = ''
         especialidad = ''
@@ -113,105 +149,109 @@ class MedicoTestCase(TestCase):
         hora = ''
         es_referido = ''
 
-        value = agregar_citas(user_pk=user.pk,paciente=paciente.cedula,institucion=institucion,
-                              descripcion=descripcion,especialidad = especialidad,
-                             fecha= fecha,hora = hora, es_referido = es_referido)
+        value = agregar_citas(user_pk=user.pk, paciente=paciente.cedula, institucion=institucion,
+                              descripcion=descripcion, especialidad=especialidad,
+                              fecha=fecha, hora=hora, es_referido=es_referido)
         self.assertIs(value, False)
 
     def test_agregar_citas_tres_campos_llenos(self):
         medico = Medico.objects.get(cedula=202020)
         user = User.objects.get(username=medico.usuario.user)
-        paciente = Paciente.objects.get(cedula = 12345678)
-        institucion = Institucion.objects.get(rif = 666555446)
+        paciente = Paciente.objects.get(cedula=12345678)
+        institucion = Institucion.objects.get(rif=666555446)
         descripcion = ''
         especialidad = ''
         fecha = ''
         hora = ''
         es_referido = ''
 
-        value = agregar_citas(user_pk=user.pk,paciente=paciente.cedula,institucion=institucion.pk,
-                              descripcion=descripcion,especialidad = especialidad,
-                             fecha= fecha,hora = hora, es_referido = es_referido)
+        value = agregar_citas(user_pk=user.pk, paciente=paciente.cedula, institucion=institucion.pk,
+                              descripcion=descripcion, especialidad=especialidad,
+                              fecha=fecha, hora=hora, es_referido=es_referido)
         self.assertIs(value, False)
 
     def test_agregar_citas_cuatro_campos_llenos(self):
         medico = Medico.objects.get(cedula=202020)
         user = User.objects.get(username=medico.usuario.user)
-        paciente = Paciente.objects.get(cedula = 12345678)
-        institucion = Institucion.objects.get(rif = 666555446)
+        paciente = Paciente.objects.get(cedula=12345678)
+        institucion = Institucion.objects.get(rif=666555446)
         descripcion = 'Nueva Cita'
         especialidad = ''
         fecha = ''
         hora = ''
         es_referido = ''
 
-        value = agregar_citas(user_pk=user.pk,paciente=paciente.cedula,institucion=institucion.pk,
-                              descripcion=descripcion,especialidad = especialidad,
-                             fecha= fecha,hora = hora, es_referido = es_referido)
+        value = agregar_citas(user_pk=user.pk, paciente=paciente.cedula, institucion=institucion.pk,
+                              descripcion=descripcion, especialidad=especialidad,
+                              fecha=fecha, hora=hora, es_referido=es_referido)
         self.assertIs(value, False)
 
     def test_agregar_citas_cinco_campos_llenos(self):
         medico = Medico.objects.get(cedula=202020)
         user = User.objects.get(username=medico.usuario.user)
-        paciente = Paciente.objects.get(cedula = 12345678)
-        institucion = Institucion.objects.get(rif = 666555446)
+        paciente = Paciente.objects.get(cedula=12345678)
+        institucion = Institucion.objects.get(rif=666555446)
         descripcion = 'Nueva Cita'
-        especialidad = Especialidad.objects.get(nombre_especialidad='Cardiologia')
+        especialidad = Especialidad.objects.get(
+            nombre_especialidad='Cardiologia')
         fecha = None
         hora = None
         es_referido = None
 
-        value = agregar_citas(user_pk=user.pk,paciente=paciente.cedula,institucion=institucion.pk,
-                              descripcion=descripcion,especialidad = especialidad,
-                             fecha= fecha,hora = hora, es_referido = es_referido)
+        value = agregar_citas(user_pk=user.pk, paciente=paciente.cedula, institucion=institucion.pk,
+                              descripcion=descripcion, especialidad=especialidad,
+                              fecha=fecha, hora=hora, es_referido=es_referido)
         self.assertIs(value, False)
 
     def test_agregar_citas_seis_campos_llenos(self):
         medico = Medico.objects.get(cedula=202020)
         user = User.objects.get(username=medico.usuario.user)
-        paciente = Paciente.objects.get(cedula = 12345678)
-        institucion = Institucion.objects.get(rif = 666555446)
+        paciente = Paciente.objects.get(cedula=12345678)
+        institucion = Institucion.objects.get(rif=666555446)
         descripcion = 'Nueva Cita'
-        especialidad = Especialidad.objects.get(nombre_especialidad='Cardiologia')
+        especialidad = Especialidad.objects.get(
+            nombre_especialidad='Cardiologia')
         fecha = '23-04-2017'
         hora = None
         es_referido = None
 
-        value = agregar_citas(user_pk=user.pk,paciente=paciente.cedula,institucion=institucion.pk,
-                              descripcion=descripcion,especialidad = especialidad,
-                             fecha= fecha,hora = hora, es_referido = es_referido)
+        value = agregar_citas(user_pk=user.pk, paciente=paciente.cedula, institucion=institucion.pk,
+                              descripcion=descripcion, especialidad=especialidad,
+                              fecha=fecha, hora=hora, es_referido=es_referido)
         self.assertIs(value, False)
 
     def test_agregar_citas_siete_campos_llenos(self):
         medico = Medico.objects.get(cedula=202020)
         user = User.objects.get(username=medico.usuario.user)
-        paciente = Paciente.objects.get(cedula = 12345678)
-        institucion = Institucion.objects.get(rif = 666555446)
+        paciente = Paciente.objects.get(cedula=12345678)
+        institucion = Institucion.objects.get(rif=666555446)
         descripcion = 'Nueva Cita'
-        especialidad = Especialidad.objects.get(nombre_especialidad='Cardiologia')
+        especialidad = Especialidad.objects.get(
+            nombre_especialidad='Cardiologia')
         fecha = '23-04-2017'
         hora = '7AM'
         es_referido = None
 
-        value = agregar_citas(user_pk=user.pk,paciente=paciente.cedula,institucion=institucion.pk,
-                              descripcion=descripcion,especialidad = especialidad,
-                             fecha= fecha,hora = hora, es_referido = es_referido)
+        value = agregar_citas(user_pk=user.pk, paciente=paciente.cedula, institucion=institucion.pk,
+                              descripcion=descripcion, especialidad=especialidad,
+                              fecha=fecha, hora=hora, es_referido=es_referido)
         self.assertIs(value, False)
 
     def test_agregar_citas_campos_llenos(self):
         medico = Medico.objects.get(cedula=202020)
         user = User.objects.get(username=medico.usuario.user)
-        paciente = Paciente.objects.get(cedula = 12345678)
-        institucion = Institucion.objects.get(rif = 666555446)
+        paciente = Paciente.objects.get(cedula=12345678)
+        institucion = Institucion.objects.get(rif=666555446)
         descripcion = 'Nueva Cita'
-        especialidad = Especialidad.objects.get(nombre_especialidad='Cardiologia')
+        especialidad = Especialidad.objects.get(
+            nombre_especialidad='Cardiologia')
         fecha = '28-03-2017'
         hora = '7AM'
         es_referido = False
 
-        value = agregar_citas(user_pk=user.pk,paciente=paciente.cedula,institucion=institucion.pk,
-                            descripcion=descripcion,especialidad = especialidad.nombre_especialidad,
-                            fecha= fecha,hora = hora, es_referido = es_referido)
+        value = agregar_citas(user_pk=user.pk, paciente=paciente.cedula, institucion=institucion.pk,
+                              descripcion=descripcion, especialidad=especialidad.nombre_especialidad,
+                              fecha=fecha, hora=hora, es_referido=es_referido)
         self.assertIs(value, True)
 
 	#####################################################################
@@ -223,158 +263,163 @@ class MedicoTestCase(TestCase):
     	# Agregar Cita
         medico = Medico.objects.get(cedula=202020)
         user = User.objects.get(username=medico.usuario.user)
-        paciente = Paciente.objects.get(cedula = 12345678)
-        institucion = Institucion.objects.get(rif = 666555446)
+        paciente = Paciente.objects.get(cedula=12345678)
+        institucion = Institucion.objects.get(rif=666555446)
         descripcion = 'Nueva Cita'
-        especialidad = Especialidad.objects.get(nombre_especialidad='Cardiologia')
+        especialidad = Especialidad.objects.get(
+            nombre_especialidad='Cardiologia')
         fecha = '28-03-2017'
         hora = '7AM'
         es_referido = False
 
-        value = agregar_citas(user_pk=user.pk,paciente=paciente.cedula,institucion=institucion.pk,
-                            descripcion=descripcion,especialidad = especialidad.nombre_especialidad,
-                            fecha= fecha,hora = hora, es_referido = es_referido)
+        value = agregar_citas(user_pk=user.pk, paciente=paciente.cedula, institucion=institucion.pk,
+                              descripcion=descripcion, especialidad=especialidad.nombre_especialidad,
+                              fecha=fecha, hora=hora, es_referido=es_referido)
 
         # Modificar Cita
-        cita = Medico_Citas.objects.get(descripcion = "Nueva Cita")
+        cita = Medico_Citas.objects.get(descripcion="Nueva Cita")
         paciente = None
         descripcion = None
         fecha = None
         hora = None
 
-        value = modificar_citas(cita_id = cita.id, paciente = paciente,
-        						descripcion = descripcion, fecha = fecha, hora = hora)
+        value = modificar_citas(cita_id=cita.id, paciente=paciente,
+                                descripcion=descripcion, fecha=fecha, hora=hora)
 
-        self.assertIs(value,False)
+        self.assertIs(value, False)
 
     def test_modificar_citas_campos_erroneos(self):
     	# Agregar Cita
         medico = Medico.objects.get(cedula=202020)
         user = User.objects.get(username=medico.usuario.user)
-        paciente = Paciente.objects.get(cedula = 12345678)
-        institucion = Institucion.objects.get(rif = 666555446)
+        paciente = Paciente.objects.get(cedula=12345678)
+        institucion = Institucion.objects.get(rif=666555446)
         descripcion = 'Nueva Cita'
-        especialidad = Especialidad.objects.get(nombre_especialidad='Cardiologia')
+        especialidad = Especialidad.objects.get(
+            nombre_especialidad='Cardiologia')
         fecha = '28-03-2017'
         hora = '7AM'
         es_referido = False
 
-        value = agregar_citas(user_pk=user.pk,paciente=paciente.cedula,institucion=institucion.pk,
-                            descripcion=descripcion,especialidad = especialidad.nombre_especialidad,
-                            fecha= fecha,hora = hora, es_referido = es_referido)
+        value = agregar_citas(user_pk=user.pk, paciente=paciente.cedula, institucion=institucion.pk,
+                              descripcion=descripcion, especialidad=especialidad.nombre_especialidad,
+                              fecha=fecha, hora=hora, es_referido=es_referido)
 
         # Modificar Cita
-        cita = Medico_Citas.objects.get(paciente = 12345678)
+        cita = Medico_Citas.objects.get(paciente=12345678)
         descripcion = None
         fecha = 'Hola'
 
-        value = modificar_citas(cita_id = cita.id, paciente = paciente.cedula,
-        						descripcion = descripcion, fecha = fecha, hora = hora)
+        value = modificar_citas(cita_id=cita.id, paciente=paciente.cedula,
+                                descripcion=descripcion, fecha=fecha, hora=hora)
 
-        self.assertIs(value,False)
+        self.assertIs(value, False)
 
 	# Casos Bordes
     def test_modificar_citas_campo_descripcion(self):
     	# Agregar Cita
         medico = Medico.objects.get(cedula=202020)
         user = User.objects.get(username=medico.usuario.user)
-        paciente = Paciente.objects.get(cedula = 12345678)
-        institucion = Institucion.objects.get(rif = 666555446)
+        paciente = Paciente.objects.get(cedula=12345678)
+        institucion = Institucion.objects.get(rif=666555446)
         descripcion = 'Nueva Cita'
-        especialidad = Especialidad.objects.get(nombre_especialidad='Cardiologia')
+        especialidad = Especialidad.objects.get(
+            nombre_especialidad='Cardiologia')
         fecha = '28-03-2017'
         hora = '7AM'
         es_referido = False
 
-        value = agregar_citas(user_pk=user.pk,paciente=paciente.cedula,institucion=institucion.pk,
-                            descripcion=descripcion,especialidad = especialidad.nombre_especialidad,
-                            fecha= fecha,hora = hora, es_referido = es_referido)
+        value = agregar_citas(user_pk=user.pk, paciente=paciente.cedula, institucion=institucion.pk,
+                              descripcion=descripcion, especialidad=especialidad.nombre_especialidad,
+                              fecha=fecha, hora=hora, es_referido=es_referido)
 
         # Modificar Cita
-        cita = Medico_Citas.objects.get(paciente = 12345678)
+        cita = Medico_Citas.objects.get(paciente=12345678)
         descripcion = 'Cita Vieja'
         fecha = '28-03-2017'
 
-        value = modificar_citas(cita_id = cita.id, paciente = paciente.cedula,
-        						descripcion = descripcion, fecha = fecha, hora = hora)
+        value = modificar_citas(cita_id=cita.id, paciente=paciente.cedula,
+                                descripcion=descripcion, fecha=fecha, hora=hora)
 
-        self.assertIs(value,True)
+        self.assertIs(value, True)
 
     def test_modificar_citas_campo_fecha(self):
     	# Agregar Cita
         medico = Medico.objects.get(cedula=202020)
         user = User.objects.get(username=medico.usuario.user)
-        paciente = Paciente.objects.get(cedula = 12345678)
-        institucion = Institucion.objects.get(rif = 666555446)
+        paciente = Paciente.objects.get(cedula=12345678)
+        institucion = Institucion.objects.get(rif=666555446)
         descripcion = 'Nueva Cita'
-        especialidad = Especialidad.objects.get(nombre_especialidad='Cardiologia')
+        especialidad = Especialidad.objects.get(
+            nombre_especialidad='Cardiologia')
         fecha = '28-03-2017'
         hora = '7AM'
         es_referido = False
 
-        value = agregar_citas(user_pk=user.pk,paciente=paciente.cedula,institucion=institucion.pk,
-                            descripcion=descripcion,especialidad = especialidad.nombre_especialidad,
-                            fecha= fecha,hora = hora, es_referido = es_referido)
+        value = agregar_citas(user_pk=user.pk, paciente=paciente.cedula, institucion=institucion.pk,
+                              descripcion=descripcion, especialidad=especialidad.nombre_especialidad,
+                              fecha=fecha, hora=hora, es_referido=es_referido)
 
         # Modificar Cita
-        cita = Medico_Citas.objects.get(paciente = 12345678)
+        cita = Medico_Citas.objects.get(paciente=12345678)
         fecha = '30-03-2017'
 
-        value = modificar_citas(cita_id = cita.id, paciente = paciente.cedula,
-        						descripcion = descripcion, fecha = fecha, hora = hora)
+        value = modificar_citas(cita_id=cita.id, paciente=paciente.cedula,
+                                descripcion=descripcion, fecha=fecha, hora=hora)
 
-        self.assertIs(value,True)
+        self.assertIs(value, True)
 
     def test_modificar_citas_campo_hora(self):
         # Agregar Cita
         medico = Medico.objects.get(cedula=202020)
         user = User.objects.get(username=medico.usuario.user)
-        paciente = Paciente.objects.get(cedula = 12345678)
-        institucion = Institucion.objects.get(rif = 666555446)
+        paciente = Paciente.objects.get(cedula=12345678)
+        institucion = Institucion.objects.get(rif=666555446)
         descripcion = 'Nueva Cita'
-        especialidad = Especialidad.objects.get(nombre_especialidad='Cardiologia')
+        especialidad = Especialidad.objects.get(
+            nombre_especialidad='Cardiologia')
         fecha = '28-03-2017'
         hora = '7AM'
         es_referido = False
 
-        value = agregar_citas(user_pk=user.pk,paciente=paciente.cedula,institucion=institucion.pk,
-                            descripcion=descripcion,especialidad = especialidad.nombre_especialidad,
-                            fecha= fecha,hora = hora, es_referido = es_referido)
+        value = agregar_citas(user_pk=user.pk, paciente=paciente.cedula, institucion=institucion.pk,
+                              descripcion=descripcion, especialidad=especialidad.nombre_especialidad,
+                              fecha=fecha, hora=hora, es_referido=es_referido)
 
         # Modificar Cita
-        cita = Medico_Citas.objects.get(paciente = 12345678)
+        cita = Medico_Citas.objects.get(paciente=12345678)
         hora = '11AM'
 
-        value = modificar_citas(cita_id = cita.id, paciente = paciente.cedula,
-                                descripcion = descripcion, fecha = fecha, hora = hora)
+        value = modificar_citas(cita_id=cita.id, paciente=paciente.cedula,
+                                descripcion=descripcion, fecha=fecha, hora=hora)
 
-        self.assertIs(value,True)
+        self.assertIs(value, True)
 
     def test_modificar_citas_campos_llenos(self):
     	# Agregar Cita
     	medico = Medico.objects.get(cedula=202020)
     	user = User.objects.get(username=medico.usuario.user)
-    	paciente = Paciente.objects.get(cedula = 12345678)
-    	institucion = Institucion.objects.get(rif = 666555446)
+    	paciente = Paciente.objects.get(cedula=12345678)
+    	institucion = Institucion.objects.get(rif=666555446)
     	descripcion = 'Nueva Cita'
     	especialidad = Especialidad.objects.get(nombre_especialidad='Cardiologia')
     	fecha = '28-03-2017'
     	hora = '7AM'
     	es_referido = False
 
-    	value = agregar_citas(user_pk=user.pk,paciente=paciente.cedula,institucion=institucion.pk,
-    						descripcion=descripcion,especialidad = especialidad.nombre_especialidad,
-    						fecha= fecha,hora = hora, es_referido = es_referido)
+    	value = agregar_citas(user_pk=user.pk, paciente=paciente.cedula, institucion=institucion.pk,
+                           descripcion=descripcion, especialidad=especialidad.nombre_especialidad,
+                           fecha=fecha, hora=hora, es_referido=es_referido)
 
     	# Modificar Cita
-    	cita = Medico_Citas.objects.get(paciente = 12345678)
+    	cita = Medico_Citas.objects.get(paciente=12345678)
     	descripcion = 'Cita Vieja'
     	fecha = '30-03-2017'
 
-    	value = modificar_citas(cita_id = cita.id, paciente = paciente.cedula,
-    							descripcion = descripcion, fecha = fecha, hora = hora)
+    	value = modificar_citas(cita_id=cita.id, paciente=paciente.cedula,
+                             descripcion=descripcion, fecha=fecha, hora=hora)
 
-    	self.assertIs(value,True)
+    	self.assertIs(value, True)
 
 	#####################################################################
 	#                 			AGREGAR CONSULTAS
@@ -387,8 +432,8 @@ class MedicoTestCase(TestCase):
     	institucion = None
     	hora = None
 
-    	value = agregar_consultas(medico_id = medico, especialidad = especialidad,
-    								institucion = institucion, hora = hora)
+    	value = agregar_consultas(medico_id=medico, especialidad=especialidad,
+                               institucion=institucion, hora=hora)
 
     	self.assertIs(value, False)
 
@@ -398,8 +443,8 @@ class MedicoTestCase(TestCase):
     	institucion = 666555447
     	hora = None
 
-    	value = agregar_consultas(medico_id = medico, especialidad = especialidad,
-    								institucion = institucion, hora = hora)
+    	value = agregar_consultas(medico_id=medico, especialidad=especialidad,
+                               institucion=institucion, hora=hora)
 
     	self.assertIs(value, False)
 
@@ -411,8 +456,8 @@ class MedicoTestCase(TestCase):
     	institucion = None
     	hora = None
 
-    	value = agregar_consultas(medico_id = user.pk, especialidad = especialidad,
-    								institucion = institucion, hora = hora)
+    	value = agregar_consultas(medico_id=user.pk, especialidad=especialidad,
+                               institucion=institucion, hora=hora)
 
     	self.assertIs(value, False)
 
@@ -423,20 +468,21 @@ class MedicoTestCase(TestCase):
     	institucion = 12345
     	hora = None
 
-    	value = agregar_consultas(medico_id = user.pk, especialidad = especialidad,
-    								institucion = institucion, hora = hora)
+    	value = agregar_consultas(medico_id=user.pk, especialidad=especialidad,
+                               institucion=institucion, hora=hora)
 
     	self.assertIs(value, False)
 
     def test_agregar_consulta_campos_llenos(self):
     	medico = Medico.objects.get(cedula=202020)
     	user = User.objects.get(username=medico.usuario.user)
-    	especialidad = Especialidad.objects.get(nombre_especialidad = 'Dermatologia')
-    	institucion = Institucion.objects.get(rif = 666555447)
+    	especialidad = Especialidad.objects.get(
+    	    nombre_especialidad='Dermatologia')
+    	institucion = Institucion.objects.get(rif=666555447)
     	hora = '8AM'
 
-    	value = agregar_consultas(medico_id = user.pk, especialidad = especialidad,
-    								institucion = institucion.pk, hora = hora)
+    	value = agregar_consultas(medico_id=user.pk, especialidad=especialidad,
+                               institucion=institucion.pk, hora=hora)
 
     	self.assertIs(value, True)
 
@@ -449,19 +495,20 @@ class MedicoTestCase(TestCase):
     	# Agregar Consulta
     	medico = Medico.objects.get(cedula=202020)
     	user = User.objects.get(username=medico.usuario.user)
-    	especialidad = Especialidad.objects.get(nombre_especialidad = 'Dermatologia')
-    	institucion = Institucion.objects.get(rif = 666555447)
+    	especialidad = Especialidad.objects.get(
+    	    nombre_especialidad='Dermatologia')
+    	institucion = Institucion.objects.get(rif=666555447)
     	hora = '7AM'
 
-    	value = agregar_consultas(medico_id = user.pk, especialidad = especialidad,
-    								institucion = institucion.pk, hora = hora)
+    	value = agregar_consultas(medico_id=user.pk, especialidad=especialidad,
+                               institucion=institucion.pk, hora=hora)
 
     	# Modificar Consulta
     	hora = None
-    	consulta = Medico_Especialidad.objects.get(especialidad = 'Dermatologia')
+    	consulta = Medico_Especialidad.objects.get(especialidad='Dermatologia')
 
-    	value = modificar_consultas(consulta_id = consulta.pk, medico_id = user.pk,
-                                    hora = hora)
+    	value = modificar_consultas(consulta_id=consulta.pk, medico_id=user.pk,
+                                 hora=hora)
 
     	self.assertIs(value, False)
 
@@ -469,19 +516,20 @@ class MedicoTestCase(TestCase):
     	# Agregar Consulta
     	medico = Medico.objects.get(cedula=202020)
     	user = User.objects.get(username=medico.usuario.user)
-    	especialidad = Especialidad.objects.get(nombre_especialidad = 'Dermatologia')
-    	institucion = Institucion.objects.get(rif = 666555447)
+    	especialidad = Especialidad.objects.get(
+    	    nombre_especialidad='Dermatologia')
+    	institucion = Institucion.objects.get(rif=666555447)
     	hora = '7AM'
 
-    	value = agregar_consultas(medico_id = user.pk, especialidad = especialidad,
-    								institucion = institucion.pk, hora = hora)
+    	value = agregar_consultas(medico_id=user.pk, especialidad=especialidad,
+                               institucion=institucion.pk, hora=hora)
 
     	# Modificar Consulta
     	hora = None
-    	consulta = Medico_Especialidad.objects.get(especialidad = 'Dermatologia')
+    	consulta = Medico_Especialidad.objects.get(especialidad='Dermatologia')
 
-    	value = modificar_consultas(consulta_id = consulta.pk, medico_id = user.pk,
-                                    hora = hora)
+    	value = modificar_consultas(consulta_id=consulta.pk, medico_id=user.pk,
+                                 hora=hora)
 
     	self.assertIs(value, False)
 
@@ -491,41 +539,42 @@ class MedicoTestCase(TestCase):
     	# Agregar Consulta
     	medico = Medico.objects.get(cedula=202020)
     	user = User.objects.get(username=medico.usuario.user)
-    	especialidad = Especialidad.objects.get(nombre_especialidad = 'Dermatologia')
-    	institucion = Institucion.objects.get(rif = 666555447)
+    	especialidad = Especialidad.objects.get(
+    	    nombre_especialidad='Dermatologia')
+    	institucion = Institucion.objects.get(rif=666555447)
     	hora = '7AM'
 
-    	value = agregar_consultas(medico_id = user.pk, especialidad = especialidad,
-    								institucion = institucion.pk, hora = hora)
+    	value = agregar_consultas(medico_id=user.pk, especialidad=especialidad,
+                               institucion=institucion.pk, hora=hora)
 
     	# Modificar Consulta
         hora = '12AM'
-    	consulta = Medico_Especialidad.objects.get(especialidad = 'Dermatologia')
+    	consulta = Medico_Especialidad.objects.get(especialidad='Dermatologia')
 
-    	value = modificar_consultas(consulta_id = consulta.pk, medico_id = user.pk,
-                                    hora = hora)
+    	value = modificar_consultas(consulta_id=consulta.pk, medico_id=user.pk,
+                                 hora=hora)
 
     	self.assertIs(value, True)
-
 
     def test_modificar_consulta_campos_llenos(self):
     	# Agregar Consulta
     	medico = Medico.objects.get(cedula=202020)
     	user = User.objects.get(username=medico.usuario.user)
-    	especialidad = Especialidad.objects.get(nombre_especialidad = 'Dermatologia')
-    	institucion = Institucion.objects.get(rif = 666555447)
+    	especialidad = Especialidad.objects.get(
+    	    nombre_especialidad='Dermatologia')
+    	institucion = Institucion.objects.get(rif=666555447)
     	hora = '7AM'
 
-    	value = agregar_consultas(medico_id = user.pk, especialidad = especialidad,
-    								institucion = institucion.pk, hora = hora)
+    	value = agregar_consultas(medico_id=user.pk, especialidad=especialidad,
+                               institucion=institucion.pk, hora=hora)
 
     	# Modificar Consulta
     	hora = '5PM'
 
-    	consulta = Medico_Especialidad.objects.get(especialidad = 'Dermatologia')
+    	consulta = Medico_Especialidad.objects.get(especialidad='Dermatologia')
 
-    	value = modificar_consultas(consulta_id = consulta.pk, medico_id = user.pk,
-                                    hora = hora)
+    	value = modificar_consultas(consulta_id=consulta.pk, medico_id=user.pk,
+                                 hora=hora)
 
     	self.assertIs(value, True)
 
@@ -538,20 +587,21 @@ class MedicoTestCase(TestCase):
     	# Agregar Cita
         medico = Medico.objects.get(cedula=202020)
         user = User.objects.get(username=medico.usuario.user)
-        paciente = Paciente.objects.get(cedula = 12345678)
-        institucion = Institucion.objects.get(rif = 666555446)
+        paciente = Paciente.objects.get(cedula=12345678)
+        institucion = Institucion.objects.get(rif=666555446)
         descripcion = 'Nueva Cita'
-        especialidad = Especialidad.objects.get(nombre_especialidad='Cardiologia')
+        especialidad = Especialidad.objects.get(
+            nombre_especialidad='Cardiologia')
         fecha = '28-03-2017'
         hora = '7AM'
         es_referido = False
 
-        value = agregar_citas(user_pk=user.pk,paciente=paciente.cedula,institucion=institucion.pk,
-                            descripcion=descripcion,especialidad = especialidad.nombre_especialidad,
-                            fecha= fecha,hora = hora, es_referido = es_referido)
+        value = agregar_citas(user_pk=user.pk, paciente=paciente.cedula, institucion=institucion.pk,
+                              descripcion=descripcion, especialidad=especialidad.nombre_especialidad,
+                              fecha=fecha, hora=hora, es_referido=es_referido)
 
     	# Comenzar Revisión
-        cita = Medico_Citas.objects.get(descripcion = "Nueva Cita")
+        cita = Medico_Citas.objects.get(descripcion="Nueva Cita")
     	motivos = None
     	sintomas = None
         presion_sanguinea_diastolica = None
@@ -561,11 +611,11 @@ class MedicoTestCase(TestCase):
     	frec_cardiaca = None
     	otros = None
 
-        value = comenzar_revision(cita_id = cita.id, motivos = motivos, sintomas = sintomas,
-                                presion_sanguinea_diastolica = presion_sanguinea_diastolica,
-                                presion_sanguinea_sistolica = presion_sanguinea_sistolica,
-                                temperatura = temperatura, frec_respiratoria = frec_respiratoria,
-                                frec_cardiaca = frec_cardiaca, otros = otros)
+        value = comenzar_revision(cita_id=cita.id, motivos=motivos, sintomas=sintomas,
+                                  presion_sanguinea_diastolica=presion_sanguinea_diastolica,
+                                  presion_sanguinea_sistolica=presion_sanguinea_sistolica,
+                                  temperatura=temperatura, frec_respiratoria=frec_respiratoria,
+                                  frec_cardiaca=frec_cardiaca, otros=otros)
 
     	self.assertIs(value, False)
 
@@ -573,21 +623,22 @@ class MedicoTestCase(TestCase):
     	# Agregar Cita
         medico = Medico.objects.get(cedula=202020)
         user = User.objects.get(username=medico.usuario.user)
-        paciente = Paciente.objects.get(cedula = 12345678)
-        institucion = Institucion.objects.get(rif = 666555446)
+        paciente = Paciente.objects.get(cedula=12345678)
+        institucion = Institucion.objects.get(rif=666555446)
         descripcion = 'Nueva Cita'
-        especialidad = Especialidad.objects.get(nombre_especialidad='Cardiologia')
+        especialidad = Especialidad.objects.get(
+            nombre_especialidad='Cardiologia')
         fecha = '28-03-2017'
         hora = '7AM'
         es_referido = False
 
-        value = agregar_citas(user_pk=user.pk,paciente=paciente.cedula,institucion=institucion.pk,
-                            descripcion=descripcion,especialidad = especialidad.nombre_especialidad,
-                            fecha= fecha,hora = hora, es_referido = es_referido)
+        value = agregar_citas(user_pk=user.pk, paciente=paciente.cedula, institucion=institucion.pk,
+                              descripcion=descripcion, especialidad=especialidad.nombre_especialidad,
+                              fecha=fecha, hora=hora, es_referido=es_referido)
         self.assertIs(value, True)
 
     	# Comenzar Revisión
-        cita = Medico_Citas.objects.get(descripcion = "Nueva Cita")
+        cita = Medico_Citas.objects.get(descripcion="Nueva Cita")
     	motivos = None
     	sintomas = 1234
         presion_sanguinea_diastolica = None
@@ -597,11 +648,11 @@ class MedicoTestCase(TestCase):
     	frec_cardiaca = None
     	otros = None
 
-        value = comenzar_revision(cita_id = cita.id, motivos = motivos, sintomas = sintomas,
-                                presion_sanguinea_diastolica = presion_sanguinea_diastolica,
-                                presion_sanguinea_sistolica = presion_sanguinea_sistolica,
-                                temperatura = temperatura, frec_respiratoria = frec_respiratoria,
-                                frec_cardiaca = frec_cardiaca, otros = otros)
+        value = comenzar_revision(cita_id=cita.id, motivos=motivos, sintomas=sintomas,
+                                  presion_sanguinea_diastolica=presion_sanguinea_diastolica,
+                                  presion_sanguinea_sistolica=presion_sanguinea_sistolica,
+                                  temperatura=temperatura, frec_respiratoria=frec_respiratoria,
+                                  frec_cardiaca=frec_cardiaca, otros=otros)
 
     	self.assertIs(value, False)
 
@@ -609,20 +660,21 @@ class MedicoTestCase(TestCase):
     	# Agregar Cita
         medico = Medico.objects.get(cedula=202020)
         user = User.objects.get(username=medico.usuario.user)
-        paciente = Paciente.objects.get(cedula = 12345678)
-        institucion = Institucion.objects.get(rif = 666555446)
+        paciente = Paciente.objects.get(cedula=12345678)
+        institucion = Institucion.objects.get(rif=666555446)
         descripcion = 'Nueva Cita'
-        especialidad = Especialidad.objects.get(nombre_especialidad='Cardiologia')
+        especialidad = Especialidad.objects.get(
+            nombre_especialidad='Cardiologia')
         fecha = '28-03-2017'
         hora = '7AM'
         es_referido = False
 
-        value = agregar_citas(user_pk=user.pk,paciente=paciente.cedula,institucion=institucion.pk,
-                            descripcion=descripcion,especialidad = especialidad.nombre_especialidad,
-                            fecha= fecha,hora = hora, es_referido = es_referido)
+        value = agregar_citas(user_pk=user.pk, paciente=paciente.cedula, institucion=institucion.pk,
+                              descripcion=descripcion, especialidad=especialidad.nombre_especialidad,
+                              fecha=fecha, hora=hora, es_referido=es_referido)
 
     	# Comenzar Revisión
-        cita = Medico_Citas.objects.get(descripcion = "Nueva Cita")
+        cita = Medico_Citas.objects.get(descripcion="Nueva Cita")
     	motivos = 'Dolor de Cabeza'
     	sintomas = 'Vomito'
         presion_sanguinea_diastolica = 60
@@ -632,11 +684,11 @@ class MedicoTestCase(TestCase):
     	frec_cardiaca = None
     	otros = 'Sin cita'
 
-        value = comenzar_revision(cita_id = cita.id, motivos = motivos, sintomas = sintomas,
-                                presion_sanguinea_diastolica = presion_sanguinea_diastolica,
-                                presion_sanguinea_sistolica = presion_sanguinea_sistolica,
-                                temperatura = temperatura, frec_respiratoria = frec_respiratoria,
-                                frec_cardiaca = frec_cardiaca, otros = otros)
+        value = comenzar_revision(cita_id=cita.id, motivos=motivos, sintomas=sintomas,
+                                  presion_sanguinea_diastolica=presion_sanguinea_diastolica,
+                                  presion_sanguinea_sistolica=presion_sanguinea_sistolica,
+                                  temperatura=temperatura, frec_respiratoria=frec_respiratoria,
+                                  frec_cardiaca=frec_cardiaca, otros=otros)
 
     	self.assertIs(value, False)
 
@@ -646,20 +698,21 @@ class MedicoTestCase(TestCase):
     	# Agregar Cita
         medico = Medico.objects.get(cedula=202020)
         user = User.objects.get(username=medico.usuario.user)
-        paciente = Paciente.objects.get(cedula = 12345678)
-        institucion = Institucion.objects.get(rif = 666555446)
+        paciente = Paciente.objects.get(cedula=12345678)
+        institucion = Institucion.objects.get(rif=666555446)
         descripcion = 'Nueva Cita'
-        especialidad = Especialidad.objects.get(nombre_especialidad='Cardiologia')
+        especialidad = Especialidad.objects.get(
+            nombre_especialidad='Cardiologia')
         fecha = '28-03-2017'
         hora = '7AM'
         es_referido = False
 
-        value = agregar_citas(user_pk=user.pk,paciente=paciente.cedula,institucion=institucion.pk,
-                            descripcion=descripcion,especialidad = especialidad.nombre_especialidad,
-                            fecha= fecha,hora = hora, es_referido = es_referido)
+        value = agregar_citas(user_pk=user.pk, paciente=paciente.cedula, institucion=institucion.pk,
+                              descripcion=descripcion, especialidad=especialidad.nombre_especialidad,
+                              fecha=fecha, hora=hora, es_referido=es_referido)
 
     	# Comenzar Revisión
-        cita = Medico_Citas.objects.get(descripcion = "Nueva Cita")
+        cita = Medico_Citas.objects.get(descripcion="Nueva Cita")
     	motivos = 'Dolor de Cabeza'
     	sintomas = 'Vomito'
         presion_sanguinea_diastolica = 60
@@ -669,12 +722,11 @@ class MedicoTestCase(TestCase):
     	frec_cardiaca = 20
     	otros = ''
 
-        value = comenzar_revision(cita_id = cita.id, motivos = motivos, sintomas = sintomas,
-                                presion_sanguinea_diastolica = presion_sanguinea_diastolica,
-                                presion_sanguinea_sistolica = presion_sanguinea_sistolica,
-                                temperatura = temperatura, frec_respiratoria = frec_respiratoria,
-                                frec_cardiaca = frec_cardiaca, otros = otros)
-
+        value = comenzar_revision(cita_id=cita.id, motivos=motivos, sintomas=sintomas,
+                                  presion_sanguinea_diastolica=presion_sanguinea_diastolica,
+                                  presion_sanguinea_sistolica=presion_sanguinea_sistolica,
+                                  temperatura=temperatura, frec_respiratoria=frec_respiratoria,
+                                  frec_cardiaca=frec_cardiaca, otros=otros)
 
     	self.assertIs(value, True)
 
@@ -682,20 +734,21 @@ class MedicoTestCase(TestCase):
     	# Agregar Cita
         medico = Medico.objects.get(cedula=202020)
         user = User.objects.get(username=medico.usuario.user)
-        paciente = Paciente.objects.get(cedula = 12345678)
-        institucion = Institucion.objects.get(rif = 666555446)
+        paciente = Paciente.objects.get(cedula=12345678)
+        institucion = Institucion.objects.get(rif=666555446)
         descripcion = 'Nueva Cita'
-        especialidad = Especialidad.objects.get(nombre_especialidad='Cardiologia')
+        especialidad = Especialidad.objects.get(
+            nombre_especialidad='Cardiologia')
         fecha = '28-03-2017'
         hora = '7AM'
         es_referido = False
 
-        value = agregar_citas(user_pk=user.pk,paciente=paciente.cedula,institucion=institucion.pk,
-                            descripcion=descripcion,especialidad = especialidad.nombre_especialidad,
-                            fecha= fecha,hora = hora, es_referido = es_referido)
+        value = agregar_citas(user_pk=user.pk, paciente=paciente.cedula, institucion=institucion.pk,
+                              descripcion=descripcion, especialidad=especialidad.nombre_especialidad,
+                              fecha=fecha, hora=hora, es_referido=es_referido)
 
     	# Comenzar Revisión
-        cita = Medico_Citas.objects.get(descripcion = "Nueva Cita")
+        cita = Medico_Citas.objects.get(descripcion="Nueva Cita")
     	motivos = 'Dolor de Cabeza'
     	sintomas = 'Vomito'
         presion_sanguinea_diastolica = 60
@@ -705,11 +758,11 @@ class MedicoTestCase(TestCase):
     	frec_cardiaca = 20
     	otros = 'Sintomas'
 
-        value = comenzar_revision(cita_id = cita.id, motivos = motivos, sintomas = sintomas,
-                                presion_sanguinea_diastolica = presion_sanguinea_diastolica,
-                                presion_sanguinea_sistolica = presion_sanguinea_sistolica,
-                                temperatura = temperatura, frec_respiratoria = frec_respiratoria,
-                                frec_cardiaca = frec_cardiaca, otros = otros)
+        value = comenzar_revision(cita_id=cita.id, motivos=motivos, sintomas=sintomas,
+                                  presion_sanguinea_diastolica=presion_sanguinea_diastolica,
+                                  presion_sanguinea_sistolica=presion_sanguinea_sistolica,
+                                  temperatura=temperatura, frec_respiratoria=frec_respiratoria,
+                                  frec_cardiaca=frec_cardiaca, otros=otros)
 
     	self.assertIs(value, True)
 
@@ -722,20 +775,21 @@ class MedicoTestCase(TestCase):
     	# Agregar Cita
         medico = Medico.objects.get(cedula=202020)
         user = User.objects.get(username=medico.usuario.user)
-        paciente = Paciente.objects.get(cedula = 12345678)
-        institucion = Institucion.objects.get(rif = 666555446)
+        paciente = Paciente.objects.get(cedula=12345678)
+        institucion = Institucion.objects.get(rif=666555446)
         descripcion = 'Nueva Cita'
-        especialidad = Especialidad.objects.get(nombre_especialidad='Cardiologia')
+        especialidad = Especialidad.objects.get(
+            nombre_especialidad='Cardiologia')
         fecha = '28-03-2017'
         hora = '7AM'
         es_referido = False
 
-        value = agregar_citas(user_pk=user.pk,paciente=paciente.cedula,institucion=institucion.pk,
-                            descripcion=descripcion,especialidad = especialidad.nombre_especialidad,
-                            fecha= fecha,hora = hora, es_referido = es_referido)
+        value = agregar_citas(user_pk=user.pk, paciente=paciente.cedula, institucion=institucion.pk,
+                              descripcion=descripcion, especialidad=especialidad.nombre_especialidad,
+                              fecha=fecha, hora=hora, es_referido=es_referido)
 
         # Comenzar Revisión
-        cita = Medico_Citas.objects.get(descripcion = "Nueva Cita")
+        cita = Medico_Citas.objects.get(descripcion="Nueva Cita")
         motivos = 'Dolor de Cabeza'
         sintomas = 'Vomito'
         presion_sanguinea_diastolica = 60
@@ -745,19 +799,19 @@ class MedicoTestCase(TestCase):
         frec_cardiaca = 20
         otros = 'Sintomas'
 
-        value = comenzar_revision(cita_id = cita.id, motivos = motivos, sintomas = sintomas,
-                                presion_sanguinea_diastolica = presion_sanguinea_diastolica,
-                                presion_sanguinea_sistolica = presion_sanguinea_sistolica,
-                                temperatura = temperatura, frec_respiratoria = frec_respiratoria,
-                                frec_cardiaca = frec_cardiaca, otros = otros)
+        value = comenzar_revision(cita_id=cita.id, motivos=motivos, sintomas=sintomas,
+                                  presion_sanguinea_diastolica=presion_sanguinea_diastolica,
+                                  presion_sanguinea_sistolica=presion_sanguinea_sistolica,
+                                  temperatura=temperatura, frec_respiratoria=frec_respiratoria,
+                                  frec_cardiaca=frec_cardiaca, otros=otros)
 
     	# Informe Médico
     	revision = None
     	prediagnostico = None
         recipe_medico = None
 
-    	value = informe_medico(revision_id = revision, prediagnostico = prediagnostico,
-                                recipe = recipe_medico)
+    	value = informe_medico(revision_id=revision, prediagnostico=prediagnostico,
+                            recipe=recipe_medico)
 
     	self.assertIs(value, False)
 
@@ -766,20 +820,21 @@ class MedicoTestCase(TestCase):
     	# Agregar Cita
         medico = Medico.objects.get(cedula=202020)
         user = User.objects.get(username=medico.usuario.user)
-        paciente = Paciente.objects.get(cedula = 12345678)
-        institucion = Institucion.objects.get(rif = 666555446)
+        paciente = Paciente.objects.get(cedula=12345678)
+        institucion = Institucion.objects.get(rif=666555446)
         descripcion = 'Nueva Cita'
-        especialidad = Especialidad.objects.get(nombre_especialidad='Cardiologia')
+        especialidad = Especialidad.objects.get(
+            nombre_especialidad='Cardiologia')
         fecha = '28-03-2017'
         hora = '7AM'
         es_referido = False
 
-        value = agregar_citas(user_pk=user.pk,paciente=paciente.cedula,institucion=institucion.pk,
-                            descripcion=descripcion,especialidad = especialidad.nombre_especialidad,
-                            fecha= fecha,hora = hora, es_referido = es_referido)
+        value = agregar_citas(user_pk=user.pk, paciente=paciente.cedula, institucion=institucion.pk,
+                              descripcion=descripcion, especialidad=especialidad.nombre_especialidad,
+                              fecha=fecha, hora=hora, es_referido=es_referido)
 
         # Comenzar Revisión
-        cita = Medico_Citas.objects.get(descripcion = "Nueva Cita")
+        cita = Medico_Citas.objects.get(descripcion="Nueva Cita")
         motivos = 'Dolor de Cabeza'
         sintomas = 'Vomito'
         presion_sanguinea_diastolica = 60
@@ -789,40 +844,41 @@ class MedicoTestCase(TestCase):
         frec_cardiaca = 20
         otros = 'Sintomas'
 
-        value = comenzar_revision(cita_id = cita.id, motivos = motivos, sintomas = sintomas,
-                                presion_sanguinea_diastolica = presion_sanguinea_diastolica,
-                                presion_sanguinea_sistolica = presion_sanguinea_sistolica,
-                                temperatura = temperatura, frec_respiratoria = frec_respiratoria,
-                                frec_cardiaca = frec_cardiaca, otros = otros)
+        value = comenzar_revision(cita_id=cita.id, motivos=motivos, sintomas=sintomas,
+                                  presion_sanguinea_diastolica=presion_sanguinea_diastolica,
+                                  presion_sanguinea_sistolica=presion_sanguinea_sistolica,
+                                  temperatura=temperatura, frec_respiratoria=frec_respiratoria,
+                                  frec_cardiaca=frec_cardiaca, otros=otros)
 
     	# Informe Médico
-    	revision = Medico_Revision.objects.get(motivos = 'Dolor de Cabeza')
+    	revision = Medico_Revision.objects.get(motivos='Dolor de Cabeza')
     	prediagnostico = None
         recipe_medico = 'Tomar Pildoras de Tranquilidad'
 
-        value = informe_medico(revision_id = revision.pk, prediagnostico = prediagnostico,
-                                recipe = recipe_medico)
- 
+        value = informe_medico(revision_id=revision.pk, prediagnostico=prediagnostico,
+                               recipe=recipe_medico)
+
     	self.assertIs(value, False)
 
     def test_informe_medico_campos_llenos(self):
     	# Agregar Cita
         medico = Medico.objects.get(cedula=202020)
         user = User.objects.get(username=medico.usuario.user)
-        paciente = Paciente.objects.get(cedula = 12345678)
-        institucion = Institucion.objects.get(rif = 666555446)
+        paciente = Paciente.objects.get(cedula=12345678)
+        institucion = Institucion.objects.get(rif=666555446)
         descripcion = 'Nueva Cita'
-        especialidad = Especialidad.objects.get(nombre_especialidad='Cardiologia')
+        especialidad = Especialidad.objects.get(
+            nombre_especialidad='Cardiologia')
         fecha = '28-03-2017'
         hora = '7AM'
         es_referido = False
 
-        value = agregar_citas(user_pk=user.pk,paciente=paciente.cedula,institucion=institucion.pk,
-                            descripcion=descripcion,especialidad = especialidad.nombre_especialidad,
-                            fecha= fecha,hora = hora, es_referido = es_referido)
+        value = agregar_citas(user_pk=user.pk, paciente=paciente.cedula, institucion=institucion.pk,
+                              descripcion=descripcion, especialidad=especialidad.nombre_especialidad,
+                              fecha=fecha, hora=hora, es_referido=es_referido)
 
         # Comenzar Revisión
-        cita = Medico_Citas.objects.get(descripcion = "Nueva Cita")
+        cita = Medico_Citas.objects.get(descripcion="Nueva Cita")
         motivos = 'Dolor de Cabeza'
         sintomas = 'Vomito'
         presion_sanguinea_diastolica = 60
@@ -832,18 +888,62 @@ class MedicoTestCase(TestCase):
         frec_cardiaca = 20
         otros = 'Sintomas'
 
-        value = comenzar_revision(cita_id = cita.id, motivos = motivos, sintomas = sintomas,
-                                presion_sanguinea_diastolica = presion_sanguinea_diastolica,
-                                presion_sanguinea_sistolica = presion_sanguinea_sistolica,
-                                temperatura = temperatura, frec_respiratoria = frec_respiratoria,
-                                frec_cardiaca = frec_cardiaca, otros = otros)
+        value = comenzar_revision(cita_id=cita.id, motivos=motivos, sintomas=sintomas,
+                                  presion_sanguinea_diastolica=presion_sanguinea_diastolica,
+                                  presion_sanguinea_sistolica=presion_sanguinea_sistolica,
+                                  temperatura=temperatura, frec_respiratoria=frec_respiratoria,
+                                  frec_cardiaca=frec_cardiaca, otros=otros)
 
     	# Informe Médico
-    	revision = Medico_Revision.objects.get(motivos = 'Dolor de Cabeza')
+    	revision = Medico_Revision.objects.get(motivos='Dolor de Cabeza')
     	prediagnostico = 'Necesita Operacion'
         recipe_medico = 'Tomar Pildoras de Tranquilidad'
 
-        value = informe_medico(revision_id = revision.pk, prediagnostico = prediagnostico,
-                                recipe = recipe_medico)
+        value = informe_medico(revision_id=revision.pk, prediagnostico=prediagnostico,
+                               recipe=recipe_medico)
 
     	self.assertIs(value, True)
+
+    ####################################################################
+    #                       AGREGAR LABORATORIO
+    ####################################################################
+
+    def test_agregar_laboratorio_campos_vacios(self):
+        rif = None
+        name = None
+        address = None
+        regent = None
+        institution = None
+
+        value = agregar_laboratorio(rif, name, address, regent, institution)
+        self.assertIs(value, False)
+
+    def test_agregar_laboratorio_campos_llenos(self):
+        rif = 666555447
+        name = "Laboratorio de prueba 2"
+        address = "Baruta"
+        regent = "Alguien"
+        institution = Institucion.objects.get(rif=666555447)
+
+        value = agregar_laboratorio(rif, name, address, regent, institution)
+        self.assertIs(value, True)
+
+    ####################################################################
+    #                       MODIFICAR LABORATORIO
+    ####################################################################
+
+    def test_modificar_laboratorio(self):
+        institution = Institucion.objects.get(rif=666555447)
+        rif = institution.rif
+        name = "Laboratorio de prueba MODIFICADO"
+        address = institution.address
+        regent = "Alguien mas"
+
+        value = modificar_laboratorio(institution.pk, rif, name, address, regent)
+        self.assertIs(value, True)
+
+        institution2 = Institucion.objects.get(rif=666555447)
+        self.assertEqual("Laboratorio de prueba MODIFICADO",
+                         institution2.name, "Nombre modificado")
+        self.assertEqual("Alguien mas",
+                         institution2.regent, "Regente modificado")
