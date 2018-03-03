@@ -549,3 +549,89 @@ class AgregarRoles(CreateView):
                                       {'form': form,
                                        'title': 'Agregar'},
                                       context_instance=RequestContext(request))
+            
+            
+            
+class VerTiposdeExamen(TemplateView):
+    template_name = 'administrador/ver_tiposdeexamen.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(
+            VerTiposdeExamen, self).get_context_data(**kwargs)
+
+        tipoexamen = Tipoexamen.objects.all()
+        context['tiposdeexamen'] = tipoexamen
+        return context
+
+
+class AgregarTipodeExamen(CreateView):
+    template_name = 'administrador/agregar_tipodeexamen.html'
+    form_class = TipoexamenForm
+
+    def get_context_data(self, **kwargs):
+        context = super(
+            AgregarTipodeExamen, self).get_context_data(**kwargs)
+
+        context['title'] = 'Agregar'
+
+        return context
+
+    def post(self, request, *args, **kwargs):
+        """
+        Handles POST requests, instantiating a form instance with the passed
+        POST variables and then checked for validity.
+        """
+        form = TipoexamenForm(request.POST)
+        if form.is_valid():
+            nombre = request.POST['nombretipo']
+            value = agregar_tipodeexamen(nombre)
+            return HttpResponseRedirect(reverse_lazy('ver_tiposdeexamen'))
+        else:
+            return render_to_response(
+                'administrador/crear_tipodeexamen.html', {'form': form},
+                context_instance=RequestContext(request))
+            
+            
+class ModificarTipodeExamen(CreateView):
+    template_name = 'administrador/agregar_tipodeexamen.html'
+    form_class = TipoexamenForm
+
+    def get_context_data(self, **kwargs):
+        context = super(
+            ModificarTipodeExamen, self).get_context_data(**kwargs)
+        tipoexamen = Tipoexamen.objects.get(pk=self.kwargs['pk'])
+        form = TipoexamenForm(
+                    initial={'nombretipo': tipoexamen.nombretipo,
+                            }
+                )
+
+        context['form'] = form
+        context['tipodeexamen'] = tipoexamen
+
+        return context
+
+    def post(self, request, *args, **kwargs):
+        """
+        Handles POST requests, instantiating a form instance with the passed
+        POST variables and then checked for validity.
+        """
+        form = TipoexamenForm(request.POST)
+        if form.is_valid():
+            nombre = request.POST['nombretipo']
+            value = modificar_tipodeexamen(self.kwargs['pk'], nombre)
+
+            if value is True:
+                return HttpResponseRedirect(reverse_lazy(
+                    'ver_tiposdeexamen'))
+            else:
+                return render_to_response('administrador/agregar_tipodeexamen.html',
+                                          {'form': form,
+                                           'title': 'Modificar'},
+                                          context_instance=RequestContext(
+                                              request))
+        else:
+            return render_to_response('administrador/agregar_tipodeexamen.html',
+                                      {'form': form,
+                                       'title': 'Modificar'},
+                                      context_instance=RequestContext(request))
+

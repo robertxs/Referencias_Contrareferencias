@@ -6,7 +6,7 @@ from django.core.validators import RegexValidator
 from administrador.models import *
 from django.contrib.auth.models import User, Group
 from medico.models import *
-
+from paciente.models import *
 
 class UsuarioForm(forms.ModelForm):
 
@@ -419,3 +419,20 @@ class PerfilForm(forms.ModelForm):
         user.set_password(password)
         user.save()
         return user
+    
+    
+class TipoexamenForm(forms.ModelForm):
+    class Meta:
+        model = Tipoexamen
+        fields = '__all__'
+
+    def clean(self):
+        data = self.cleaned_data
+        nombre = self.cleaned_data.get('nombretipo')
+
+        cantidad = Tipoexamen.objects.filter(nombretipo=nombre).count()
+
+        if cantidad == 1:
+            msj="Ya existe este nombre de exámen, verifíquelo por favor."
+            self.add_error('nombretipo',msj)
+

@@ -136,6 +136,27 @@ urlpatterns = patterns(
         'administrador.controllers.eliminar_rol',
         name='eliminar_rol'
     ),
+    url(
+        r'^ver-tiposdeexamen/$',
+        VerTiposdeExamen.as_view(),
+        name='ver_tiposdeexamen'
+    ),
+    url(
+        r'^agregar_tipodeexamen/$',
+        AgregarTipodeExamen.as_view(),
+        name='agregar_tipodeexamen'
+    ),
+    url(
+        r'^modificar_tipodeexamen/(?P<pk>\w+)$',
+        ModificarTipodeExamen.as_view(),
+        name='modificar_tipodeexamen'
+    ),
+    url(
+        r'^eliminar_tipodeexamen/(?P<pk>\w+)$',
+        'administrador.controllers.eliminar_tipodeexamen',
+        name='eliminar_tipodeexamen'
+    ),
+                       
 )
 
 if settings.DEBUG:

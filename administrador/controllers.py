@@ -165,3 +165,28 @@ def eliminar_especialidad(request, pk):
     especialidad.delete()
     return HttpResponseRedirect(reverse_lazy(
         'ver_especialidades'))
+    
+def agregar_tipodeexamen(nombre):
+    try:
+        tipoexamen = Tipoexamen(nombretipo = nombre)
+        tipoexamen.save()
+        return True
+    except:
+        return False
+
+
+def modificar_tipodeexamen(anterior, nombre):
+    try:
+        tipoexamen = Tipoexamen.objects.get(nombretipo=anterior)
+        tipoexamen.delete()
+        tipoexamen = Tipoexamen(nombretipo = nombre)
+        tipoexamen.save()
+        return True
+    except:
+        return False
+
+def eliminar_tipodeexamen(request, pk):
+    tipoexamen = Tipoexamen.objects.get(pk=pk)
+    tipoexamen.delete()
+    return HttpResponseRedirect(reverse_lazy(
+        'ver_tiposdeexamen'))

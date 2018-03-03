@@ -60,7 +60,7 @@ class Historia(models.Model):
                                      on_delete=models.CASCADE)
  
 class Tipoexamen(models.Model):
-    nombre = models.CharField(max_length=200)
+    nombretipo = models.CharField(primary_key=True, max_length=200)
     
 
 class Examen(models.Model):
@@ -80,7 +80,7 @@ class Medicion(models.Model):
     tipoexamen = models.ForeignKey(Tipoexamen,
                     on_delete=models.CASCADE,
                     null=True)
-    nombre = models.CharField(max_length=200)
+    nombremedicion = models.CharField(max_length=200)
     unidad = models.CharField(max_length=50)
     rangoesperado = models.CharField(max_length=100)
     resultado = models.CharField(max_length=100)

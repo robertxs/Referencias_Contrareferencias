@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block content %}
+  <div id="cuerpoHeredado">
+
+    <center><h1>Gestión de Tipos de Exámen</h1></center>
+    <div id="show-tiposdeexamen"><table>
+      <tr>
+        <th style="text-align: center;">Tipo</th>
+
+        <th style="text-align: center;">
+        <a id="add_institucion" href="{% url 'agregar_tipodeexamen' %}">
+          <i class="fa fa-plus-circle" style="font-size:20px;color:white"></i>
+        </a>
+        </th>
+      </tr>
+      {% for tipo in tiposdeexamen %}
+
+      <!-- Modal -->
+      <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog">
+
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">Eliminar Tipo de Exámen</h4>
+            </div>
+            <div class="modal-body">
+              <p>¿Está seguro que desea eliminar este tipo de exámen?</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+              <a type="button" class="btn btn-primary" href="{% url 'eliminar_tipodeexamen' tipo.pk %}" > Aceptar</a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+        <tr>
+          <td style="text-align: center;">{{tipo.nombretipo}}</td>
+
+          <td style="text-align: center;">
+            <a href="{% url 'modificar_tipodeexamen' tipo.pk %}"><i class="fa fa-pencil" style="font-size:20px;color:#5882FA"></i></a>
+            <a data-toggle="modal" data-target="#myModal" ><i class="fa fa-trash" style="font-size:20px;color:#5882FA"></i></a>
+          </td>
+        </tr>
+      {% endfor%}
+    </table></div>
+  </div>
+{% endblock %}
