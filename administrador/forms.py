@@ -56,6 +56,7 @@ class UsuarioForm(forms.ModelForm):
             ('admin', 'Administrador'),
             ('medico', 'Medico'),
             ('paciente', 'Paciente'),
+            ('bioanalista', 'Bioanalista'),
         ]
     )
 

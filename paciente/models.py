@@ -1,7 +1,7 @@
 from django.db import models
 from django.core.validators import MaxValueValidator
 from medico.models import *
-
+from django.utils import timezone
 
 class Paciente(models.Model):
     ESTADOS_CIVILES = (
@@ -31,7 +31,7 @@ class Historiadetriaje(models.Model):
     paciente = models.ForeignKey(Paciente,
                                  on_delete=models.CASCADE)
     medico_triaje = models.ForeignKey('medico.Medico',
-                                      on_delete=models.CASCADE, null=True)
+                                      on_delete=models.CASCADE)
     antecedentes_personales = models.CharField(max_length=500)
     antecedentes_familiares = models.CharField(max_length=500)
     motivo_consulta = models.CharField(max_length=200)
@@ -55,6 +55,36 @@ class Historia(models.Model):
     paciente = models.ForeignKey(Paciente,
                                  on_delete=models.CASCADE)
     medico = models.ForeignKey('medico.Medico',
-                               on_delete=models.CASCADE, null=True)
+                               on_delete=models.CASCADE)
     especialidad = models.ForeignKey('medico.Especialidad',
-                                     on_delete=models.CASCADE, null=True)
+                                     on_delete=models.CASCADE)
+ 
+class Tipoexamen(models.Model):
+    nombre = models.CharField(max_length=200)
+    
+
+class Examen(models.Model):
+    paciente = models.ForeignKey(Paciente,
+                                 on_delete=models.CASCADE)
+    bioanalista = models.ForeignKey('bioanalista.Bioanalista',
+                               on_delete=models.CASCADE)
+    laboratorio = models.ForeignKey('medico.Laboratorio',
+                    on_delete=models.CASCADE,
+                    null=True)
+    tipoexamen = models.ForeignKey(Tipoexamen,
+                    on_delete=models.CASCADE,
+                    null=True)
+    fecha = models.DateTimeField(default=timezone.localtime(timezone.now()))
+
+class Medicion(models.Model):
+    tipoexamen = models.ForeignKey(Tipoexamen,
+                    on_delete=models.CASCADE,
+                    null=True)
+    nombre = models.CharField(max_length=200)
+    unidad = models.CharField(max_length=50)
+    rangoesperado = models.CharField(max_length=100)
+    resultado = models.CharField(max_length=100)
+    posicion = models.CharField(max_length=3, null=True)
+
+   
+    
