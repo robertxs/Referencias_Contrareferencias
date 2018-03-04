@@ -234,10 +234,10 @@ class InstitucionForm(forms.ModelForm):
         nombre = self.cleaned_data.get('name')
 
         num_rif = Institucion.objects.filter(rif=rif).count()
-        print(num_rif)
+      
 
         num_nombre = Institucion.objects.filter(name=nombre).count()
-        print(num_nombre)
+     
 
         if num_rif == 1:
             msj="Ya existe este rif asociado a una institución, verifíquelo por favor."
@@ -432,7 +432,8 @@ class TipoexamenForm(forms.ModelForm):
 
         cantidad = Tipoexamen.objects.filter(nombretipo=nombre).count()
 
-        if cantidad >= 1:
+        if cantidad == 1:
             msj="Ya existe este nombre de exámen, verifíquelo por favor."
             self.add_error('nombretipo',msj)
-
+            
+    

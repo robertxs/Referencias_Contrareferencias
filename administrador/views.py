@@ -587,9 +587,11 @@ class AgregarTipodeExamen(CreateView):
             value = agregar_tipodeexamen(nombre)
             return HttpResponseRedirect(reverse_lazy('ver_tiposdeexamen'))
         else:
-            return render_to_response(
-                'administrador/crear_tipodeexamen.html', {'form': form},
-                context_instance=RequestContext(request))
+            messages.error(request,"Por favor verifique los campos siguientes:")
+            return render_to_response('administrador/agregar_tipodeexamen.html',
+                                      {'form': form,
+                                       'title': 'Agregar'},
+                                      context_instance=RequestContext(request))
             
             
 class ModificarTipodeExamen(CreateView):
