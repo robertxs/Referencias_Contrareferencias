@@ -432,7 +432,7 @@ class TipoexamenForm(forms.ModelForm):
 
         cantidad = Tipoexamen.objects.filter(nombretipo=nombre).count()
 
-        if cantidad == 1:
+        if cantidad >= 1:
             msj="Ya existe este nombre de exámen, verifíquelo por favor."
             self.add_error('nombretipo',msj)
 

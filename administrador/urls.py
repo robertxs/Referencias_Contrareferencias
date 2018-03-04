@@ -117,12 +117,12 @@ urlpatterns = patterns(
         name='agregar_especialidad'
     ),
     url(
-        r'^modificar_especialidad/(?P<pk>\w+)$',
+        r'^modificar_especialidad/(?P<pk>[\w\s]+)$',
         ModificarEspecialidad.as_view(),
         name='modificar_especialidad'
     ),
     url(
-        r'^eliminar_especialidad/(?P<pk>\w+)$',
+        r'^eliminar_especialidad/(?P<pk>[\w\s]+)$',
         'administrador.controllers.eliminar_especialidad',
         name='eliminar_especialidad'
     ),
@@ -147,12 +147,12 @@ urlpatterns = patterns(
         name='agregar_tipodeexamen'
     ),
     url(
-        r'^modificar_tipodeexamen/(?P<pk>\w+)$',
+        r'^modificar_tipodeexamen/(?P<pk>[\w\s]+)$',
         ModificarTipodeExamen.as_view(),
         name='modificar_tipodeexamen'
     ),
     url(
-        r'^eliminar_tipodeexamen/(?P<pk>\w+)$',
+        r'^eliminar_tipodeexamen/(?P<pk>[\w\s]+)$',
         'administrador.controllers.eliminar_tipodeexamen',
         name='eliminar_tipodeexamen'
     ),

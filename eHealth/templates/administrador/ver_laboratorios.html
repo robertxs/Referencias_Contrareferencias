@@ -34,6 +34,7 @@
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
             <a type="button" class="btn btn-primary" href="{% url 'eliminar_laboratorio' lab.pk %}" > Aceptar</a>
+            <a class="eliminar_laboratorio"><i class="fa fa-trash" style="font-size:20px;color:#5882FA""></i></a>
           </div>
         </div>
 
@@ -48,10 +49,13 @@
 		  <td style="text-align: center;">{{lab.institucion.name}}</td>
           <td style="text-align: center;">
             <a href="{% url 'modificar_laboratorio' lab.pk %}"><i class="fa fa-pencil" style="font-size:20px;color:#5882FA"></i></a>
-            <a data-toggle="modal" data-target="#myModal" ><i class="fa fa-trash" style="font-size:20px;color:#5882FA"></i></a>
+             <a href="{% url 'eliminar_laboratorio' lab.pk %}"><i class="fa fa-trash" style="font-size:20px;color:#5882FA"></i></a>
+          <!--  <a data-toggle="modal" data-target="#myModal" ><i class="fa fa-trash" style="font-size:20px;color:#5882FA"></i></a> -->
 
         </tr>
       {% endfor%}
     </table></div>
   </div>
 {% endblock %}
+
+
