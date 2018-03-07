@@ -61,6 +61,9 @@ class Historia(models.Model):
  
 class Tipoexamen(models.Model):
     nombretipo = models.CharField(primary_key=True, max_length=200)
+    
+    def __str__(self):
+		return str(self.nombretipo)
 
 class Examen(models.Model):
     paciente = models.ForeignKey(Paciente,

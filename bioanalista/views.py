@@ -20,13 +20,13 @@ class CrearExamen(CreateView):
 		tipo_examen = request.POST.get('tipo_examen')
 		paciente = request.POST.get('paciente')
 		laboratorio = request.POST.get('laboratorio')
+		tipoexamen = Tipoexamen.objects.filter(nombretipo = tipo_examen)
 		
 		# En caso de que se haya seleccionado un tipo de examen
 		if(tipoexamen and not request.POST.get('filledform')):
 			form.fields['paciente'].widget.attrs['disabled'] = True
 			form.fields['tipo_examen'].widget.attrs['disabled'] = True
 			form.fields['laboratorio'].widget.attrs['disabled'] = True
-			tipoexamen = Tipoexamen.objects.filter(nombretipo = tipo_examen)
 			mediciones = Medicion.objects.filter(tipoexamen = tipoexamen)
 			context = {'form' : form,
 						'mediciones' : mediciones,
