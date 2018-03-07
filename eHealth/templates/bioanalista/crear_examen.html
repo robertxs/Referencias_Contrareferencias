@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{# Load the tag library #}
+{% load bootstrap3 %}
+
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery=1%}
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
+{% load static %}
+
+{% block content %}
+	
+	<h1> Datos del Examen </h1>
+	<form action="" method="post">
+		{% csrf_token %}
+		{{ form }}
+		{% if not mediciones %}
+			<input type="submit" value="Crear" />
+		{% endif %}
+	</form>
+	
+	{% if mediciones %}
+		<br/>
+		<h1>Mediciones</h1>
+		<form action ="" method="post">
+			{% csrf_token %}
+			<input type="hidden" name="filledform" value="true">
+			<input type="hidden" name="paciente" value="{{paciente}}">
+			<input type="hidden" name="laboratorio" value="{{laboratorio}}">
+			<input type="hidden" name="tipo_examen" value="{{tipo_examen}}">
+			{# IMPORTANTE, HACER QUE ESTEN ORDENADOS CON medicion.posicion #}
+			{% for medicion in mediciones %}
+				<label for="{{medicion.nombremedicion}}">{{medicion.nombremedicion}}</label>
+				<input type="text" name="{{medicion.nombremedicion}}">
+			{% endfor %}
+			<input type="submit" value="Crear"/>
+		</form>
+	{% endif %}
+
+
+{% endblock %}
