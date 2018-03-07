@@ -156,7 +156,28 @@ urlpatterns = patterns(
         'administrador.controllers.eliminar_tipodeexamen',
         name='eliminar_tipodeexamen'
     ),
-                       
+    url(
+        r'^ver-mediciones/$',
+        VerMediciones.as_view(),
+        name='ver_mediciones'
+    ),
+    url(
+        r'^agregar-medicion/$',
+        AgregarMedicion.as_view(),
+        name='agregar_medicion'
+    ),
+    url(
+        r'^eliminar-medicion/(?P<pk>[\w\s]+)$',
+        'administrador.controllers.eliminar_medicion',
+        name='eliminar_medicion'
+    ),
+    url(
+        r'^modificar-medicion/(?P<pk>[\w\s]+)$',
+        ModificarMedicion.as_view(),
+        name='modificar_medicion'
+    ),
+  
+         
 )
 
 if settings.DEBUG:

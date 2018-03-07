@@ -637,3 +637,189 @@ class ModificarTipodeExamen(CreateView):
                                        'title': 'Modificar'},
                                       context_instance=RequestContext(request))
 
+
+
+class VerMediciones(TemplateView):
+    template_name = 'administrador/ver_mediciones.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(
+            VerMediciones, self).get_context_data(**kwargs)
+
+        mediciones = Medicion.objects.all()
+       
+        context['mediciones'] = mediciones
+        
+        
+        return context
+
+
+class AgregarMedicion(CreateView):
+    template_name = 'administrador/agregar_medicion.html'
+    form_class = MedicionesForm
+
+    def get_context_data(self, **kwargs):
+        context = super(
+            AgregarMedicion, self).get_context_data(**kwargs)
+        tiposdeexamen = Tipoexamen.objects.all()
+        context['title'] = 'Agregar'
+        context['tiposdeexamen'] = tiposdeexamen
+        return context
+
+    def post(self, request, *args, **kwargs):
+        """
+        Handles POST requests, instantiating a form instance with the passed
+        POST variables and then checked for validity.
+        """
+        form = MedicionesForm(request.POST)
+        if form.is_valid():
+            nombremedicion = request.POST['nombremedicion']
+            unidad = request.POST['unidad']
+            rangoesperado = request.POST['rangoesperado']
+            posicion = request.POST['posicion']
+            tipoexamenpk = request.POST['tipoexamen']
+            tipoexamen = Tipoexamen.objects.get(pk=tipoexamenpk)
+            value = agregar_medicion(nombremedicion,unidad,rangoesperado,posicion,tipoexamen)
+            
+            if value is True:
+                return HttpResponseRedirect(reverse_lazy(
+                    'ver_mediciones'))
+            else:
+                return render_to_response('administrador/agregar_medicion.html',
+                                          {'form': form,
+                                           'title': 'Agregar'},
+                                          context_instance=RequestContext(
+                                              request))
+        else:
+            messages.error(request,"Por favor verifique los campos suguientes:")
+            return render_to_response('administrador/agregar_medicion.html',
+                                      {'form': form,
+                                       'title': 'Agregar'},
+                                      context_instance=RequestContext(request))
+
+
+class ModificarMedicion(CreateView):
+    template_name = 'administrador/modificar_medicion.html'
+    form_class = MedicionesFormEditar
+
+    def get_context_data(self, **kwargs):
+        context = super(
+            ModificarMedicion, self).get_context_data(**kwargs)
+        medicion = Medicion.objects.get(pk=self.kwargs['pk'])
+        form = MedicionesFormEditar(
+                    initial={
+                             'nombremedicion' : medicion.nombremedicion,
+                             'unidad' : medicion.unidad,
+                             'rangoesperado' : medicion.rangoesperado,
+                             'posicion': medicion.posicion,
+                             'tipoexamen': medicion.tipoexamen,
+                            }
+                )
+
+        context['form'] = form
+        context['medicion'] = medicion
+
+        return context
+
+    def post(self, request, *args, **kwargs):
+        """
+        Handles POST requests, instantiating a form instance with the passed
+        POST variables and then checked for validity.
+        """
+        form = MedicionesFormEditar(request.POST)
+        if form.is_valid():
+          
+            nombremedicion = request.POST['nombremedicion']
+            unidad = request.POST['unidad']
+            rangoesperado = request.POST['rangoesperado']
+            posicion = request.POST['posicion']
+            value = modificar_medicion(self.kwargs['pk'], nombremedicion, unidad, rangoesperado, posicion)
+
+            if value is True:
+                return HttpResponseRedirect(reverse_lazy(
+                    'ver_mediciones'))
+            else:
+                return render_to_response('administrador/modificar_medicion.html',
+                                          {'form': form,
+                                           'title': 'Modificar'},
+                                          context_instance=RequestContext(
+                                              request))
+        else:
+            return render_to_response('administrador/modificar_medicion.html',
+                                      {'form': form,
+                                       'title': 'Modificar'},
+                                      context_instance=RequestContext(request))
+
+
+
+
+'''
+class VerMediciones(TemplateView):
+    template_name = 'administrador/ver_mediciones.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(
+            VerMediciones, self).get_context_data(**kwargs)
+        mediciones = Medicion.objects.filter(tipoexamen__pk=self.kwargs['pk'])
+        tipoexamen = Tipoexamen.objects.get(pk=self.kwargs['pk'])
+        context['mediciones'] = mediciones
+        context['tipoexamen'] = tipoexamen
+
+        return context
+
+
+class CrearMedicion(CreateView):
+    template_name = 'administrador/modificar_medicion.html'
+    form_class = MedicionesForm
+
+    def get_context_data(self, **kwargs):
+        context = super(
+            CrearMedicion, self).get_context_data(**kwargs)
+
+        form = MedicionesForm()
+
+        context['form'] = form
+        context['title'] = 'Crear'
+
+        return context
+
+    def post(self, request, *args, **kwargs):
+        """
+        Handles POST requests, instantiating a form instance with the passed
+        POST variables and then checked for validity.
+        """
+        nombremedicion = request.POST['nombremedicion']
+        unidad = request.POST['unidad']
+        rangoesperado = request.POST['rangoesperado']
+        posicion = request.POST['posicion']
+        result = crear_medicion(nombremedicion, unidad, rangoesperado, posicion, kwargs['pk'])
+        if result is True:
+            return HttpResponseRedirect(reverse_lazy('ver_mediciones', kwargs={'pk': kwargs['pk']}))
+        else:
+            return render_to_response(
+                'administrador/modificar_medicion.html',
+                context_instance=RequestContext(request))
+
+
+class ModificarMedicion(UpdateView):
+    template_name = 'administrador/modificar_medicion.html'
+    form_class = MedicionesForm
+    #success_url = reverse_lazy('gestionar_historias')
+
+    def get_queryset(self):
+        return Medicion.objects.filter(pk=self.kwargs['pk'])
+
+    def get_context_data(self, **kwargs):
+        context = super(
+            ModificarMedicion, self).get_context_data(**kwargs)
+
+        medicion = Medicion.objects.get(pk=self.kwargs['pk'])
+
+        form = MedicionesForm(
+            initial={'medicion': medicion.nombremedicion})
+
+        context['form'] = form
+        context['title'] = 'Modificar'
+
+        return context
+'''

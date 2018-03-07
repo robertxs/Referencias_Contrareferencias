@@ -190,3 +190,57 @@ def eliminar_tipodeexamen(request, pk):
     tipoexamen.delete()
     return HttpResponseRedirect(reverse_lazy(
         'ver_tiposdeexamen'))
+    
+def eliminar_medicion(request, pk):
+    medicion = Medicion.objects.get(pk=pk)
+    tipoexamen = Tipoexamen.objects.filter(nombretipo=medicion.tipoexamen)
+    medicion.delete()
+    return HttpResponseRedirect(reverse_lazy(
+        'ver_mediciones'))
+
+def agregar_medicion(medicion,unidad,rangoesperado,posicion, tipoexamen):
+    try:
+        medicion = Medicion(nombremedicion=medicion,
+                            tipoexamen=tipoexamen,
+                            unidad=unidad,
+                            rangoesperado=rangoesperado,
+                            posicion=posicion
+                            )
+        medicion.save()
+        return True
+    except:
+        return False
+    
+def modificar_medicion(medicion, nombremedicion, unidad, rangoesperado, posicion ):
+    try:
+        medicion = Medicion.objects.get(pk=medicion)
+        tipoexamen = medicion.tipoexamen
+        medicion.delete()
+        medicion = Medicion(nombremedicion=nombremedicion,
+                            tipoexamen=tipoexamen,
+                            unidad=unidad,
+                            rangoesperado=rangoesperado,
+                            posicion=posicion
+                            )
+        medicion.save()
+        return True
+    except:
+        return False
+    
+
+
+
+
+'''
+def ordenar_mediciones(request):
+    pks = request.POST.getlist('id')
+    for pk in pks:
+        posicion = request.POST['posicion_' + id]
+        medicion = Medicion.objects.get(id=id)
+        medicion.posicion = posicion
+        medicion.save()
+    tipoexamen = Tipoexamen.objects.get(pk=medicion.tipoexamen.pk)
+    return HttpResponseRedirect(reverse_lazy(
+'ver_mediciones', kwargs={'pk': tipoexamen.pk}))
+'''
+

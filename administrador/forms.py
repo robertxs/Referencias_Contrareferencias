@@ -435,5 +435,32 @@ class TipoexamenForm(forms.ModelForm):
         if cantidad == 1:
             msj="Ya existe este nombre de exámen, verifíquelo por favor."
             self.add_error('nombretipo',msj)
-            
+               
+class MedicionesForm(forms.ModelForm):
+
+    class Meta:
+        model = Medicion
+        fields = '__all__'
+
+    def clean(self):
+        data = self.cleaned_data
+        nombremedicion = self.cleaned_data.get('nombremedicion')
+
+        num_nombremedicion  = Medicion.objects.filter(nombremedicion=nombremedicion ).count()
+
+
+        if num_nombremedicion  == 1:
+            msj="Ya existe este nombre asociado a una medicion, verifíquelo por favor."
+            self.add_error('nombremedicion',msj)
+        return data
     
+    
+    def __init__(self, *args, **kwargs):
+        super(MedicionesForm, self).__init__(*args, **kwargs)
+        self.fields['tipoexamen'].queryset = Tipoexamen.objects.all()
+    
+class MedicionesFormEditar(forms.ModelForm):
+
+    class Meta:
+        model = Medicion
+        exclude = ["tipoexamen"]

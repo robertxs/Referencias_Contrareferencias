@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{# Load the tag library #}
+{% load bootstrap3 %}
+
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery=1%}
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
+{% load static %}
+{% block content %}
+  <div id="cuerpoHeredado">
+    <br>
+    <h2>Modificar datos de Mediciones</h2>
+    <form action="" method=POST>
+    {% csrf_token %}
+    
+    <div class="hidden">
+        {% bootstrap_form_errors form %}
+    </div>
+
+    {% if messages %}
+    <ul class="messages">
+      {% for mes in messages %}
+      <li{% if mes.tags  %}
+      class="{{ mes.tag }}"
+      {% endif%}>{{ mes }}
+      </li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if form.errors %}
+        {% for field in form %}
+            {% for error in field.errors %}
+                <div class="alert alert-danger">
+                    <strong>{{ error|escape }}</strong>
+                </div>
+            {% endfor %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}
+            <div class="alert alert-danger">
+                <strong>{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    
+    <label for="id_tipoexamen">Tipo de exámen</label>
+    <span> {{ medicion.tipoexamen.nombretipo }} </span>
+    <label for="id_nombremedicion">Nombre medición</label>
+    {% bootstrap_field form.nombremedicion layout="inline" %}
+    <label for="id_unidad">Unidad:</label>
+    {% bootstrap_field form.unidad layout="inline" %}
+    <label for="id_rangoesperado">Rango esperado: </label>
+    {% bootstrap_field form.rangoesperado layout="inline" %} 
+    <label for="id_posicion">Posicion: </label>
+    {% bootstrap_field form.posicion layout="inline" %}
+        {% buttons %}
+        <div class="col-md-3"></div>
+        <div class="col-sm-4 col-md-6 text-center">
+            <br>
+            <button id="id_submit" type="submit" class="btn btn-lg calculate" >
+                Guardar
+            </button>
+            <br>
+            <br>
+        </div>
+        <div class="col-md-3"></div>
+    {% endbuttons %}
+    </form>
+  </div>
+{% endblock %}
