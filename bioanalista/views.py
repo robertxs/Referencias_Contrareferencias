@@ -1,2 +1,61 @@
 from django.shortcuts import render
+from django.views.generic import *
+from paciente.models import *
+from administrador.models import *
+from .models import *
+from .forms import *
+from django.template.context_processors import csrf
 
+class CrearExamen(CreateView):
+	template_name = 'bioanalista/crear_examen.html'
+	form_class = ExamenForm
+	
+	def get(self, request):
+		form = ExamenForm()
+		
+		return render(request, 'bioanalista/crear_examen.html', {'form' : form})
+		
+	def post(self, request):
+		form = ExamenForm(request.POST)
+		tipo_examen = request.POST.get('tipo_examen')
+		paciente = request.POST.get('paciente')
+		laboratorio = request.POST.get('laboratorio')
+		
+		# En caso de que se haya seleccionado un tipo de examen
+		if(tipoexamen and not request.POST.get('filledform')):
+			form.fields['paciente'].widget.attrs['disabled'] = True
+			form.fields['tipo_examen'].widget.attrs['disabled'] = True
+			form.fields['laboratorio'].widget.attrs['disabled'] = True
+			tipoexamen = Tipoexamen.objects.filter(nombretipo = tipo_examen)
+			mediciones = Medicion.objects.filter(tipoexamen = tipoexamen)
+			context = {'form' : form,
+						'mediciones' : mediciones,
+						'paciente' : paciente,
+						'laboratorio' : laboratorio,
+						'tipo_examen' : tipo_examen
+						}
+			context.update(csrf(request))
+			
+			return render(request, 'bioanalista/crear_examen.html', context)
+		
+		# En caso de que ya se hayan seleccionado los valores para las mediciones
+		elif(request.POST.get('filledform')):
+			paciente = Paciente.objects.get(cedula = paciente)
+			laboratorio = Laboratorio.objects.get(pk = laboratorio)
+			user_pk = request.user.pk
+			user = User.objects.get(pk = user_pk)
+			usuario = Usuario.objects.get(user = user)
+			bioanalista = Bioanalista.objects.get(usuario = usuario)
+			tipoexamen = Tipoexamen.objects.get(nombretipo = tipo_examen)
+			examen = Examen(paciente = paciente, bioanalista = bioanalista, laboratorio = laboratorio, tipoexamen = tipoexamen)
+			examen.save()
+
+			for elem in request.POST:
+				if(elem not in ['paciente', 'filledform', 'laboratorio', 'tipo_examen', 'csrfmiddlewaretoken']):
+					medicion = Medicion.objects.get(nombremedicion = elem)
+					resultado = Resultadomedicion(examen = examen, medicion = medicion, resultado = request.POST.get(elem))
+					resultado.save()
+				
+			self.get(request)
+		
+		return render(request, 'bioanalista/crear_examen.html', {'form' : form})

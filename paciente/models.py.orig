@@ -60,7 +60,11 @@ class Historia(models.Model):
                                      on_delete=models.CASCADE)
  
 class Tipoexamen(models.Model):
+<<<<<<< HEAD
+    nombretipo = models.CharField(primary_key=True, max_length=200)   
+=======
     nombretipo = models.CharField(primary_key=True, max_length=200)
+>>>>>>> Ninesoft-Juan
 
 class Examen(models.Model):
     paciente = models.ForeignKey(Paciente,
@@ -85,10 +89,16 @@ class Medicion(models.Model):
     posicion = models.CharField(max_length=3, null=True)
     
 class Resultadomedicion(models.Model):
+<<<<<<< HEAD
     examen = models.ForeignKey(Examen, on_delete=models.CASCADE)
     medicion = models.ForeignKey(Medicion, on_delete=models.CASCADE)
     resultado = models.CharField(max_length=100)
     
+=======
+	examen = models.ForeignKey(Examen, on_delete=models.CASCADE)
+	medicion = models.ForeignKey(Medicion, on_delete=models.CASCADE)
+	resultado = models.CharField(max_length=100)
+>>>>>>> Ninesoft-Juan
 
    
     
