@@ -61,10 +61,6 @@ class Historia(models.Model):
  
 class Tipoexamen(models.Model):
     nombretipo = models.CharField(primary_key=True, max_length=200)
-    
-    def __str__(self):
-		return str(self.nombretipo)
-    
 
 class Examen(models.Model):
     paciente = models.ForeignKey(Paciente,
@@ -86,7 +82,6 @@ class Medicion(models.Model):
     nombremedicion = models.CharField(max_length=200)
     unidad = models.CharField(max_length=50)
     rangoesperado = models.CharField(max_length=100)
-    #resultado = models.CharField(max_length=100)
     posicion = models.CharField(max_length=3, null=True)
     
 class Resultadomedicion(models.Model):
