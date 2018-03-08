@@ -93,6 +93,10 @@
                   <li><a href="{% url 'buscar_medico' %}"><i class="fa fa-search "></i>  Buscar médico</a></li>
                   <li><a href="{% url 'ver_citas' user.pk %}"><i class="fa fa-pencil-square-o "></i>  Ver Citas</a></li>
                 {% endif %}
+                
+                {% if user.groups.all.0.name == 'bioanalista' %}
+                  <li><a href="{% url 'ver_examenes_bioanalista' %}"><i class="fa fa-envelope"></i>  Ver Examenes </a></li>
+                {% endif %}
 
               {% else %}
                 <li><a href="{% url 'ver_usuarios' %}"><i class="fa fa-user"></i>  Gestionar Usuarios</a></li>

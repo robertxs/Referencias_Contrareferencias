@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block content %}
+  <div id="cuerpoHeredado">
+
+    <center><h1>Examenes</h1></center>
+    <div id="show-laboratorios"><table>
+      <tr>
+        <th style="text-align: center;">Paciente</th>
+        <th style="text-align: center;">Tipo de Examen</th>
+        <th style="text-align: center;">Fecha</th>
+        <th style="text-align: center;">Laboratorio</th>
+        <th style="text-align: center">
+        <a id="add_medicion" href="{% url 'crear_examen_bioanalista' %}">
+          <i class="fa fa-plus-circle" style="font-size:20px;color:white"></i>
+        </a>
+        </th>
+      </tr>
+      {% for examen in examenes %}
+      <!-- Modal content -->
+      <div class="modal fade" id="myModal" role="dialog">
+
+      <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Eliminar Examen</h4>
+          </div>
+          <div class="modal-body">
+            <p>¿Está seguro que desea eliminar este examen?</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+            <a type="button" class="btn btn-primary" href="" > Aceptar</a>
+            <a class="eliminar_examen"><i class="fa fa-trash" style="font-size:20px;color:#5882FA"></i></a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    
+          <tr>
+          <td style="text-align: center;">
+          	<a href="{% url 'ver_detalles_examen_bioanalista' examen.pk %}">{{examen.paciente}}</a>
+          </td>
+          <td style="text-align: center;">{{examen.tipoexamen}}</td>
+          <td style="text-align: center;">{{examen.fecha}}</td>
+          <td style="text-align: center;">{{examen.laboratorio}}</td>
+          <td style="text-align: center;">
+            <!-- <a href=""><i class="fa fa-pencil" style="font-size:20px;color:#5882FA"></i></a>
+            <a href=""><i class="fa fa-trash" style="font-size:20px;color:#5882FA"></i></a> -->
+          <!--  <a data-toggle="modal" data-target="#myModal" ><i class="fa fa-trash" style="font-size:20px;color:#5882FA"></i></a> -->
+
+        </tr>
+      {% endfor%}
+    </table></div>
+  </div>
+{% endblock %}
+
+

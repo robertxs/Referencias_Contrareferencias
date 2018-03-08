@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+	<h1> {{examen.tipoexamen}} </h1>
+	<h2> {{examen.paciente}} </h2>
+	
+	<table>
+	{% for resultado in resultados %}
+		<tr>
+			<td style="text-align: center;">{{resultado.medicion.nombremedicion}}</td>
+			<td style="text-align: center;">{{resultado.resultado}}</td>
+		</tr>
+		
+	{% endfor %}
+	</table>
+	
+{% endblock %}

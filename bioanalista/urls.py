@@ -23,5 +23,17 @@ urlpatterns = [
         CrearExamen.as_view(),
         name='crear_examen_bioanalista'
     ),
+    
+    url(
+        r'^ver-examenes$',
+        VerExamenes.as_view(),
+        name='ver_examenes_bioanalista'
+    ),
+    
+    url(
+        r'^detalles_examen/(?P<examen_id>\w+)$',
+        DetallesExamen.as_view(),
+        name='ver_detalles_examen_bioanalista'
+    ),
 ]
 

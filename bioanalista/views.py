@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic import *
 from paciente.models import *
 from administrador.models import *
@@ -56,6 +56,40 @@ class CrearExamen(CreateView):
 					resultado = Resultadomedicion(examen = examen, medicion = medicion, resultado = request.POST.get(elem))
 					resultado.save()
 				
-			self.get(request)
+			return redirect('ver_examenes_bioanalista')
+			return render(request, 'home.html', {})
 		
 		return render(request, 'bioanalista/crear_examen.html', {'form' : form})
+		
+		
+class VerExamenes(CreateView):
+	template_name = 'bioanalista/ver_examenes.html'
+
+	def get(self, request):
+		user_pk = request.user.pk
+		user = User.objects.get(pk = user_pk)
+		usuario = Usuario.objects.get(user = user)
+		bioanalista = Bioanalista.objects.get(usuario = usuario)
+		examenes = Examen.objects.filter(bioanalista = bioanalista)
+		context = { 'examenes' : examenes }
+		
+		return render(request, 'bioanalista/ver_examenes.html', context)
+		
+	def post(self, request):
+		pass
+		
+class DetallesExamen(TemplateView):
+	template_name = 'bioanalista/detalles_examen.html'
+	
+	def get(self, request, examen_id):
+		examen = Examen.objects.get(pk = examen_id)
+		resultados = Resultadomedicion.objects.filter(examen = examen)
+		#resultados = []
+		#for r in aux:
+		#	resultados = resultados + [r.medicion.nombremedicion]
+			
+		context = { 'examen' : examen,
+					'resultados' : resultados
+					 }
+		
+		return render(request, 'bioanalista/detalles_examen.html', context)
