@@ -5,26 +5,29 @@
     </center>
 
     <div id="show-tests" class="table-responsive">
-        <table class="table">
-            <tr>
-                <th>Fecha</th>
-                <th>Bioanalista</th>
-                <th>Laboratorio</th>
-                <th>Tipo Examen</th>
-            </tr>
-
-            {% for t in tests %}
-            <tr>
-                <td>{{t.fecha}}</td>
-                <td>{{t.bioanalista.first_name}} {{t.bioanalista.last_name}}</td>
-                <td>{{t.laboratorio.name}}</td>
-                <td>
-                    <a href="{% url 'ver_detalles_examen_paciente' t.pk %}">
-                        {{t.tipoexamen.nombretipo}}
-                    </a>
-                </td>
-            </tr>
-            {% endfor%}
+        <table id="search_result" class="table display" cellspacing="0" width="100%">
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Bioanalista</th>
+                    <th>Laboratorio</th>
+                    <th>Tipo Examen</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in tests %}
+                <tr>
+                    <td>{{t.fecha}}</td>
+                    <td>{{t.bioanalista.first_name}} {{t.bioanalista.last_name}}</td>
+                    <td>{{t.laboratorio.name}}</td>
+                    <td>
+                        <a href="{% url 'ver_detalles_examen_paciente' t.pk %}">
+                            {{t.tipoexamen.nombretipo}}
+                        </a>
+                    </td>
+                </tr>
+                {% endfor%}
+            </tbody>
         </table>
     </div>
 </div>
