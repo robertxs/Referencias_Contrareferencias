@@ -239,3 +239,30 @@ class Informe(TemplateView):
         context['appointments'] = citas
 
         return context
+
+
+class VerExamenesPaciente(TemplateView):
+    template_name = 'paciente/ver_examenes_paciente.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(VerExamenesPaciente, self).get_context_data(**kwargs)
+        user = user = User.objects.get(pk=self.kwargs['id'])
+        tests = Examen.objects.filter(paciente__usuario__user=user)
+
+        context['tests'] = tests
+
+        return context
+
+class DetallesExamenPaciente(TemplateView):
+    template_name = 'paciente/ver_detalles_examen_paciente.html'
+    
+    def get(self, request, examen_id):
+        test = Examen.objects.get(pk = examen_id)
+        resultados = Resultadomedicion.objects.filter(examen = test)
+
+        context = {
+            'test' : test,
+            'results' : resultados
+        }
+
+        return render(request, 'paciente/ver_detalles_examen_paciente.html', context)

@@ -1,0 +1,24 @@
+{% extends 'base.html' %} {% block content %}
+<h1> {{test.tipoexamen}} </h1>
+<h2> {{test.paciente}} </h2>
+
+<div class="table-responsive">
+    <table class="table">
+        <tr>
+            <th>Medicion</th>
+            <th>Resultado</th>
+            <th>Unidad de Medida</th>
+            <th>Esperado</th>
+        </tr>
+        {% for result in results %}
+        <tr>
+            <td>{{result.medicion.nombremedicion}}</td>
+            <td>{{result.resultado}}</td>
+            <td>{{result.medicion.unidad}}</td>
+            <td>{{result.medicion.rangoesperado}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+{% endblock %}

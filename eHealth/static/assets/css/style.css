@@ -333,6 +333,7 @@ th {
   background-color: #428BCA;
   color: white;
   border-bottom: 1px solid #ddd;
+  text-align: center;
 }
 
 td {
@@ -340,6 +341,7 @@ td {
   height: 50px;
   vertical-align: middle;
   border-bottom: 1px solid #ddd;
+  text-align: center;
 }
 
 tr:nth-child(even){background-color: rgba(219, 219, 219, 0.31)}
@@ -663,8 +665,7 @@ label:hover:before {
   height: 250px;
   border-radius: 150px;
   -webkit-border-radius:150px;
-  -moz-border.radius:150px;
-
+  -moz-border-radius:150px;
 }
 
 .fotoPaciente{
@@ -672,8 +673,11 @@ label:hover:before {
   height: 250px;
   border-radius: 150px;
   -webkit-border-radius:150px;
-  -moz-border.radius:150px;
+  -moz-border-radius:150px;
   position: relative;
   top : 50px;
+}
 
+.tests-table {
+  text-align: center;
 }

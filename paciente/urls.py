@@ -54,4 +54,14 @@ urlpatterns = [
         Informe.as_view(),
         name='informe_med'
     ),
+    url(
+        r'^ver-examenes/(?P<id>\w+)$',
+        VerExamenesPaciente.as_view(),
+        name='ver_examenes_paciente'
+    ),
+    url(
+        r'^ver-detalles-examen/(?P<examen_id>\w+)$',
+        DetallesExamenPaciente.as_view(),
+        name='ver_detalles_examen_paciente'
+    ),
 ]
