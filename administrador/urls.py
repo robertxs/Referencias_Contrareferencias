@@ -15,6 +15,11 @@ urlpatterns = patterns(
         name='register'
     ),
     url(
+        r'^register-bioanalista/(?P<user_id>\w+)$',
+        RegisterBioanalista.as_view(),
+        name='register-bioanalista'
+    ),
+    url(
         r'^login/$',
         'administrador.views.user_login',
         name='login'

@@ -1,6 +1,7 @@
 from django.db import models
 from administrador.models import *
 from paciente.models import *
+from medico.models import Laboratorio
 from django.core.validators import MaxValueValidator
 
 class Bioanalista(models.Model):
@@ -18,3 +19,10 @@ class Bioanalista(models.Model):
 
     def __str__(self):
         return str(self.cedula) + " " + self.first_name + " " + self.last_name
+        
+class BioanalistaEnLab(models.Model):
+	bioanalista = models.ForeignKey(Bioanalista, on_delete = models.CASCADE)
+	laboratorio = models.ForeignKey(Laboratorio, on_delete = models.CASCADE)
+	
+	class Meta:
+		unique_together = ('bioanalista', 'laboratorio')

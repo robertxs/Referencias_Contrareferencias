@@ -216,4 +216,9 @@ urlpatterns = [
         VerHistorial.as_view(),
         name='ver_historial'
     ),
+    url(
+        r'^solicitud-examen/$',
+        SolicitudExamen.as_view(),
+        name='solicitud-examen'
+    ),
 ]

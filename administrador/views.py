@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, redirect, render
 from django.core.urlresolvers import reverse_lazy
 from django.http import HttpResponseRedirect
 from django.http import HttpResponse
@@ -41,10 +41,39 @@ class Register(CreateView):
         form = UsuarioForm(request.POST)
         if form.is_valid():
             # Registramos al usuario
-            register_user(form)
+            user = register_user(form)
+            if(form.cleaned_data['rol'] == 'bioanalista'):
+            	return redirect('register-bioanalista', user_id = user.pk)
             return HttpResponseRedirect(reverse_lazy('index'))
         else:
             return render_to_response('register.html',
+                                      {'form': form},
+                                      context_instance=RequestContext(
+                                          request))
+                                          
+class RegisterBioanalista(TemplateView):
+	def get(self, request, user_id):
+		labform = LabForm()
+		context = {
+			'form' : labform,
+			'user_id' : user_id
+		}
+		
+		return render(request, 'register_bioanalista.html', context)
+		
+	def post(self, request, user_id):
+		form = LabForm(request.POST)
+		user_id = request.POST.get('user_id')
+		
+		if form.is_valid():
+			user = User.objects.get(pk = user_id)
+			usuario = Usuario.objects.get(user = user)
+			bioanalista = Bioanalista.objects.get(usuario = usuario)
+			bioEnLab = BioanalistaEnLab(bioanalista = bioanalista, laboratorio = form.cleaned_data['laboratorio'])
+			bioEnLab.save()
+			return HttpResponseRedirect(reverse_lazy('index'))
+		else:
+			return render_to_response('register_bioanalista.html',
                                       {'form': form},
                                       context_instance=RequestContext(
                                           request))

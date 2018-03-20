@@ -464,3 +464,6 @@ class MedicionesFormEditar(forms.ModelForm):
     class Meta:
         model = Medicion
         exclude = ["tipoexamen"]
+        
+class LabForm(forms.Form):
+	laboratorio = forms.ModelChoiceField(queryset = Laboratorio.objects.all())

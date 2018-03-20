@@ -93,10 +93,12 @@
                   <li><a href="{% url 'buscar_paciente' %}"><i class="fa fa-search "></i>  Buscar paciente</a></li>
                   <li><a href="{% url 'buscar_medico' %}"><i class="fa fa-search "></i>  Buscar médico</a></li>
                   <li><a href="{% url 'ver_citas' user.pk %}"><i class="fa fa-pencil-square-o "></i>  Ver Citas</a></li>
+                  <li><a href="{% url 'solicitud-examen' %}"><i class="fa fa-pencil-square-o "></i>  Solicitar Examen </a></li>
                 {% endif %}
                 
                 {% if user.groups.all.0.name == 'bioanalista' %}
                   <li><a href="{% url 'ver_examenes_bioanalista' %}"><i class="fa fa-envelope"></i>  Ver Examenes </a></li>
+                  <li><a href="{% url 'ver_solicitudes_examen' %}"><i class="fa fa-envelope"></i>  Solicitudes de Examen </a></li>
                 {% endif %}
 
               {% else %}

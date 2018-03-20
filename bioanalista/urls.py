@@ -35,5 +35,19 @@ urlpatterns = [
         DetallesExamen.as_view(),
         name='ver_detalles_examen_bioanalista'
     ),
+    
+    url(
+        r'^ver-solicitudes-examen$',
+        VerSolicitudesExamen.as_view(),
+        name='ver_solicitudes_examen'
+    ),
+    
+    url(
+        r'^aprobar-solicitud-examen/(?P<sol_id>\w+)$',
+        AprobarSolicitudExamen.as_view(),
+        name='aprobar_solicitud_examen'
+    ),
+    
+    
 ]
 

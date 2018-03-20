@@ -1366,3 +1366,25 @@ class VerHistorial(TemplateView):
         context['consulta'] = consulta
 
         return context
+
+class SolicitudExamen(CreateView):
+	
+	template_name = 'medico/solicitud_examen.html'
+	
+	def get(self, request):
+		form = SolicitudExamenForm()
+		context = {'form' : form}
+		
+		return render(request, 'medico/solicitud_examen.html', context)
+		
+	def post(self, request):
+		form = SolicitudExamenForm(request.POST)
+		
+		if form.is_valid():
+			form.save()
+			return HttpResponseRedirect(reverse_lazy('index'))
+			
+		return render(request, 'medico/solicitud_examen.html', context)
+		
+
+# Hacer vista de solicitud para bioanalista
